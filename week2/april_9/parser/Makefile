@@ -10,11 +10,11 @@ antlr.generated: antlr.generated.mini antlr.generated.type
 	touch antlr.generated
 
 antlr.generated.mini : Mini.g
-	java ${TOOL} Mini.g
+	java ${ORG} Mini.g
 	touch antlr.generated.mini
 
 antlr.generated.type : TypeCheck.g
-	java ${TOOL} TypeCheck.g
+	java ${ORG} TypeCheck.g
 	touch antlr.generated.type
 
 clean:
