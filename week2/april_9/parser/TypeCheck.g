@@ -1,5 +1,7 @@
 tree grammar TypeCheck;
 
+// github commit test
+
 options
 {
    tokenVocab=Mini;
