@@ -1,6 +1,4 @@
 FILES=Mini.java
-TOOL = -jar ../../../antlr-3.3-complete.jar
-ORG = org.antlr.Tool
 
 
 Mini.class : antlr.generated ${FILES}
@@ -10,11 +8,11 @@ antlr.generated: antlr.generated.mini antlr.generated.type
 	touch antlr.generated
 
 antlr.generated.mini : Mini.g
-	java ${ORG} Mini.g
+	java org.antlr.Tool Mini.g
 	touch antlr.generated.mini
 
 antlr.generated.type : TypeCheck.g
-	java ${ORG} TypeCheck.g
+	java org.antlr.Tool TypeCheck.g
 	touch antlr.generated.type
 
 clean:

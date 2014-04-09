@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/david/github/MiniCompiler/week2/april_9/parser/Mini.g 2014-04-07 09:39:02
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/david/github/MiniCompiler/week2/april_9/parser/Mini.g 2014-04-09 09:08:27
 
    /* package declaration here */
 
@@ -80,14 +80,14 @@ public class MiniParser extends DebugParser {
     // delegators
 
     public static final String[] ruleNames = new String[] {
-        "invalidRule", "nested_decl", "return_type", "type_declaration", 
-        "statement_list", "arg_list", "read", "ret", "expression", "id_list", 
-        "types", "conditional", "even_neg", "unary", "assignment", "synpred4_Mini", 
-        "print", "synpred3_Mini", "types_sub", "odd_neg", "declarations", 
-        "block", "term", "factor", "program", "odd_not", "delete", "boolterm", 
-        "synpred2_Mini", "lvalue", "invocation", "decl", "type", "parameters", 
-        "synpred1_Mini", "loop", "simple", "even_not", "statement", "functions", 
-        "declaration", "selector", "arguments", "function"
+        "invalidRule", "synpred3_Mini", "conditional", "declarations", "print", 
+        "loop", "program", "return_type", "lvalue", "simple", "synpred1_Mini", 
+        "block", "expression", "statement", "even_neg", "term", "type_declaration", 
+        "arguments", "types_sub", "synpred2_Mini", "parameters", "synpred4_Mini", 
+        "types", "invocation", "delete", "factor", "statement_list", "odd_not", 
+        "declaration", "odd_neg", "unary", "ret", "read", "arg_list", "type", 
+        "boolterm", "assignment", "function", "decl", "nested_decl", "selector", 
+        "functions", "even_not", "id_list"
     };
     public static final boolean[] decisionCanBacktrack = new boolean[] {
         false, // invalid decision
@@ -220,7 +220,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: t, f, d
+            // elements: d, t, f
             // token labels: 
             // rule labels: f, retval, d, t
             // token list labels: 
@@ -933,7 +933,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: t, i
+            // elements: i, t
             // token labels: i
             // rule labels: retval, t
             // token list labels: 
@@ -1349,7 +1349,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: ilist, t
+            // elements: t, ilist
             // token labels: 
             // rule labels: retval, t, ilist
             // token list labels: 
@@ -1774,7 +1774,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: id, r, p, s, d, FUN
+            // elements: FUN, s, r, p, id, d
             // token labels: id
             // rule labels: retval, d, s, r, p
             // token list labels: 
@@ -2720,7 +2720,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: l, e, ASSIGN
+            // elements: e, ASSIGN, l
             // token labels: 
             // rule labels: retval, e, l
             // token list labels: 
@@ -3186,7 +3186,7 @@ public class MiniParser extends DebugParser {
 
 
             // AST REWRITE
-            // elements: e, e, WHILE, b
+            // elements: e, b, WHILE, e
             // token labels: 
             // rule labels: retval, e, b
             // token list labels: 
@@ -5364,7 +5364,7 @@ public class MiniParser extends DebugParser {
 
 
                     // AST REWRITE
-                    // elements: id, a
+                    // elements: a, id
                     // token labels: id
                     // rule labels: retval, a
                     // token list labels: 
