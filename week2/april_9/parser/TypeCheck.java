@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 TypeCheck.g 2014-04-09 09:33:29
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 TypeCheck.g 2014-04-09 10:03:43
 
    import java.util.Map;
    import java.util.HashMap;
@@ -321,71 +321,49 @@ public class TypeCheck extends TreeParser {
 
 
     // $ANTLR start "decls"
-    // TypeCheck.g:35:1: decls : ;
+    // TypeCheck.g:36:1: decls : ^( DECLS ( decllist )* ) ;
     public final void decls() throws RecognitionException {
         try {
-            // TypeCheck.g:35:6: ()
-            // TypeCheck.g:36:5: 
+            // TypeCheck.g:36:6: ( ^( DECLS ( decllist )* ) )
+            // TypeCheck.g:37:5: ^( DECLS ( decllist )* )
             {
+            match(input,DECLS,FOLLOW_DECLS_in_decls142); 
+
+            if ( input.LA(1)==Token.DOWN ) {
+                match(input, Token.DOWN, null); 
+                // TypeCheck.g:37:13: ( decllist )*
+                loop4:
+                do {
+                    int alt4=2;
+                    int LA4_0 = input.LA(1);
+
+                    if ( (LA4_0==DECLLIST) ) {
+                        alt4=1;
+                    }
+
+
+                    switch (alt4) {
+                	case 1 :
+                	    // TypeCheck.g:37:13: decllist
+                	    {
+                	    pushFollow(FOLLOW_decllist_in_decls144);
+                	    decllist();
+
+                	    state._fsp--;
+
+
+                	    }
+                	    break;
+
+                	default :
+                	    break loop4;
+                    }
+                } while (true);
+
+
+                match(input, Token.UP, null); 
+            }
             System.out.println("Decls found");
-
-            }
-
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end "decls"
-
-
-    // $ANTLR start "funcs"
-    // TypeCheck.g:39:1: funcs : ;
-    public final void funcs() throws RecognitionException {
-        try {
-            // TypeCheck.g:39:6: ()
-            // TypeCheck.g:40:5: 
-            {
-            System.out.println("Found funcs");
-
-            }
-
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end "funcs"
-
-
-    // $ANTLR start "verify"
-    // TypeCheck.g:43:1: verify : ^( PROGRAM types decls funcs ) ;
-    public final void verify() throws RecognitionException {
-        try {
-            // TypeCheck.g:43:8: ( ^( PROGRAM types decls funcs ) )
-            // TypeCheck.g:44:5: ^( PROGRAM types decls funcs )
-            {
-            match(input,PROGRAM,FOLLOW_PROGRAM_in_verify167); 
-
-            match(input, Token.DOWN, null); 
-            pushFollow(FOLLOW_types_in_verify169);
-            types();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_decls_in_verify171);
-            decls();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_funcs_in_verify173);
-            funcs();
-
-            state._fsp--;
-
-
-            match(input, Token.UP, null); 
-             System.out.println("Finished Verify"); 
 
             }
 
@@ -398,7 +376,65 @@ public class TypeCheck extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end "verify"
+    // $ANTLR end "decls"
+
+
+    // $ANTLR start "decllist"
+    // TypeCheck.g:41:1: decllist : ^( DECLLIST type ( ID )* ) ;
+    public final void decllist() throws RecognitionException {
+        try {
+            // TypeCheck.g:41:9: ( ^( DECLLIST type ( ID )* ) )
+            // TypeCheck.g:42:5: ^( DECLLIST type ( ID )* )
+            {
+            match(input,DECLLIST,FOLLOW_DECLLIST_in_decllist165); 
+
+            match(input, Token.DOWN, null); 
+            pushFollow(FOLLOW_type_in_decllist167);
+            type();
+
+            state._fsp--;
+
+            // TypeCheck.g:42:21: ( ID )*
+            loop5:
+            do {
+                int alt5=2;
+                int LA5_0 = input.LA(1);
+
+                if ( (LA5_0==ID) ) {
+                    alt5=1;
+                }
+
+
+                switch (alt5) {
+            	case 1 :
+            	    // TypeCheck.g:42:21: ID
+            	    {
+            	    match(input,ID,FOLLOW_ID_in_decllist169); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop5;
+                }
+            } while (true);
+
+
+            match(input, Token.UP, null); 
+            System.out.println("Decclist found");
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return ;
+    }
+    // $ANTLR end "decllist"
 
     // Delegated rules
 
@@ -418,9 +454,10 @@ public class TypeCheck extends TreeParser {
     public static final BitSet FOLLOW_BOOL_in_type113 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_STRUCT_in_type123 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_ID_in_type125 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_PROGRAM_in_verify167 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_types_in_verify169 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_decls_in_verify171 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_funcs_in_verify173 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_DECLS_in_decls142 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_decllist_in_decls144 = new BitSet(new long[]{0x0000000008000008L});
+    public static final BitSet FOLLOW_DECLLIST_in_decllist165 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_type_in_decllist167 = new BitSet(new long[]{0x0100000000000008L});
+    public static final BitSet FOLLOW_ID_in_decllist169 = new BitSet(new long[]{0x0100000000000008L});
 
 }

@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 Mini.g 2014-04-09 09:33:27
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 Mini.g 2014-04-09 10:01:56
 
    /* package declaration here */
 
@@ -160,7 +160,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: f, t, d
+            // elements: d, f, t
             // token labels: 
             // rule labels: f, retval, d, t
             // token list labels: 
@@ -738,7 +738,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: t, i
+            // elements: i, t
             // token labels: i
             // rule labels: retval, t
             // token list labels: 
@@ -1404,7 +1404,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: d, r, id, FUN, p, s
+            // elements: s, d, p, FUN, id, r
             // token labels: id
             // rule labels: retval, d, s, r, p
             // token list labels: 
@@ -2147,7 +2147,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: e, ASSIGN, l
+            // elements: l, e, ASSIGN
             // token labels: 
             // rule labels: retval, e, l
             // token list labels: 
@@ -2508,7 +2508,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: b, WHILE, e, e
+            // elements: e, e, b, WHILE
             // token labels: 
             // rule labels: retval, e, b
             // token list labels: 
@@ -2746,7 +2746,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: id, a
+            // elements: a, id
             // token labels: id
             // rule labels: retval, a
             // token list labels: 
@@ -4200,7 +4200,7 @@ public class MiniParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: id, a
+                    // elements: a, id
                     // token labels: id
                     // rule labels: retval, a
                     // token list labels: 
