@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 TypeCheck.g 2014-04-09 17:07:54
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 TypeCheck.g 2014-04-09 17:17:12
 
    import java.util.Map;
    import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class TypeCheck extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STRUCT", "INT", "BOOL", "FUN", "VOID", "PRINT", "ENDL", "READ", "IF", "ELSE", "WHILE", "DELETE", "RETURN", "TRUE", "FALSE", "NEW", "NULL", "PROGRAM", "TYPES", "TYPE", "DECLS", "FUNCS", "DECL", "DECLLIST", "PARAMS", "RETTYPE", "BLOCK", "STMTS", "INVOKE", "ARGS", "NEG", "LBRACE", "RBRACE", "SEMI", "COMMA", "LPAREN", "RPAREN", "ASSIGN", "DOT", "AND", "OR", "EQ", "LT", "GT", "NE", "LE", "GE", "PLUS", "MINUS", "TIMES", "DIVIDE", "NOT", "ID", "INTEGER", "WS", "COMMENT", "BOOLTERM", "CONJ", "ASSIGNMENT", "CONDITIONAL", "LOOP", "RET", "INVOCATION"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "STRUCT", "INT", "BOOL", "FUN", "VOID", "PRINT", "ENDL", "READ", "IF", "ELSE", "WHILE", "DELETE", "RETURN", "TRUE", "FALSE", "NEW", "NULL", "PROGRAM", "TYPES", "TYPE", "DECLS", "FUNCS", "DECL", "DECLLIST", "PARAMS", "RETTYPE", "BLOCK", "STMTS", "INVOKE", "ARGS", "NEG", "LBRACE", "RBRACE", "SEMI", "COMMA", "LPAREN", "RPAREN", "ASSIGN", "DOT", "AND", "OR", "EQ", "LT", "GT", "NE", "LE", "GE", "PLUS", "MINUS", "TIMES", "DIVIDE", "NOT", "ID", "INTEGER", "WS", "COMMENT", "BOOLTERM", "CONJ", "COMPAR", "ASSIGNMENT", "CONDITIONAL", "LOOP", "RET", "INVOCATION"
     };
     public static final int EOF=-1;
     public static final int STRUCT=4;
@@ -74,11 +74,12 @@ public class TypeCheck extends TreeParser {
     public static final int COMMENT=59;
     public static final int BOOLTERM=60;
     public static final int CONJ=61;
-    public static final int ASSIGNMENT=62;
-    public static final int CONDITIONAL=63;
-    public static final int LOOP=64;
-    public static final int RET=65;
-    public static final int INVOCATION=66;
+    public static final int COMPAR=62;
+    public static final int ASSIGNMENT=63;
+    public static final int CONDITIONAL=64;
+    public static final int LOOP=65;
+    public static final int RET=66;
+    public static final int INVOCATION=67;
 
     // delegates
     // delegators
@@ -558,16 +559,45 @@ public class TypeCheck extends TreeParser {
 
 
     // $ANTLR start "boolterm"
-    // TypeCheck.g:55:1: boolterm : simple ;
+    // TypeCheck.g:55:1: boolterm : simple ( ^( COMPAR simple ) )? ;
     public final void boolterm() throws RecognitionException {
         try {
-            // TypeCheck.g:55:9: ( simple )
-            // TypeCheck.g:56:4: simple
+            // TypeCheck.g:55:9: ( simple ( ^( COMPAR simple ) )? )
+            // TypeCheck.g:56:4: simple ( ^( COMPAR simple ) )?
             {
             pushFollow(FOLLOW_simple_in_boolterm233);
             simple();
 
             state._fsp--;
+
+            // TypeCheck.g:56:11: ( ^( COMPAR simple ) )?
+            int alt7=2;
+            int LA7_0 = input.LA(1);
+
+            if ( (LA7_0==COMPAR) ) {
+                alt7=1;
+            }
+            switch (alt7) {
+                case 1 :
+                    // TypeCheck.g:56:12: ^( COMPAR simple )
+                    {
+                    match(input,COMPAR,FOLLOW_COMPAR_in_boolterm237); 
+
+                    if ( input.LA(1)==Token.DOWN ) {
+                        match(input, Token.DOWN, null); 
+                        pushFollow(FOLLOW_simple_in_boolterm239);
+                        simple();
+
+                        state._fsp--;
+
+
+                        match(input, Token.UP, null); 
+                    }
+
+                    }
+                    break;
+
+            }
 
 
             }
@@ -606,41 +636,41 @@ public class TypeCheck extends TreeParser {
     public final void lvalue() throws RecognitionException {
         try {
             // TypeCheck.g:64:7: ( ID | ^( DOT lvalue ID ) )
-            int alt7=2;
-            int LA7_0 = input.LA(1);
+            int alt8=2;
+            int LA8_0 = input.LA(1);
 
-            if ( (LA7_0==ID) ) {
-                alt7=1;
+            if ( (LA8_0==ID) ) {
+                alt8=1;
             }
-            else if ( (LA7_0==DOT) ) {
-                alt7=2;
+            else if ( (LA8_0==DOT) ) {
+                alt8=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 7, 0, input);
+                    new NoViableAltException("", 8, 0, input);
 
                 throw nvae;
             }
-            switch (alt7) {
+            switch (alt8) {
                 case 1 :
                     // TypeCheck.g:65:4: ID
                     {
-                    match(input,ID,FOLLOW_ID_in_lvalue258); 
+                    match(input,ID,FOLLOW_ID_in_lvalue267); 
 
                     }
                     break;
                 case 2 :
                     // TypeCheck.g:66:6: ^( DOT lvalue ID )
                     {
-                    match(input,DOT,FOLLOW_DOT_in_lvalue266); 
+                    match(input,DOT,FOLLOW_DOT_in_lvalue275); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lvalue_in_lvalue268);
+                    pushFollow(FOLLOW_lvalue_in_lvalue277);
                     lvalue();
 
                     state._fsp--;
 
-                    match(input,ID,FOLLOW_ID_in_lvalue270); 
+                    match(input,ID,FOLLOW_ID_in_lvalue279); 
 
                     match(input, Token.UP, null); 
 
@@ -784,19 +814,19 @@ public class TypeCheck extends TreeParser {
     public final void stmt() throws RecognitionException {
         try {
             // TypeCheck.g:97:5: ( ^( STMTS ^( BLOCK stmtlist ) ) | ^( STMTS ^( ASSIGNMENT assignment ) ) | ^( STMTS ^( PRINT print ) ) | ^( STMTS ^( READ read ) ) | ^( STMTS ^( CONDITIONAL conditional ) ) | ^( STMTS ^( LOOP loop ) ) | ^( STMTS ^( DELETE delete ) ) | ^( STMTS ^( RET ret ) ) | ^( STMTS ^( INVOCATION invocation ) ) )
-            int alt8=9;
-            alt8 = dfa8.predict(input);
-            switch (alt8) {
+            int alt9=9;
+            alt9 = dfa9.predict(input);
+            switch (alt9) {
                 case 1 :
                     // TypeCheck.g:98:5: ^( STMTS ^( BLOCK stmtlist ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt366); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt375); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,BLOCK,FOLLOW_BLOCK_in_stmt369); 
+                    match(input,BLOCK,FOLLOW_BLOCK_in_stmt378); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_stmtlist_in_stmt371);
+                    pushFollow(FOLLOW_stmtlist_in_stmt380);
                     stmtlist();
 
                     state._fsp--;
@@ -811,13 +841,13 @@ public class TypeCheck extends TreeParser {
                 case 2 :
                     // TypeCheck.g:99:6: ^( STMTS ^( ASSIGNMENT assignment ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt381); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt390); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,ASSIGNMENT,FOLLOW_ASSIGNMENT_in_stmt384); 
+                    match(input,ASSIGNMENT,FOLLOW_ASSIGNMENT_in_stmt393); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_assignment_in_stmt386);
+                    pushFollow(FOLLOW_assignment_in_stmt395);
                     assignment();
 
                     state._fsp--;
@@ -832,14 +862,14 @@ public class TypeCheck extends TreeParser {
                 case 3 :
                     // TypeCheck.g:100:6: ^( STMTS ^( PRINT print ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt396); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt405); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,PRINT,FOLLOW_PRINT_in_stmt399); 
+                    match(input,PRINT,FOLLOW_PRINT_in_stmt408); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_print_in_stmt401);
+                        pushFollow(FOLLOW_print_in_stmt410);
                         print();
 
                         state._fsp--;
@@ -855,14 +885,14 @@ public class TypeCheck extends TreeParser {
                 case 4 :
                     // TypeCheck.g:101:6: ^( STMTS ^( READ read ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt411); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt420); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,READ,FOLLOW_READ_in_stmt414); 
+                    match(input,READ,FOLLOW_READ_in_stmt423); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_read_in_stmt416);
+                        pushFollow(FOLLOW_read_in_stmt425);
                         read();
 
                         state._fsp--;
@@ -878,14 +908,14 @@ public class TypeCheck extends TreeParser {
                 case 5 :
                     // TypeCheck.g:102:6: ^( STMTS ^( CONDITIONAL conditional ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt426); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt435); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,CONDITIONAL,FOLLOW_CONDITIONAL_in_stmt429); 
+                    match(input,CONDITIONAL,FOLLOW_CONDITIONAL_in_stmt438); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_conditional_in_stmt431);
+                        pushFollow(FOLLOW_conditional_in_stmt440);
                         conditional();
 
                         state._fsp--;
@@ -901,14 +931,14 @@ public class TypeCheck extends TreeParser {
                 case 6 :
                     // TypeCheck.g:103:6: ^( STMTS ^( LOOP loop ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt441); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt450); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,LOOP,FOLLOW_LOOP_in_stmt444); 
+                    match(input,LOOP,FOLLOW_LOOP_in_stmt453); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_loop_in_stmt446);
+                        pushFollow(FOLLOW_loop_in_stmt455);
                         loop();
 
                         state._fsp--;
@@ -924,14 +954,14 @@ public class TypeCheck extends TreeParser {
                 case 7 :
                     // TypeCheck.g:104:6: ^( STMTS ^( DELETE delete ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt456); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt465); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,DELETE,FOLLOW_DELETE_in_stmt459); 
+                    match(input,DELETE,FOLLOW_DELETE_in_stmt468); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_delete_in_stmt461);
+                        pushFollow(FOLLOW_delete_in_stmt470);
                         delete();
 
                         state._fsp--;
@@ -947,14 +977,14 @@ public class TypeCheck extends TreeParser {
                 case 8 :
                     // TypeCheck.g:105:6: ^( STMTS ^( RET ret ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt471); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt480); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,RET,FOLLOW_RET_in_stmt474); 
+                    match(input,RET,FOLLOW_RET_in_stmt483); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_ret_in_stmt476);
+                        pushFollow(FOLLOW_ret_in_stmt485);
                         ret();
 
                         state._fsp--;
@@ -970,14 +1000,14 @@ public class TypeCheck extends TreeParser {
                 case 9 :
                     // TypeCheck.g:106:6: ^( STMTS ^( INVOCATION invocation ) )
                     {
-                    match(input,STMTS,FOLLOW_STMTS_in_stmt486); 
+                    match(input,STMTS,FOLLOW_STMTS_in_stmt495); 
 
                     match(input, Token.DOWN, null); 
-                    match(input,INVOCATION,FOLLOW_INVOCATION_in_stmt489); 
+                    match(input,INVOCATION,FOLLOW_INVOCATION_in_stmt498); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        pushFollow(FOLLOW_invocation_in_stmt491);
+                        pushFollow(FOLLOW_invocation_in_stmt500);
                         invocation();
 
                         state._fsp--;
@@ -1012,26 +1042,26 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:110:9: ( ^( STMTS ( stmt )* ) )
             // TypeCheck.g:111:5: ^( STMTS ( stmt )* )
             {
-            match(input,STMTS,FOLLOW_STMTS_in_stmtlist512); 
+            match(input,STMTS,FOLLOW_STMTS_in_stmtlist521); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
                 // TypeCheck.g:111:13: ( stmt )*
-                loop9:
+                loop10:
                 do {
-                    int alt9=2;
-                    int LA9_0 = input.LA(1);
+                    int alt10=2;
+                    int LA10_0 = input.LA(1);
 
-                    if ( (LA9_0==STMTS) ) {
-                        alt9=1;
+                    if ( (LA10_0==STMTS) ) {
+                        alt10=1;
                     }
 
 
-                    switch (alt9) {
+                    switch (alt10) {
                 	case 1 :
                 	    // TypeCheck.g:111:13: stmt
                 	    {
-                	    pushFollow(FOLLOW_stmt_in_stmtlist514);
+                	    pushFollow(FOLLOW_stmt_in_stmtlist523);
                 	    stmt();
 
                 	    state._fsp--;
@@ -1041,7 +1071,7 @@ public class TypeCheck extends TreeParser {
                 	    break;
 
                 	default :
-                	    break loop9;
+                	    break loop10;
                     }
                 } while (true);
 
@@ -1071,26 +1101,26 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:115:6: ( ^( FUNCS ( fun )* ) )
             // TypeCheck.g:116:5: ^( FUNCS ( fun )* )
             {
-            match(input,FUNCS,FOLLOW_FUNCS_in_funcs535); 
+            match(input,FUNCS,FOLLOW_FUNCS_in_funcs544); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
                 // TypeCheck.g:116:13: ( fun )*
-                loop10:
+                loop11:
                 do {
-                    int alt10=2;
-                    int LA10_0 = input.LA(1);
+                    int alt11=2;
+                    int LA11_0 = input.LA(1);
 
-                    if ( (LA10_0==FUN) ) {
-                        alt10=1;
+                    if ( (LA11_0==FUN) ) {
+                        alt11=1;
                     }
 
 
-                    switch (alt10) {
+                    switch (alt11) {
                 	case 1 :
                 	    // TypeCheck.g:116:13: fun
                 	    {
-                	    pushFollow(FOLLOW_fun_in_funcs537);
+                	    pushFollow(FOLLOW_fun_in_funcs546);
                 	    fun();
 
                 	    state._fsp--;
@@ -1100,7 +1130,7 @@ public class TypeCheck extends TreeParser {
                 	    break;
 
                 	default :
-                	    break loop10;
+                	    break loop11;
                     }
                 } while (true);
 
@@ -1130,26 +1160,26 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:120:4: ( ^( FUN ID params rettype decls stmtlist ) )
             // TypeCheck.g:121:5: ^( FUN ID params rettype decls stmtlist )
             {
-            match(input,FUN,FOLLOW_FUN_in_fun558); 
+            match(input,FUN,FOLLOW_FUN_in_fun567); 
 
             match(input, Token.DOWN, null); 
-            match(input,ID,FOLLOW_ID_in_fun560); 
-            pushFollow(FOLLOW_params_in_fun562);
+            match(input,ID,FOLLOW_ID_in_fun569); 
+            pushFollow(FOLLOW_params_in_fun571);
             params();
 
             state._fsp--;
 
-            pushFollow(FOLLOW_rettype_in_fun564);
+            pushFollow(FOLLOW_rettype_in_fun573);
             rettype();
 
             state._fsp--;
 
-            pushFollow(FOLLOW_decls_in_fun566);
+            pushFollow(FOLLOW_decls_in_fun575);
             decls();
 
             state._fsp--;
 
-            pushFollow(FOLLOW_stmtlist_in_fun568);
+            pushFollow(FOLLOW_stmtlist_in_fun577);
             stmtlist();
 
             state._fsp--;
@@ -1179,26 +1209,26 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:125:7: ( ^( PARAMS ( decl )* ) )
             // TypeCheck.g:126:5: ^( PARAMS ( decl )* )
             {
-            match(input,PARAMS,FOLLOW_PARAMS_in_params588); 
+            match(input,PARAMS,FOLLOW_PARAMS_in_params597); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
                 // TypeCheck.g:126:14: ( decl )*
-                loop11:
+                loop12:
                 do {
-                    int alt11=2;
-                    int LA11_0 = input.LA(1);
+                    int alt12=2;
+                    int LA12_0 = input.LA(1);
 
-                    if ( (LA11_0==DECL) ) {
-                        alt11=1;
+                    if ( (LA12_0==DECL) ) {
+                        alt12=1;
                     }
 
 
-                    switch (alt11) {
+                    switch (alt12) {
                 	case 1 :
                 	    // TypeCheck.g:126:14: decl
                 	    {
-                	    pushFollow(FOLLOW_decl_in_params590);
+                	    pushFollow(FOLLOW_decl_in_params599);
                 	    decl();
 
                 	    state._fsp--;
@@ -1208,7 +1238,7 @@ public class TypeCheck extends TreeParser {
                 	    break;
 
                 	default :
-                	    break loop11;
+                	    break loop12;
                     }
                 } while (true);
 
@@ -1238,10 +1268,10 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:130:8: ( ^( RETTYPE ID ) )
             // TypeCheck.g:131:5: ^( RETTYPE ID )
             {
-            match(input,RETTYPE,FOLLOW_RETTYPE_in_rettype611); 
+            match(input,RETTYPE,FOLLOW_RETTYPE_in_rettype620); 
 
             match(input, Token.DOWN, null); 
-            match(input,ID,FOLLOW_ID_in_rettype613); 
+            match(input,ID,FOLLOW_ID_in_rettype622); 
 
             match(input, Token.UP, null); 
             System.out.println("Found rettype");
@@ -1267,20 +1297,20 @@ public class TypeCheck extends TreeParser {
             // TypeCheck.g:137:8: ( ^( PROGRAM types decls funcs ) )
             // TypeCheck.g:138:5: ^( PROGRAM types decls funcs )
             {
-            match(input,PROGRAM,FOLLOW_PROGRAM_in_verify637); 
+            match(input,PROGRAM,FOLLOW_PROGRAM_in_verify646); 
 
             match(input, Token.DOWN, null); 
-            pushFollow(FOLLOW_types_in_verify639);
+            pushFollow(FOLLOW_types_in_verify648);
             types();
 
             state._fsp--;
 
-            pushFollow(FOLLOW_decls_in_verify641);
+            pushFollow(FOLLOW_decls_in_verify650);
             decls();
 
             state._fsp--;
 
-            pushFollow(FOLLOW_funcs_in_verify643);
+            pushFollow(FOLLOW_funcs_in_verify652);
             funcs();
 
             state._fsp--;
@@ -1305,23 +1335,23 @@ public class TypeCheck extends TreeParser {
     // Delegated rules
 
 
-    protected DFA8 dfa8 = new DFA8(this);
-    static final String DFA8_eotS =
+    protected DFA9 dfa9 = new DFA9(this);
+    static final String DFA9_eotS =
         "\14\uffff";
-    static final String DFA8_eofS =
+    static final String DFA9_eofS =
         "\14\uffff";
-    static final String DFA8_minS =
+    static final String DFA9_minS =
         "\1\37\1\2\1\11\11\uffff";
-    static final String DFA8_maxS =
-        "\1\37\1\2\1\102\11\uffff";
-    static final String DFA8_acceptS =
+    static final String DFA9_maxS =
+        "\1\37\1\2\1\103\11\uffff";
+    static final String DFA9_acceptS =
         "\3\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11";
-    static final String DFA8_specialS =
+    static final String DFA9_specialS =
         "\14\uffff}>";
-    static final String[] DFA8_transitionS = {
+    static final String[] DFA9_transitionS = {
             "\1\1",
             "\1\2",
-            "\1\5\1\uffff\1\6\3\uffff\1\11\16\uffff\1\3\37\uffff\1\4\1\7"+
+            "\1\5\1\uffff\1\6\3\uffff\1\11\16\uffff\1\3\40\uffff\1\4\1\7"+
             "\1\10\1\12\1\13",
             "",
             "",
@@ -1334,34 +1364,34 @@ public class TypeCheck extends TreeParser {
             ""
     };
 
-    static final short[] DFA8_eot = DFA.unpackEncodedString(DFA8_eotS);
-    static final short[] DFA8_eof = DFA.unpackEncodedString(DFA8_eofS);
-    static final char[] DFA8_min = DFA.unpackEncodedStringToUnsignedChars(DFA8_minS);
-    static final char[] DFA8_max = DFA.unpackEncodedStringToUnsignedChars(DFA8_maxS);
-    static final short[] DFA8_accept = DFA.unpackEncodedString(DFA8_acceptS);
-    static final short[] DFA8_special = DFA.unpackEncodedString(DFA8_specialS);
-    static final short[][] DFA8_transition;
+    static final short[] DFA9_eot = DFA.unpackEncodedString(DFA9_eotS);
+    static final short[] DFA9_eof = DFA.unpackEncodedString(DFA9_eofS);
+    static final char[] DFA9_min = DFA.unpackEncodedStringToUnsignedChars(DFA9_minS);
+    static final char[] DFA9_max = DFA.unpackEncodedStringToUnsignedChars(DFA9_maxS);
+    static final short[] DFA9_accept = DFA.unpackEncodedString(DFA9_acceptS);
+    static final short[] DFA9_special = DFA.unpackEncodedString(DFA9_specialS);
+    static final short[][] DFA9_transition;
 
     static {
-        int numStates = DFA8_transitionS.length;
-        DFA8_transition = new short[numStates][];
+        int numStates = DFA9_transitionS.length;
+        DFA9_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA8_transition[i] = DFA.unpackEncodedString(DFA8_transitionS[i]);
+            DFA9_transition[i] = DFA.unpackEncodedString(DFA9_transitionS[i]);
         }
     }
 
-    class DFA8 extends DFA {
+    class DFA9 extends DFA {
 
-        public DFA8(BaseRecognizer recognizer) {
+        public DFA9(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 8;
-            this.eot = DFA8_eot;
-            this.eof = DFA8_eof;
-            this.min = DFA8_min;
-            this.max = DFA8_max;
-            this.accept = DFA8_accept;
-            this.special = DFA8_special;
-            this.transition = DFA8_transition;
+            this.decisionNumber = 9;
+            this.eot = DFA9_eot;
+            this.eof = DFA9_eof;
+            this.min = DFA9_min;
+            this.max = DFA9_max;
+            this.accept = DFA9_accept;
+            this.special = DFA9_special;
+            this.transition = DFA9_transition;
         }
         public String getDescription() {
             return "97:1: stmt : ( ^( STMTS ^( BLOCK stmtlist ) ) | ^( STMTS ^( ASSIGNMENT assignment ) ) | ^( STMTS ^( PRINT print ) ) | ^( STMTS ^( READ read ) ) | ^( STMTS ^( CONDITIONAL conditional ) ) | ^( STMTS ^( LOOP loop ) ) | ^( STMTS ^( DELETE delete ) ) | ^( STMTS ^( RET ret ) ) | ^( STMTS ^( INVOCATION invocation ) ) );";
@@ -1393,57 +1423,59 @@ public class TypeCheck extends TreeParser {
     public static final BitSet FOLLOW_BOOLTERM_in_expression206 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_boolterm_in_expression208 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_CONJ_in_expression217 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_boolterm_in_expression219 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_boolterm_in_expression219 = new BitSet(new long[]{0x4000000000000000L});
     public static final BitSet FOLLOW_boolterm_in_expression221 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_simple_in_boolterm233 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_lvalue258 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_lvalue266 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lvalue_in_lvalue268 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_ID_in_lvalue270 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt366 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_BLOCK_in_stmt369 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_stmtlist_in_stmt371 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt381 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ASSIGNMENT_in_stmt384 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_assignment_in_stmt386 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt396 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_PRINT_in_stmt399 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_print_in_stmt401 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt411 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_READ_in_stmt414 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_read_in_stmt416 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt426 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_CONDITIONAL_in_stmt429 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_conditional_in_stmt431 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt441 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_LOOP_in_stmt444 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_loop_in_stmt446 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt456 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_DELETE_in_stmt459 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_delete_in_stmt461 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt471 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_RET_in_stmt474 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ret_in_stmt476 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmt486 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_INVOCATION_in_stmt489 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_invocation_in_stmt491 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_STMTS_in_stmtlist512 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_stmt_in_stmtlist514 = new BitSet(new long[]{0x0000000080000008L});
-    public static final BitSet FOLLOW_FUNCS_in_funcs535 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fun_in_funcs537 = new BitSet(new long[]{0x0000000000000088L});
-    public static final BitSet FOLLOW_FUN_in_fun558 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_fun560 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_params_in_fun562 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_rettype_in_fun564 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_decls_in_fun566 = new BitSet(new long[]{0x0000000080000000L});
-    public static final BitSet FOLLOW_stmtlist_in_fun568 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_PARAMS_in_params588 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_decl_in_params590 = new BitSet(new long[]{0x0000000004000008L});
-    public static final BitSet FOLLOW_RETTYPE_in_rettype611 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_rettype613 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_PROGRAM_in_verify637 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_types_in_verify639 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_decls_in_verify641 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_funcs_in_verify643 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_simple_in_boolterm233 = new BitSet(new long[]{0x4000000000000002L});
+    public static final BitSet FOLLOW_COMPAR_in_boolterm237 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_simple_in_boolterm239 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_lvalue267 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_lvalue275 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lvalue_in_lvalue277 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_ID_in_lvalue279 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt375 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_BLOCK_in_stmt378 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_stmtlist_in_stmt380 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt390 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ASSIGNMENT_in_stmt393 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_assignment_in_stmt395 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt405 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_PRINT_in_stmt408 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_print_in_stmt410 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt420 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_READ_in_stmt423 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_read_in_stmt425 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt435 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_CONDITIONAL_in_stmt438 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_conditional_in_stmt440 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt450 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_LOOP_in_stmt453 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_loop_in_stmt455 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt465 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_DELETE_in_stmt468 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_delete_in_stmt470 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt480 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_RET_in_stmt483 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ret_in_stmt485 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmt495 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_INVOCATION_in_stmt498 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_invocation_in_stmt500 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_STMTS_in_stmtlist521 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_stmt_in_stmtlist523 = new BitSet(new long[]{0x0000000080000008L});
+    public static final BitSet FOLLOW_FUNCS_in_funcs544 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fun_in_funcs546 = new BitSet(new long[]{0x0000000000000088L});
+    public static final BitSet FOLLOW_FUN_in_fun567 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_fun569 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_params_in_fun571 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_rettype_in_fun573 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_decls_in_fun575 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_stmtlist_in_fun577 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_PARAMS_in_params597 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_decl_in_params599 = new BitSet(new long[]{0x0000000004000008L});
+    public static final BitSet FOLLOW_RETTYPE_in_rettype620 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_rettype622 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_PROGRAM_in_verify646 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_types_in_verify648 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_decls_in_verify650 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_funcs_in_verify652 = new BitSet(new long[]{0x0000000000000008L});
 
 }

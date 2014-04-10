@@ -54,10 +54,15 @@ expression:
 
 boolterm:
    simple
- //  | ^(COMPAR simple simple)
+   | ^(COMPAR simple simple)
 ;
   
 simple:
+   term
+   | ^(BOP term term)
+;
+
+term:
    // to do
 ;
 
