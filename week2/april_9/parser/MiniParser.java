@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 Mini.g 2014-04-09 10:01:56
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 Mini.g 2014-04-09 16:29:56
 
    /* package declaration here */
 
@@ -160,7 +160,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: d, f, t
+            // elements: t, f, d
             // token labels: 
             // rule labels: f, retval, d, t
             // token list labels: 
@@ -738,7 +738,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: i, t
+            // elements: t, i
             // token labels: i
             // rule labels: retval, t
             // token list labels: 
@@ -1069,7 +1069,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: t, ilist
+            // elements: ilist, t
             // token labels: 
             // rule labels: retval, t, ilist
             // token list labels: 
@@ -1404,7 +1404,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: s, d, p, FUN, id, r
+            // elements: d, s, FUN, p, r, id
             // token labels: id
             // rule labels: retval, d, s, r, p
             // token list labels: 
@@ -2147,7 +2147,7 @@ public class MiniParser extends Parser {
 
 
             // AST REWRITE
-            // elements: l, e, ASSIGN
+            // elements: e, l, ASSIGN
             // token labels: 
             // rule labels: retval, e, l
             // token list labels: 

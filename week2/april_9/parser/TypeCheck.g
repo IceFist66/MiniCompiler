@@ -1,7 +1,5 @@
 tree grammar TypeCheck;
 
-// github commit test
-
 options
 {
    tokenVocab=Mini;
@@ -45,6 +43,57 @@ decllist:
     {System.out.println("Decclist found");}
 ;
 
+assignment:
+   ^(ASSIGN lvalue expression)
+;
+
+expression:
+   ^(BOOLTERM boolterm)
+   | ^(CONJ boolterm boolterm)
+;
+
+boolterm:
+   simple
+ //  | ^(COMPAR simple simple)
+;
+  
+simple:
+   // to do
+;
+
+lvalue:
+   ID
+   | ^(DOT lvalue ID)
+;
+
+print:
+   // to do
+;
+
+ret:
+   // to do
+;
+
+read:
+   // to do
+;
+
+conditional:
+   // to do
+   ;
+   
+loop:
+   // to do
+   ;
+   
+invocation:
+   // to do
+;
+
+delete:
+   // to do
+;
+
 stmt:
     ^(STMTS ^(BLOCK stmtlist))
     |^(STMTS ^(ASSIGNMENT assignment))
@@ -55,7 +104,7 @@ stmt:
     |^(STMTS ^(DELETE delete))
     |^(STMTS ^(RET ret))
     |^(STMTS ^(INVOCATION invocation))
-    {System.out.println("stmts found")}
+    {System.out.println("stmts found");}
 ;
 
 stmtlist:
@@ -69,7 +118,7 @@ funcs:
 ;
 
 fun:
-    ^(FUN ID params rettype decls stmst)
+    ^(FUN ID params rettype decls stmtlist)
     {System.out.println("Found fun");}
 ;
 
