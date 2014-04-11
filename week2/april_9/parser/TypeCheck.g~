@@ -27,10 +27,10 @@ struct [StructTypes stypes, String scope]:
 ;
 
 decl[StructTypes stypes, String scope]:
-    ^(DECL ^(TYPE type) ID )
+    ^(DECL ^(TYPE type[stypes]) ID )
 ;
 
-type //[StructTypes stypes] returns {Type t = null]
+type [StructTypes stypes] returns {Type t = null]
     : ^(TYPE INT)
     | ^(TYPE BOOL)
     | ^(TYPE ^(STRUCT type))

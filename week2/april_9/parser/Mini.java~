@@ -87,8 +87,8 @@ public class Mini
          nodes.setTokenStream(tokens);
          TypeCheck tparser = new TypeCheck(nodes);         
          
-         StructTypes stypes = new StructTypes();
-         SymbolTable stable = new SymbolTable();
+         Structypes stypes = new StructTypes();
+         Symbolable stable = new SymbolTable();
 
          tparser.verify(stypes, stable);
       }
