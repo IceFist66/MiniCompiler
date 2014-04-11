@@ -96,7 +96,7 @@ stmt:
     |^(IF {System.out.println("Inside IF");}expression stmt stmt?) {System.out.println("OUT of IF");}
     |^(WHILE expression stmt expression)
     |^(DELETE expression)
-    |^(RETURN expression)
+    |^(RETURN expression?)
     |^(INVOKE ID args)
     |^(ASSIGN expression lvalue) {System.out.println("OUT of ASSIGN");}
     //{System.out.println("stmts found");}

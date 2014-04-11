@@ -2,18 +2,33 @@ import java.util.HashMap;
 
 
 public class SymbolTable {
-	private HashMap hashmap;
+	private HashMap<String, HashMap<String, Type>> hashmap;
 	
 	public SymbolTable(){
-		hashmap = new HashMap<String, Type>();
+		hashmap = new HashMap<String, HashMap<String, Type>>();
 	}
 	
-	public void addSymbol(String key, Type type){
-		hashmap.put(key, type);
+	public void addTable(String key, HashMap<String, Type> map){
+		hashmap.put(key, map);
 	}
 	
-	public Type getType(String key){
-		return ((Type) hashmap.get(key));
+	public void addSymbol(String table_key, String value_key, Type type){
+		HashMap<String, Type> value_map;
+		//check if table exists, create if not
+		if(!hashmap.containsKey(table_key)){
+			//create the table
+			value_map = new HashMap<String, Type>();
+		}
+		else{
+			//Retrieve table
+			value_map = hashmap.get(table_key);
+		}
+		//add type
+		value_map.put(value_key, type);
+	}
+	
+	public Type getType(String table_key, String value_key){
+		return hashmap.get(table_key).get(value_key);
 	}
 
 	public enum ENUM{
