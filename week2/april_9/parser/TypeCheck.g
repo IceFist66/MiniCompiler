@@ -61,8 +61,10 @@ expression:
    |^(DIVIDE expression expression)
    |^(NOT expression)
    |INT
+   |stmt
    |BOOL
    |ID
+   |ENDL
 ;
 
 lvalue:
@@ -132,50 +134,49 @@ factor:
 arglist:
 
 ;
-*/
+
 print:
-   // to do
+   expression
 ;
 
 ret:
-   // to do
+   (expression)?
 ;
 
 read:
    // to do
 ;
 
-conditional:
-   // to do
-   ;
-   
+guard:
+   exp
+;
+
 loop:
    // to do
-   ;
-   
+   ;   
 invocation:
-   // to do
+   
 ;
 
 delete:
    // to do
-;
+;*/
 
 stmt:
-    ^(STMTS ^(BLOCK stmtlist))
-    |^(STMTS ^(ASSIGNMENT assignment))
-    |^(STMTS ^(PRINT print))
-    |^(STMTS ^(READ read))
-    |^(STMTS ^(CONDITIONAL conditional))
-    |^(STMTS ^(LOOP loop))
-    |^(STMTS ^(DELETE delete))
-    |^(STMTS ^(RET ret))
-    |^(STMTS ^(INVOCATION invocation))
+    ^(STMT ^(BLOCK stmtlist))
+    |^(STMT ^(ASSIGNMENT assignment))
+    |^(STMT ^(PRINT expression))
+    |^(STMT ^(READ lvalue))
+    |^(STMT ^(IF expression stmt stmt))
+    |^(STMT ^(LOOP expression stmt expression))
+    |^(STMT ^(DELETE expression))
+    |^(STMT ^(RET expression))
+    |^(STMT ^(INVOCATION ID expression*))
     {System.out.println("stmts found");}
 ;
 
 stmtlist:
-    ^(STMTS stmt*)
+    ^(STMTLIST stmt*)
     {System.out.println("found stmtlist");}
 ;
 
