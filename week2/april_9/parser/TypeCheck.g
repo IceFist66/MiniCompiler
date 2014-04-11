@@ -61,7 +61,7 @@ expression:
    |^(DIVIDE expression expression)
    |^(NOT expression)
    |INT
-   |stmt
+   |stmts
    |BOOL
    |ID
    |ENDL
@@ -72,36 +72,8 @@ lvalue:
    |ID
 ;
 
-
-print:
-   expression
-;
-
-ret:
-   (expression)?
-;
-
-read:
-   // to do
-;
-
-guard:
-   exp
-;
-
-loop:
-   // to do
-   ;   
-invocation:
-   
-;
-
-delete:
-   // to do
-;
-
 stmt:
-    ^(STMT ^(BLOCK stmtlist))
+    ^(STMT ^(BLOCK stmts))
     |^(STMT ^(ASSIGNMENT assignment))
     |^(STMT ^(PRINT expression))
     |^(STMT ^(READ lvalue))
@@ -113,9 +85,9 @@ stmt:
     {System.out.println("stmts found");}
 ;
 
-stmtlist:
-    ^(STMTLIST stmt*)
-    {System.out.println("found stmtlist");}
+stmts:
+    ^(STMTS stmt*)
+    {System.out.println("found stmts");}
 ;
 
 funcs:
@@ -124,7 +96,7 @@ funcs:
 ;
 
 fun:
-    ^(FUN ID params rettype decls stmtlist)
+    ^(FUN ID params rettype decls stmts)
     {System.out.println("Found fun");}
 ;
 
