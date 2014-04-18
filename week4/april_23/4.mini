@@ -1,0 +1,80 @@
+
+<!-- saved from url=(0078)http://users.csc.calpoly.edu/~akeen/courses/csc431/handouts/assignments/4.mini -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>window["_GOOG_TRANS_EXT_VER"] = "1";</script><style type="text/css"></style></head><body class=" hasGoogleVoiceExt"><pre style="word-wrap: break-word; white-space: pre-wrap;">struct A
+{
+   int i;
+   int j1;
+   bool b;
+   struct A a;
+};
+struct B
+{
+   struct A a;
+};
+
+int i, j, k;
+struct B b, bb, bbb;
+bool bob;
+
+fun g(int i, struct B j) int
+{
+   int g, m, k;
+   return 3;
+}
+
+fun foo(int n) int
+{
+   if (n &lt;= 0)
+   {
+      return 1;
+   }
+   else
+   {
+      return n * foo(n - 1);
+   }
+}
+
+fun f(int i, struct B j) struct A
+{
+   int f, l, k;
+   b.a.a.a.i = 7;
+   return b.a.a.a.a;
+}
+fun bar(struct B j, int i) void
+{
+}
+
+fun main() int
+{
+   struct A a;
+   int i, j, k;
+   bool b;
+      int h;
+   {
+      i = --2;
+      if (i &lt; g(1,null))
+      {
+         print 1;
+      }
+
+      if (i &gt; g(1,null))
+      {
+         print 1;
+      }
+      else
+      {
+         print 3 endl;
+      }
+      while (true)
+      {
+         print 7;
+      }
+      f(g(1,new B),new B);
+      print 1;
+      bar(new B, g(1,new B));
+      print 2;
+      print f(g(1,new B),new B).i endl;
+   }
+   return 0;
+}
+</pre></body></html>
