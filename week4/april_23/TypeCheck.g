@@ -14,40 +14,46 @@ options
    import java.util.Iterator;
 }
 
+@members {
+    private StructTypes g_stypes;
+    private SymbolTable g_stable;
+}
+
 error:
     {System.out.println("NO MATCH FOUND");}
 ;
 
-types [StructTypes stypes]:
-    ^(TYPES struct[stypes, "global"]*) 
+types :
+    ^(TYPES struct*) 
 ;
 
-struct [StructTypes stypes, String scope]:
-    ^(STRUCT ID {StructDef sd = new StructDef();} (decl[stypes, scope])*)
+struct :
+    ^(STRUCT ID {StructDef sd = new StructDef();} (decl)*)
 ;
 
-decl[StructTypes stypes, String scope]:
-    ^(DECL ^(TYPE type) ID )
+decl:
+    ^(DECL ^(TYPE type["empty"]) ID )
 ;
 
-type //[StructTypes stypes] returns {Type t = null]
+type [String scope] returns [Type t = null]
     : ^(TYPE INT)
     | ^(TYPE BOOL)
-    | ^(TYPE ^(STRUCT type))
-    | INT //{$t = new Type(MiniType.INT, "global");}
+    | ^(TYPE ^(STRUCT type["empty"]))
+    | INT {$t = new Type(MiniType.INT, scope);}
     | BOOL
-    | ^(STRUCT type)
+    | ^(STRUCT type["empty"])
     | ID
     | VOID
 ;
 
 
-decls:
-    ^(DECLS decllist*)
+decls [String scope]:
+    ^(DECLS (decllist[scope])*)
+    //{System.out.println(scope);}
 ;
 
-decllist:
-    ^(DECLLIST type ID*)
+decllist[String scope]:
+    ^(DECLLIST type[scope] ID*)
 ;
 
 expression:
@@ -100,24 +106,24 @@ stmts:
     ^(STMTS stmt*)
 ;
 
-funcs[StructTypes stypes, SymbolTable stable]:
-    ^(FUNCS fun[stypes, stable]*)
+funcs:
+    ^(FUNCS fun*)
 ;
 
-fun[StructTypes stypes, SymbolTable stable]:
-    ^(FUN id=ID (params[stypes, stable, $id.text]) rettype decls stmts)
+fun:
+    ^(FUN id=ID (params) rettype decls[$id.text] stmts)
 ;
 
-params[StructTypes stypes, SymbolTable stable, String id]:
-    ^(PARAMS decl[stypes, id]*)
+params:
+    ^(PARAMS decl*)
 ;
 
 rettype:
-    ^(RETTYPE type)
+    ^(RETTYPE type["empty"])
 ;
 
 
-verify [StructTypes stypes, SymbolTable stable]: 
-    ^(PROGRAM (types[stypes]) decls funcs[stypes, stable])
+verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
+    ^(PROGRAM (types) decls["global"] funcs)
     { System.out.println("Successfully walked Program tree."); }
 ;
