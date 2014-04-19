@@ -22,7 +22,7 @@ fun g(int i, struct B j) int
 
 fun foo(int n) int
 {
-   if (n &lt;= 0)
+   if (n <= 0)
    {
       return 1;
    }
@@ -50,12 +50,12 @@ fun main() int
       int h;
    {
       i = --2;
-      if (i &lt; g(1,null))
+      if (i < g(1,null))
       {
          print 1;
       }
 
-      if (i &gt; g(1,null))
+      if (i > g(1,null))
       {
          print 1;
       }

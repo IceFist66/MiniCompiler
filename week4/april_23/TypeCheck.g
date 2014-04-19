@@ -38,6 +38,7 @@ type //[StructTypes stypes] returns {Type t = null]
     | BOOL
     | ^(STRUCT type)
     | ID
+    | VOID
 ;
 
 
