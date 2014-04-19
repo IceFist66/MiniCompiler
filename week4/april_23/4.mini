@@ -1,6 +1,4 @@
-
-<!-- saved from url=(0078)http://users.csc.calpoly.edu/~akeen/courses/csc431/handouts/assignments/4.mini -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>window["_GOOG_TRANS_EXT_VER"] = "1";</script><style type="text/css"></style></head><body class=" hasGoogleVoiceExt"><pre style="word-wrap: break-word; white-space: pre-wrap;">struct A
+struct A
 {
    int i;
    int j1;
@@ -77,4 +75,3 @@ fun main() int
    }
    return 0;
 }
-</pre></body></html>
