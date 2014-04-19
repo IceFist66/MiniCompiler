@@ -14,11 +14,6 @@ options
    import java.util.Iterator;
 }
 
-@members {
-    private StructTypes g_stypes;
-    private SymbolTable g_stable;
-}
-
 error:
     {System.out.println("NO MATCH FOUND");}
 ;
@@ -122,7 +117,6 @@ rettype:
 
 
 verify [StructTypes stypes, SymbolTable stable]: 
-    @init {g_stypes = stypes; g_stable = stable; }
     ^(PROGRAM (types[stypes]) decls funcs[stypes, stable])
     { System.out.println("Successfully walked Program tree."); }
 ;
