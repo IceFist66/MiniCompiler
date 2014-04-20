@@ -124,12 +124,12 @@ stmts:
     ^(STMTS stmt*)
 ;
 
-funcs:
-    ^(FUNCS fun*)
+funcs [String scope]:
+    ^(FUNCS (fun[scope])*)
 ;
 
-fun:
-    ^(FUN id=ID (params) rettype decls[$id.text] stmts)
+fun [String scope]:
+    ^(FUN id=ID (params[scope]) rettype decls[$id.text] stmts)
 ;
 
 params [String scope]:
@@ -142,6 +142,6 @@ rettype:
 
 
 verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
-    ^(PROGRAM types["global"] decls["global"] funcs)
+    ^(PROGRAM types["global"] decls["global"] funcs["global"])
     { System.out.println("Successfully walked Program tree."); }
 ;
