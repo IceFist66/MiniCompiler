@@ -28,19 +28,27 @@ types [String scope]
 ;
 
 struct [String scope]:
-    ^(STRUCT id=ID {StructDef sd = new StructDef();} (decl[scope])*) {g_stypes.addStruct(scope, $id.text, sd);}
+    ^(STRUCT id=ID {StructDef sd = new StructDef();} (d = decl[scope])*) {g_stypes.addStruct(scope, $id.text, sd);}
 ;
 
 decl [String scope] returns [Variable v = null]
-   : ^(DECL ^(TYPE var=type[scope]) id=ID ) //{$v = new Variable }
+   : ^(DECL ^(TYPE var=type[scope]) id=ID ) 
+   
+   {
+      if (var != null) {
+         var.setName($id.text);   
+         v = var;
+         System.out.println("NOT NULL!!!!!!!!!!!!!!!!!!!!!!!!");
+      }
+   }
 ;
 
 type [String scope] returns [Variable v = null]
     : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
     | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
     | ^(TYPE ^(STRUCT type["empty"]))
-    | INT //{$v = new Variable(Type.INT, scope);}
-    | BOOL //{$v = new Variable(Type.BOOL, scope);}
+    | INT {$v = new Variable(Type.INT, scope);} // struct fields
+    | BOOL {$v = new Variable(Type.BOOL, scope);} // struct fields
     | ^(STRUCT type["empty"])
     | ID
     | VOID
