@@ -24,7 +24,7 @@ public class SymbolTable {
 
 	}
 	
-	public Variable getType(String table_key, String value_key){
+	public Variable getVariable(String table_key, String value_key){
 		HashMap<String, Variable> value_map;
 		
 		if (value_key.contains("."))

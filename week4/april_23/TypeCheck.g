@@ -32,7 +32,7 @@ struct [String scope]:
 ;
 
 decl [String scope] returns [Variable v = null]
-   : ^(DECL ^(TYPE var=type["empty"]) ID )
+   : ^(DECL ^(TYPE var=type[scope]) id=ID ) //{$v = new Variable }
 ;
 
 type [String scope] returns [Variable v = null]
@@ -60,7 +60,7 @@ decllist[String scope]:
       if (v!=null) {
          g_stable.addSymbol(scope, $id.text, v); 
          System.out.println("Added a new symbol to the table: " + $id.text);
-    	   Variable tt1 = g_stable.getType(scope, $id.text);
+    	   Variable tt1 = g_stable.getVariable(scope, $id.text);
 		   if (tt1 == null)
 			   System.out.println("t1 not in table.");
 		   else

@@ -20,7 +20,7 @@ public class StructTypes {
 		
 		structmap.put(scope, value_map);
 		structmap.get(scope).put(variable, def);
-		System.out.println(structmap.get(scope).get(variable).getName());
+		//System.out.println(structmap.get(scope).get(variable).getName());
 	}
 	
 	// have to determine value_key from path
