@@ -3,19 +3,19 @@ import java.util.ArrayList;
 
 public class StructDef {
 	private ArrayList<String> names;
-	private ArrayList<MiniType> types;
+	private ArrayList<Type> types;
 
-	public StructDef(ArrayList<String> names, ArrayList<MiniType> types){
+	public StructDef(ArrayList<String> names, ArrayList<Type> types){
 		this.names = names;
 		this.types = types;
 	}
 	
 	public StructDef(){
 		this.names = new ArrayList<String>();
-		this.types = new ArrayList<MiniType>();
+		this.types = new ArrayList<Type>();
 	}
 	
-	public MiniType getFieldType(String name) {
+	public Type getFieldType(String name) {
 		for (int i = 0; i < names.size(); i++) {
 			if(name.equals(names.get(i)))
 				return types.get(i);
@@ -28,7 +28,7 @@ public class StructDef {
 		return this.names.get(0);
 	}
 	
-	public void addField(String name, MiniType type) {
+	public void addField(String name, Type type) {
 		this.names.add(name);
 		this.types.add(type);
 	}

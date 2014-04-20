@@ -35,11 +35,11 @@ decl:
     ^(DECL ^(TYPE type["empty"]) ID )
 ;
 
-type [String scope] returns [Type t = null]
+type [String scope] returns [Variable t = null]
     : ^(TYPE INT)
     | ^(TYPE BOOL)
     | ^(TYPE ^(STRUCT type["empty"]))
-    | INT {$t = new Type(MiniType.INT, scope);}
+    | INT {$t = new Variable(Type.INT, scope);}
     | BOOL
     | ^(STRUCT type["empty"])
     | ID

@@ -21,24 +21,14 @@ public class StructTypes {
 		structmap.put(scope, value_map);
 		structmap.get(scope).put(variable, def);
 		System.out.println(structmap.get(scope).get(variable).getName());
-		
-		
-//		hashmap.put(table_key, new HashMap<String, Type>());
-//		hashmap.get(table_key).put(value_key, type);
-//		System.out.println(hashmap.get(table_key).get(value_key));
 	}
 	
 	// have to determine value_key from path
-	public MiniType getMiniType(String table_key, String value_key, String dot_expression){
+	public Type getType(String table_key, String value_key, String dot_expression){
 		
 		HashMap<String, StructDef> value_map;
 		String[] result = dot_expression.split("\\.");
 		String field = result[result.length-1];
-		
-//		if ((!table_key.equals("global")) && (!structmap.containsKey(table_key))) {
-//			System.out.println("The struct doesn't exist in the specified local scope!");
-//			return null;
-//		}
 		
 		// if variable doesn't exist under local scope, set table_key to "global"
 		
@@ -75,4 +65,3 @@ public class StructTypes {
 	}
 	
 }
-
