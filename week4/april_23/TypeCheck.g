@@ -23,24 +23,24 @@ error:
     {System.out.println("NO MATCH FOUND");}
 ;
 
-types :
-    ^(TYPES struct*) 
+types [String scope]
+   : ^(TYPES (struct[scope])*) 
 ;
 
-struct :
-    ^(STRUCT ID {StructDef sd = new StructDef();} (decl)*)
+struct [String scope]:
+    ^(STRUCT id=ID {StructDef sd = new StructDef();} (decl[scope])*) {g_stypes.addStruct(scope, $id.text, sd);}
 ;
 
-decl:
-    ^(DECL ^(TYPE type["empty"]) ID )
+decl [String scope] returns [Variable v = null]
+   : ^(DECL ^(TYPE var=type["empty"]) ID )
 ;
 
-type [String scope] returns [Variable t = null]
-    : ^(TYPE INT)
-    | ^(TYPE BOOL)
+type [String scope] returns [Variable v = null]
+    : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
+    | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
     | ^(TYPE ^(STRUCT type["empty"]))
-    | INT {$t = new Variable(Type.INT, scope);}
-    | BOOL
+    | INT //{$v = new Variable(Type.INT, scope);}
+    | BOOL //{$v = new Variable(Type.BOOL, scope);}
     | ^(STRUCT type["empty"])
     | ID
     | VOID
@@ -53,7 +53,25 @@ decls [String scope]:
 ;
 
 decllist[String scope]:
-    ^(DECLLIST type[scope] ID*)
+    ^(DECLLIST v=type[scope] (id=ID 
+    
+    {    
+      System.out.println(scope); 
+      if (v!=null) {
+         g_stable.addSymbol(scope, $id.text, v); 
+         System.out.println("Added a new symbol to the table: " + $id.text);
+    	   Variable tt1 = g_stable.getType(scope, $id.text);
+		   if (tt1 == null)
+			   System.out.println("t1 not in table.");
+		   else
+			   System.out.println($id.text + " = " + tt1.getType().toString());
+      }
+      else {
+         System.out.println("v WAS NULL");
+      }
+    }
+    
+    )*)
 ;
 
 expression:
@@ -114,8 +132,8 @@ fun:
     ^(FUN id=ID (params) rettype decls[$id.text] stmts)
 ;
 
-params:
-    ^(PARAMS decl*)
+params [String scope]:
+    ^(PARAMS (decl[scope])*)
 ;
 
 rettype:
@@ -124,6 +142,6 @@ rettype:
 
 
 verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
-    ^(PROGRAM (types) decls["global"] funcs)
+    ^(PROGRAM types["global"] decls["global"] funcs)
     { System.out.println("Successfully walked Program tree."); }
 ;
