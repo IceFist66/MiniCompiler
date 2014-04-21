@@ -20,7 +20,7 @@ public class cfg {
 		private ArrayList<String> genSet;
 		private ArrayList<String> killSet;
 		private ArrayList<String> liveOut;
-		private ArrayList<String> w; // holds id of params and locals passed into function
+		private ArrayList<String> locals; // holds id of params and locals passed into function
 		private Node backEdgeTarget;
 		
 		public Node (NodeType nodeType, /*AST.Statement command,*/ String text, ArrayList<Node> predNodes, ArrayList<Node> succNodes) {

@@ -1,4 +1,4 @@
-tree grammar TypeCheck;
+tree grammar Control;
 
 options
 {
@@ -17,26 +17,28 @@ options
 @members {
     private StructTypes g_stypes;
     private SymbolTable g_stable;
+    private ArrayList<cfg.Node> functions;
+    private int currentIDNum;
 }
 
 error:
     {System.out.println("NO MATCH FOUND");}
 ;
 
-types [StructTypes stypes]:
-    ^(TYPES struct[stypes, "global"]*) 
+types:
+    ^(TYPES struct*) 
 ;
 
-struct [StructTypes stypes, String scope]:
-    ^(STRUCT ID {StructDef sd = new StructDef();} (decl[stypes, scope])*)
+struct:
+    ^(STRUCT ID {StructDef sd = new StructDef();} (decl)*)
 ;
 
-decl[StructTypes stypes, String scope]:
+decl:
     ^(DECL ^(TYPE type) ID )
 ;
 
-type //[StructTypes stypes] returns {Type t = null]
-    : ^(TYPE INT)
+type:
+    ^(TYPE INT)
     | ^(TYPE BOOL)
     | ^(TYPE ^(STRUCT type))
     | INT //{$t = new Type(MiniType.INT, "global");}
@@ -104,16 +106,21 @@ stmts:
     ^(STMTS stmt*)
 ;
 
-funcs[StructTypes stypes, SymbolTable stable]:
-    ^(FUNCS fun[stypes, stable]*)
+funcs:
+    ^(FUNCS fun*)
 ;
 
-fun[StructTypes stypes, SymbolTable stable]:
-    ^(FUN id=ID (params[stypes, stable, $id.text]) rettype decls stmts)
+fun:
+    ^(FUN id=ID{
+        functions.add(new cfg.Node(cfg.NodeType.ENTRY,$id.text));
+        cfg.Node last = new cfg.Node(cfg.NodeType.EXIT, null, "Exit");
+    } (params) rettype decls var=stmts{
+        
+    })
 ;
 
-params[StructTypes stypes, SymbolTable stable, String id]:
-    ^(PARAMS decl[stypes, id]*)
+params:
+    ^(PARAMS decl*)
 ;
 
 rettype:
@@ -121,8 +128,13 @@ rettype:
 ;
 
 
-verify [StructTypes stypes, SymbolTable stable]: 
-    @init {g_stypes = stypes; g_stable = stable; }
-    ^(PROGRAM (types[stypes]) decls funcs[stypes, stable])
+construct [StructTypes stypes, SymbolTable stable] 
+    @init {
+        g_stypes = stypes; 
+        g_stable = stable; 
+        functions = new ArrayList<cfg.Node>();
+        currentIDNum = 0;
+    }:
+    ^(PROGRAM (types) decls funcs)
     { System.out.println("Successfully walked Program tree."); }
 ;

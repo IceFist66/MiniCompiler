@@ -1,10 +1,10 @@
-FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java
+FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java cfg.java
 
 
 Mini.class : antlr.generated ${FILES}
 	javac *.java
 
-antlr.generated: antlr.generated.mini antlr.generated.type
+antlr.generated: antlr.generated.mini antlr.generated.type antlr.generated.control
 	touch antlr.generated
 
 antlr.generated.mini : Mini.g
@@ -14,6 +14,10 @@ antlr.generated.mini : Mini.g
 antlr.generated.type : TypeCheck.g
 	java org.antlr.Tool TypeCheck.g
 	touch antlr.generated.type
+
+antlr.generated.control : Control.g
+	java org.antlr.Tool Control.g
+	touch antlr.generated.control
 
 clean:
 	\rm *generated* MiniParser.java MiniLexer.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class
