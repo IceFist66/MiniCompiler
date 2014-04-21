@@ -44,7 +44,7 @@ struct [String scope]: //adds a new struct definition
       {StructDef sd = new StructDef(); System.out.println("Gathering fields for struct " + $id.text);} 
     (d = decl[scope] 
       {if (d != null) {
-         sd.addField(d.getName(), d.getType());
+         sd.addField("empty",d.getName(), d.getType());
          System.out.println("Struct field " + d.getName() + " of type " + d.getType());
          }
       }

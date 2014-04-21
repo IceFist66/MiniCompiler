@@ -70,4 +70,8 @@ public class Variable {
 	public String getVariableScope() {
 		return this.variableScope;
 	}
+
+	public void setStructType(String struct_type) {
+		this.structType = struct_type;
+	}
 }
