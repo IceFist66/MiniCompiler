@@ -5,7 +5,7 @@ XXX 1. Struct fields within struct definitions are only defined as Type.STRUCT; 
 need to carry information about the StructType. This will require modifying the 
 StructDef class to carry this information in another parallel array. See Type below.
 
-2. Params needs to be modified to modify variable.
+XXX 2. Params needs to be modified to modify variable.
  
 3. Fun needs to be modified to modify variable. NULLs reported in program are function names.
 
@@ -72,10 +72,10 @@ decl [String scope] returns [Variable v = null]
 type [String scope] returns [Variable v = null, String s = null]
     : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
     | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
-    | ^(TYPE ^(STRUCT type["empty"])) {System.out.println("TYPE STRUCT!!!!");}
+    | ^(TYPE ^(STRUCT type[scope])) {System.out.println("TYPE STRUCT!!!!");}
     | INT {$v = new Variable(Type.INT, scope);}                         // struct fields, params
     | BOOL {$v = new Variable(Type.BOOL, scope);}                       // struct fields, params
-    | ^(STRUCT var=type["empty"]) {$v = new Variable(scope, "unspecified struct as field or param", scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
+    | ^(STRUCT var=type[scope]) {$v = new Variable(scope, "unspecified struct as field or param", scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
     | id=ID {$s = $id.text; /*System.out.println($s);*/   }
     | VOID
 ;
@@ -162,27 +162,25 @@ funcs [String scope]:
 ;
 
 fun [String scope]:
-    ^(FUN id=ID (params[$id.text]) rettype decls[$id.text] stmts)
+    ^(FUN id=ID (params[$id.text]) var=rettype[scope]
+    {
+        g_stable.addSymbol($id.text, $id.text, var);
+    } decls[$id.text] stmts)
 ;
 
 params [String scope]:
     ^(PARAMS (v=decl[scope]
     {
-        System.out.println("Get Param name: "+ v.getName());
-        System.out.println("Get Param struct_type: "+ v.getStructType());
-        if(v.getType() == Type.STRUCT){
-            
-        }
-        else{
-            g_stable.addSymbol(scope, v.getName(), v);
-            System.out.println("Symbol " + v.getName() + " was added to " + scope);
-        }
+        /*System.out.println("Get Param name: "+ v.getName());
+        System.out.println("Get Param struct_type: "+ v.getStructType());*/
+        g_stable.addSymbol(scope, v.getName(), v);
+        System.out.println("Symbol " + v.getName() + " was added to " + scope);
     }
     )*)
 ;
 
-rettype:
-    ^(RETTYPE type["empty"])
+rettype[String scope] returns [Variable v = null]:
+    ^(RETTYPE var=type[scope]{$v=var.v;})
 ;
 
 
