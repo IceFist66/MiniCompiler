@@ -1,7 +1,7 @@
 tree grammar TypeCheck;
 
 /* to do
-1. Struct fields within struct definitions are only defined as Type.STRUCT; they
+XXX 1. Struct fields within struct definitions are only defined as Type.STRUCT; they
 need to carry information about the StructType. This will require modifying the 
 StructDef class to carry this information in another parallel array. See Type below.
 
@@ -44,9 +44,12 @@ struct [String scope]: //adds a new struct definition
       {StructDef sd = new StructDef(); System.out.println("Gathering fields for struct " + $id.text);} 
     (d = decl[scope] 
       {if (d != null) {
-         sd.addField("empty",d.getName(), d.getType());
-         System.out.println("Struct field " + d.getName() + " of type " + d.getType());
-         }
+         sd.addField(d.getStructType(),d.getName(), d.getType());
+            if(d.getStructType() != null)
+                System.out.println("Struct type "+ d.getStructType() + " Struct field " + d.getName() + " of type " + d.getType());
+            else
+                System.out.println("Struct field " + d.getName() + " of type " + d.getType());
+        }
       }
     )*) 
     
@@ -56,24 +59,24 @@ struct [String scope]: //adds a new struct definition
 ;
 
 decl [String scope] returns [Variable v = null]
-   : ^(DECL ^(TYPE var=type[scope]) id=ID ) 
+   : ^(DECL ^(TYPE var=type[scope]{$v = $var.v; String string = $var.s;}) id=ID ) 
    
    {
       if (var != null) {
-         var.setName($id.text);   
-         v = var;
+         v.setName($id.text);
+         v.setStructType(string);
       }
    }
 ;
 
-type [String scope] returns [Variable v = null]
+type [String scope] returns [Variable v = null, String s = null]
     : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
     | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
-    | ^(TYPE ^(STRUCT type["empty"]))
+    | ^(TYPE ^(STRUCT type["empty"])) {System.out.println("TYPE STRUCT!!!!");}
     | INT {$v = new Variable(Type.INT, scope);}                         // struct fields, params
     | BOOL {$v = new Variable(Type.BOOL, scope);}                       // struct fields, params
-    | ^(STRUCT type["empty"]) {$v = new Variable(scope, "unspecified struct as field or param", scope);}   // **This is probably where structtype needs to be stored.**
-    | ID
+    | ^(STRUCT var=type["empty"]) {$v = new Variable(scope, "unspecified struct as field or param", scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
+    | id=ID {$s = $id.text; /*System.out.println($s);*/   }
     | VOID
 ;
 
@@ -84,7 +87,7 @@ decls [String scope]:
 ;
 
 decllist[String scope]:
-    ^(DECLLIST v=type[scope] (id=ID 
+    ^(DECLLIST var=type[scope]{Variable v = $var.v;} (id=ID 
     
     {    
       if (v!=null) {
@@ -159,11 +162,23 @@ funcs [String scope]:
 ;
 
 fun [String scope]:
-    ^(FUN id=ID (params[scope]) rettype decls[$id.text] stmts)
+    ^(FUN id=ID (params[$id.text]) rettype decls[$id.text] stmts)
 ;
 
 params [String scope]:
-    ^(PARAMS (decl[scope])*)
+    ^(PARAMS (v=decl[scope]
+    {
+        System.out.println("Get Param name: "+ v.getName());
+        System.out.println("Get Param struct_type: "+ v.getStructType());
+        if(v.getType() == Type.STRUCT){
+            
+        }
+        else{
+            g_stable.addSymbol(scope, v.getName(), v);
+            System.out.println("Symbol " + v.getName() + " was added to " + scope);
+        }
+    }
+    )*)
 ;
 
 rettype:
