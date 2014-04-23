@@ -194,7 +194,42 @@ stmt [Node predNode] returns [Node n = predNode]
     
 
     
-    |^(WHILE e=expression[predNode] w=stmt[predNode] wjoin=expression[predNode])
+    |^(WHILE 
+    
+         {
+            if (printNodeAdds)
+               System.out.println("while exp1");
+        
+         }
+    
+    e1=expression[predNode]
+    
+         {
+            if (printNodeAdds)
+               System.out.println("WHILE_BODY exp2");
+            Node whileBlock = new Node(NodeType.WHILE_BODY, (currentIDNum++), "WHILE_BODY");
+            Node whileJoin = new Node(NodeType.WHILE_JOIN, (currentIDNum++), "WHILE_JOIN");
+            e1.getSuccNodes().add(whileBlock);
+            e1.getSuccNodes().add(whileJoin);
+            whileBlock.getPredNodes().add(e1);
+            whileBlock.getPredNodes().add(whileBlock);
+            whileBlock.getSuccNodes().add(whileBlock);
+            Node after = e1;
+         }
+    
+    w=stmt[after] 
+    
+         {
+            if (printNodeAdds)
+               System.out.println("WHILE_JOIN"); 
+            whileBlock.getSuccNodes().add(whileJoin);
+            whileJoin.getPredNodes().add(whileBlock);  
+            whileJoin.getPredNodes().add(predNode);        
+         }
+    
+    e2=expression[predNode])
+    
+    
     |^(DELETE current=expression[predNode]
     
     {
