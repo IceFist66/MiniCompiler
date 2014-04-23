@@ -57,29 +57,29 @@ decllist:
     ^(DECLLIST type ID*)
 ;
 
-expression :
-   ^(AND expression expression)
-   |^(OR expression expression)
-   |^(EQ expression expression)
-   |^(LT expression expression)
-   |^(GT expression expression)
-   |^(LE expression expression)
-   |^(GE expression expression)
-   |^(PLUS expression expression)
-   |^(MINUS expression expression)
-   |^(TIMES expression expression)
-   |^(DIVIDE expression expression)
-   |^(NOT expression)
+expression [Node predNode] returns [Node n = null]
+   :^(AND expression[predNode] expression[predNode])
+   |^(OR expression[predNode] expression[predNode])
+   |^(EQ expression[predNode] expression[predNode])
+   |^(LT expression[predNode] expression[predNode])
+   |^(GT expression[predNode] expression[predNode])
+   |^(LE expression[predNode] expression[predNode])
+   |^(GE expression[predNode] expression[predNode])
+   |^(PLUS expression[predNode] expression[predNode])
+   |^(MINUS expression[predNode] expression[predNode])
+   |^(TIMES expression[predNode] expression[predNode])
+   |^(DIVIDE expression[predNode] expression[predNode])
+   |^(NOT expression[predNode])
    |^(NEW ID)
-   |^(DOT expression expression)
-   |^(INVOKE ID args)
+   |^(DOT expression[predNode] expression[predNode])
+   |^(INVOKE ID args[predNode])
    |TRUE
    |FALSE
    |INTEGER
    |ID
    |ENDL
    |NULL
-   |stmts[null]
+   |stmts[predNode]
 ;
 
 lvalue:
@@ -87,24 +87,24 @@ lvalue:
    |ID
 ;
 
-stmt returns [Node n = null]
-    :^(BLOCK stmts[null])
-    |^(PRINT expression*)
+stmt [Node predNode] returns [Node n = null]
+    :^(BLOCK stmts[predNode])
+    |^(PRINT (expression[predNode])*)
     |^(READ lvalue)
-    |^(IF expression stmt stmt?)             // need to start new node
-    |^(WHILE expression stmt expression)     // need to start new node
-    |^(DELETE expression)
-    |^(RETURN expression?)
-    |^(INVOKE ID args)                       // need to start new node
-    |^(ASSIGN expression lvalue)
+    |^(IF expression[predNode] stmt[predNode] stmt[predNode]?)             // need to start new node
+    |^(WHILE expression[predNode] stmt[predNode] expression[predNode])     // need to start new node
+    |^(DELETE expression[predNode])
+    |^(RETURN (expression[predNode])?)
+    |^(INVOKE ID args[predNode])                       // need to start new node
+    |^(ASSIGN expression[predNode] lvalue)
 ;
 
-args:
-    ^(ARGS expression*)
+args [Node predNode] returns [Node n = null]
+   :^(ARGS (expression[predNode])*)
 ;
 
 stmts [Node predNode] returns [Node n = null]
-   : ^(STMTS node = (stmt
+   : ^(STMTS node = (stmt[predNode]
    
    {
    
