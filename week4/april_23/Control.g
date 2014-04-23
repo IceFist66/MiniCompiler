@@ -94,8 +94,8 @@ stmt [Node predNode] returns [Node n = null]
     |^(IF expression[predNode] stmt[predNode] stmt[predNode]?)             // need to start new node
     |^(WHILE expression[predNode] stmt[predNode] expression[predNode])     // need to start new node
     |^(DELETE expression[predNode])
-    |^(RETURN (expression[predNode])?)
-    |^(INVOKE ID args[predNode])                       // need to start new node
+    |^(RETURN (expression[predNode])?)                   
+    |^(INVOKE ID args[predNode])                                           // need to start new node
     |^(ASSIGN expression[predNode] lvalue)
 ;
 
@@ -104,15 +104,27 @@ args [Node predNode] returns [Node n = null]
 ;
 
 stmts [Node predNode] returns [Node n = null]
-   : ^(STMTS node = (stmt[predNode]
+   :^(STMTS 
+    
+   {  
+      if (printNodeAdds)
+         System.out.println("Entered stmts");
+
+   }
+    
+   (newNode = stmt[predNode]
    
    {
-   
+      predNode = newNode;
       
    
    }
    
    )*)
+   
+   {
+      n = predNode;
+   }
 ;
 
 funcs:
@@ -130,10 +142,13 @@ fun:
         
       } 
       
-      params rettype decls n=stmts[head]
+      params rettype decls current=stmts[head]
     
       {
         Node last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
+        current.getSuccNodes().add(last);
+        last.getPredNodes().add(current);
+        
         if (printNodeAdds)
            System.out.println("EXIT Node for function " + $id.text);
            
