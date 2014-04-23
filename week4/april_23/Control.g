@@ -17,8 +17,9 @@ options
 @members {
     private StructTypes g_stypes;
     private SymbolTable g_stable;
-    private ArrayList<cfg.Node> functions;
+    private ArrayList<Node> functions;
     private int currentIDNum;
+    boolean printNodeAdds;
 }
 
 error:
@@ -30,7 +31,7 @@ types:
 ;
 
 struct:
-    ^(STRUCT ID {StructDef sd = new StructDef();} (decl)*)
+    ^(STRUCT ID (decl)*)
 ;
 
 decl:
@@ -41,12 +42,12 @@ type:
     ^(TYPE INT)
     | ^(TYPE BOOL)
     | ^(TYPE ^(STRUCT type))
-    | INT //{$t = new Type(MiniType.INT, "global");}
+    | INT
     | BOOL
     | ^(STRUCT type)
-    | ID
+    | ID 
+    | VOID
 ;
-
 
 decls:
     ^(DECLS decllist*)
@@ -56,7 +57,7 @@ decllist:
     ^(DECLLIST type ID*)
 ;
 
-expression:
+expression :
    ^(AND expression expression)
    |^(OR expression expression)
    |^(EQ expression expression)
@@ -78,7 +79,7 @@ expression:
    |ID
    |ENDL
    |NULL
-   |stmts
+   |stmts[null]
 ;
 
 lvalue:
@@ -86,15 +87,15 @@ lvalue:
    |ID
 ;
 
-stmt:
-    ^(BLOCK stmts)
+stmt returns [Node n = null]
+    :^(BLOCK stmts[null])
     |^(PRINT expression*)
     |^(READ lvalue)
-    |^(IF expression stmt stmt?)
-    |^(WHILE expression stmt expression)
+    |^(IF expression stmt stmt?)             // need to start new node
+    |^(WHILE expression stmt expression)     // need to start new node
     |^(DELETE expression)
     |^(RETURN expression?)
-    |^(INVOKE ID args)
+    |^(INVOKE ID args)                       // need to start new node
     |^(ASSIGN expression lvalue)
 ;
 
@@ -102,8 +103,16 @@ args:
     ^(ARGS expression*)
 ;
 
-stmts:
-    ^(STMTS stmt*)
+stmts [Node predNode] returns [Node n = null]
+   : ^(STMTS node = (stmt
+   
+   {
+   
+      
+   
+   }
+   
+   )*)
 ;
 
 funcs:
@@ -111,12 +120,26 @@ funcs:
 ;
 
 fun:
-    ^(FUN id=ID{
-        functions.add(new cfg.Node(cfg.NodeType.ENTRY,$id.text));
-        cfg.Node last = new cfg.Node(cfg.NodeType.EXIT, null, "Exit");
-    } (params) rettype decls var=stmts{
+    ^(FUN id=ID
+      
+      {
+        Node head = new Node(NodeType.ENTRY, (currentIDNum++), $id.text);
+        functions.add(head);
+        if (printNodeAdds)
+           System.out.println("HEAD Node for function " + $id.text);
         
-    })
+      } 
+      
+      params rettype decls n=stmts[head]
+    
+      {
+        Node last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
+        if (printNodeAdds)
+           System.out.println("EXIT Node for function " + $id.text);
+           
+      }
+          
+    )
 ;
 
 params:
@@ -132,9 +155,10 @@ construct [StructTypes stypes, SymbolTable stable]
     @init {
         g_stypes = stypes; 
         g_stable = stable; 
-        functions = new ArrayList<cfg.Node>();
+        functions = new ArrayList<Node>();
         currentIDNum = 0;
-    }:
-    ^(PROGRAM (types) decls funcs)
-    { System.out.println("Successfully walked Program tree."); }
+        printNodeAdds = true;
+    }
+   : ^(PROGRAM (types) decls funcs)
+   { System.out.println("Successfully completed Control.g."); }
 ;
