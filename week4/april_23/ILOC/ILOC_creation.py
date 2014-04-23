@@ -1,3 +1,8 @@
+'''
+In order for this to work, call 'python ILOC_creation [template file]' otherwise it wont work.
+Hope this helps.
+'''
+
 import sys
 
 def create_Class(name, size, text):
