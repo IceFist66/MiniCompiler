@@ -17,8 +17,9 @@ options
 @members {
     private StructTypes g_stypes;
     private SymbolTable g_stable;
-    private ArrayList<cfg.Node> functions;
+    private ArrayList<Node> functions;
     private int currentIDNum;
+    boolean printNodeAdds;
 }
 
 error:
@@ -30,7 +31,7 @@ types:
 ;
 
 struct:
-    ^(STRUCT ID {StructDef sd = new StructDef();} (decl)*)
+    ^(STRUCT ID (decl)*)
 ;
 
 decl:
@@ -41,12 +42,12 @@ type:
     ^(TYPE INT)
     | ^(TYPE BOOL)
     | ^(TYPE ^(STRUCT type))
-    | INT //{$t = new Type(MiniType.INT, "global");}
+    | INT
     | BOOL
     | ^(STRUCT type)
-    | ID
+    | ID 
+    | VOID
 ;
-
 
 decls:
     ^(DECLS decllist*)
@@ -56,29 +57,29 @@ decllist:
     ^(DECLLIST type ID*)
 ;
 
-expression:
-   ^(AND expression expression)
-   |^(OR expression expression)
-   |^(EQ expression expression)
-   |^(LT expression expression)
-   |^(GT expression expression)
-   |^(LE expression expression)
-   |^(GE expression expression)
-   |^(PLUS expression expression)
-   |^(MINUS expression expression)
-   |^(TIMES expression expression)
-   |^(DIVIDE expression expression)
-   |^(NOT expression)
+expression [Node predNode] returns [Node n = null]
+   :^(AND expression[predNode] expression[predNode])
+   |^(OR expression[predNode] expression[predNode])
+   |^(EQ expression[predNode] expression[predNode])
+   |^(LT expression[predNode] expression[predNode])
+   |^(GT expression[predNode] expression[predNode])
+   |^(LE expression[predNode] expression[predNode])
+   |^(GE expression[predNode] expression[predNode])
+   |^(PLUS expression[predNode] expression[predNode])
+   |^(MINUS expression[predNode] expression[predNode])
+   |^(TIMES expression[predNode] expression[predNode])
+   |^(DIVIDE expression[predNode] expression[predNode])
+   |^(NOT expression[predNode])
    |^(NEW ID)
-   |^(DOT expression expression)
-   |^(INVOKE ID args)
+   |^(DOT expression[predNode] expression[predNode])
+   |^(INVOKE ID args[predNode])
    |TRUE
    |FALSE
    |INTEGER
    |ID
    |ENDL
    |NULL
-   |stmts
+   |stmts[predNode]
 ;
 
 lvalue:
@@ -86,24 +87,32 @@ lvalue:
    |ID
 ;
 
-stmt:
-    ^(BLOCK stmts)
-    |^(PRINT expression*)
+stmt [Node predNode] returns [Node n = null]
+    :^(BLOCK stmts[predNode])
+    |^(PRINT (expression[predNode])*)
     |^(READ lvalue)
-    |^(IF expression stmt stmt?)
-    |^(WHILE expression stmt expression)
-    |^(DELETE expression)
-    |^(RETURN expression?)
-    |^(INVOKE ID args)
-    |^(ASSIGN expression lvalue)
+    |^(IF expression[predNode] stmt[predNode] stmt[predNode]?)             // need to start new node
+    |^(WHILE expression[predNode] stmt[predNode] expression[predNode])     // need to start new node
+    |^(DELETE expression[predNode])
+    |^(RETURN (expression[predNode])?)
+    |^(INVOKE ID args[predNode])                       // need to start new node
+    |^(ASSIGN expression[predNode] lvalue)
 ;
 
-args:
-    ^(ARGS expression*)
+args [Node predNode] returns [Node n = null]
+   :^(ARGS (expression[predNode])*)
 ;
 
-stmts:
-    ^(STMTS stmt*)
+stmts [Node predNode] returns [Node n = null]
+   : ^(STMTS node = (stmt[predNode]
+   
+   {
+   
+      
+   
+   }
+   
+   )*)
 ;
 
 funcs:
@@ -111,12 +120,26 @@ funcs:
 ;
 
 fun:
-    ^(FUN id=ID{
-        functions.add(new cfg.Node(cfg.NodeType.ENTRY,$id.text));
-        cfg.Node last = new cfg.Node(cfg.NodeType.EXIT, null, "Exit");
-    } (params) rettype decls var=stmts{
+    ^(FUN id=ID
+      
+      {
+        Node head = new Node(NodeType.ENTRY, (currentIDNum++), $id.text);
+        functions.add(head);
+        if (printNodeAdds)
+           System.out.println("HEAD Node for function " + $id.text);
         
-    })
+      } 
+      
+      params rettype decls n=stmts[head]
+    
+      {
+        Node last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
+        if (printNodeAdds)
+           System.out.println("EXIT Node for function " + $id.text);
+           
+      }
+          
+    )
 ;
 
 params:
@@ -132,9 +155,10 @@ construct [StructTypes stypes, SymbolTable stable]
     @init {
         g_stypes = stypes; 
         g_stable = stable; 
-        functions = new ArrayList<cfg.Node>();
+        functions = new ArrayList<Node>();
         currentIDNum = 0;
-    }:
-    ^(PROGRAM (types) decls funcs)
-    { System.out.println("Successfully walked Program tree."); }
+        printNodeAdds = true;
+    }
+   : ^(PROGRAM (types) decls funcs)
+   { System.out.println("Successfully completed Control.g."); }
 ;

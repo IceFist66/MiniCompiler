@@ -83,14 +83,20 @@ public class Mini
    {
       try
       {
-         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
-         nodes.setTokenStream(tokens);
-         TypeCheck tparser = new TypeCheck(nodes);         
+         CommonTreeNodeStream nodes1 = new CommonTreeNodeStream(tree);
+         nodes1.setTokenStream(tokens);
+         CommonTreeNodeStream nodes2 = new CommonTreeNodeStream(tree);
+         nodes2.setTokenStream(tokens);
+         TypeCheck tparser = new TypeCheck(nodes1);
+         Control cparser = new Control(nodes2);          
          
          StructTypes stypes = new StructTypes();
          SymbolTable stable = new SymbolTable();
 
-         tparser.verify(stypes, stable);
+         // Do we need to capture these tables from Typecheck and pass them on
+         // to construct? I assume not.
+         //tparser.verify(stypes, stable);
+         cparser.construct(stypes, stable);
       }
       catch (org.antlr.runtime.RecognitionException e)
       {
