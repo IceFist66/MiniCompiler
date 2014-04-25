@@ -1,0 +1,6 @@
+What happened to the funciton calls. Because there was no need to spill, 
+the optimized functions only needed to call the values in the registers 
+and manipulate them there. Because of that, there was no need for unnessasary 
+code to spill to the stack. As for the 10*10 function, the machine seems 
+to have manually calculated this and produces 100 for the answer. That 
+is very effecient. 
