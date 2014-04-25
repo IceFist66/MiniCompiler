@@ -1,0 +1,65 @@
+	.file	"unopt.c"
+	.text
+.globl square
+	.type	square, @function
+square:
+	pushl	%ebp           //Save base pointer
+	movl	%esp, %ebp     //Set stack pointer as base pointer
+	movl	8(%ebp), %eax  //Moving argument 8 offset awayfrom ebp to eax
+	imull	8(%ebp), %eax  //multiply argument 8 offset away from ebp with eax and save at eax
+	popl	%ebp           //restore base pointer
+	ret                  //return
+	.size	square, .-square
+	.section	.rodata
+.LC0:
+	.string	"%ld %ld %ld %ld %ld %ld %ld\n"
+	.text
+.globl print_them
+	.type	print_them, @function
+print_them:
+	pushl	%ebp              //Save base pointer
+	movl	%esp, %ebp        //set stack pointer as base pointer
+	subl	$40, %esp         //make space for the new function
+	movl	$.LC0, %eax       //move value of .LCO into eax
+	movl	32(%ebp), %edx    //move argument found at offset 32 to edx
+	movl	%edx, 28(%esp)    //move argument in edx to offset 28 of esp
+	movl	28(%ebp), %edx    //move arguemnt found at offset 28 to edx
+	movl	%edx, 24(%esp)    //move argument in edx to offset 24 of esp
+	movl	24(%ebp), %edx    //move argument found at offset 24 to edx
+	movl	%edx, 20(%esp)    //move argument in edx to offset 20 of esp
+	movl	20(%ebp), %edx    //move argument found at offset 20 to edx
+	movl	%edx, 16(%esp)    //move argument in edx to offset 16 of esp
+	movl	16(%ebp), %edx    //move argument found at offset 16 to edx
+	movl	%edx, 12(%esp)    //move argument in edx to offset 12 of esp
+	movl	12(%ebp), %edx    //move argument found at offset 12 to edx
+	movl	%edx, 8(%esp)
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	printf
+	leave
+	ret
+	.size	print_them, .-print_them
+.globl main
+	.type	main, @function
+main:
+	pushl	%ebp
+	movl	%esp, %ebp
+	andl	$-16, %esp
+	subl	$32, %esp
+	movl	$10, (%esp)
+	call	square
+	movl	%eax, 24(%esp)
+	movl	$6, 20(%esp)
+	movl	$5, 16(%esp)
+	movl	$4, 12(%esp)
+	movl	$3, 8(%esp)
+	movl	$2, 4(%esp)
+	movl	$1, (%esp)
+	call	print_them
+	movl	$0, %eax
+	leave
+	ret
+	.size	main, .-main
+	.ident	"GCC: (GNU) 4.4.7 20120313 (Red Hat 4.4.7-3)"
+	.section	.note.GNU-stack,"",@progbits
