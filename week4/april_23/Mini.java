@@ -95,7 +95,7 @@ public class Mini
 
          // Do we need to capture these tables from Typecheck and pass them on
          // to construct? I assume not.
-         //tparser.verify(stypes, stable);
+         tparser.verify(stypes, stable);
          cparser.construct(stypes, stable);
       }
       catch (org.antlr.runtime.RecognitionException e)
