@@ -72,7 +72,7 @@ decl [String scope] returns [Variable v = null]
 type [String scope] returns [Variable v = null, String s = null]
     : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
     | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
-    | ^(TYPE ^(STRUCT type[scope])) {System.out.println("TYPE STRUCT!!!!");}
+    | ^(TYPE ^(STRUCT type[scope])) {$v = new Variable(Type.STRUCT, scope); System.out.println("TYPE STRUCT!!!!");}
     | INT {$v = new Variable(Type.INT, scope);}                         // struct fields, params
     | BOOL {$v = new Variable(Type.BOOL, scope);}                       // struct fields, params
     | ^(STRUCT var=type[scope]) {$v = new Variable(scope, "unspecified struct as field or param", scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
@@ -186,5 +186,7 @@ rettype[String scope] returns [Variable v = null]:
 
 verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
     ^(PROGRAM types["global"] decls["global"] funcs["global"])
-    { System.out.println("Successfully walked Program tree."); }
+    { System.out.println("Successfully walked Program tree."); 
+      stable.getAll();
+    }
 ;

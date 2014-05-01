@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.*;
 
 // table_key = global or function name
 
@@ -66,6 +66,25 @@ public class SymbolTable {
 		String[] result = dot_expression.split("\\.");
 		System.out.println("result length = " + result.length);
 		return result[result.length-2];
+	}
+	
+	public void getAll(){
+		Set<String> scopes = this.hashmap.keySet();
+		HashMap<String, Variable> func;
+		Set<String> values;
+		for(String scope: scopes){
+			func = this.hashmap.get(scope);
+			values = func.keySet();
+			for(String name: values){
+				Variable v = getVariable(scope, name);
+				if(v == null){
+					System.out.println("In scope: " + scope + ", " + name + " has type: null");
+				}
+				else{
+					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString());
+				}
+			}
+		}
 	}
 
 }
