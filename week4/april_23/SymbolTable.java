@@ -80,6 +80,12 @@ public class SymbolTable {
 				if(v == null){
 					System.out.println("In scope: " + scope + ", " + name + " has type: null");
 				}
+				else if(v.getType() == Type.STRUCT){
+					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString() + " " + v.getStructType());
+				}
+				else if(v.isFunc()){
+					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString() + " is a function with " + v.getNumParam() + " parameters.");
+				}
 				else{
 					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString());
 				}

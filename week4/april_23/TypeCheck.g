@@ -72,12 +72,12 @@ decl [String scope] returns [Variable v = null]
 type [String scope] returns [Variable v = null, String s = null]
     : ^(TYPE INT) {$v = new Variable(Type.INT, scope);}
     | ^(TYPE BOOL) {$v = new Variable(Type.BOOL, scope);}
-    | ^(TYPE ^(STRUCT type[scope])) {$v = new Variable(Type.STRUCT, scope); System.out.println("TYPE STRUCT!!!!");}
+    | ^(TYPE ^(STRUCT var=type[scope])) {$v = new Variable(scope, $var.s, scope); System.out.println("TYPE STRUCT!!!!");}
     | INT {$v = new Variable(Type.INT, scope);}                         // struct fields, params
     | BOOL {$v = new Variable(Type.BOOL, scope);}                       // struct fields, params
-    | ^(STRUCT var=type[scope]) {$v = new Variable(scope, "unspecified struct as field or param", scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
+    | ^(STRUCT var=type[scope]) {$v = new Variable(scope, var.s, scope); $s = var.s;}   // **This is probably where structtype needs to be stored.**
     | id=ID {$s = $id.text; /*System.out.println($s);*/   }
-    | VOID
+    | VOID {$v = new Variable(Type.VOID, scope);}  
 ;
 
 
@@ -162,21 +162,24 @@ funcs [String scope]:
 ;
 
 fun [String scope]:
-    ^(FUN id=ID (params[$id.text]) var=rettype[scope]
+    ^(FUN id=ID (num=params[$id.text]) var=rettype[scope]
     {
-        g_stable.addSymbol($id.text, $id.text, var);
+        var.setIsFunc(true);
+        var.setNumParam(num);
+        g_stable.addSymbol(scope, $id.text, var);
     } decls[$id.text] stmts)
 ;
 
-params [String scope]:
-    ^(PARAMS (v=decl[scope]
+params [String scope] returns [int i = 0]:
+    ^(PARAMS {int j = 0;}(v=decl[scope]
     {
         /*System.out.println("Get Param name: "+ v.getName());
         System.out.println("Get Param struct_type: "+ v.getStructType());*/
         g_stable.addSymbol(scope, v.getName(), v);
         System.out.println("Symbol " + v.getName() + " was added to " + scope);
+        j++;
     }
-    )*)
+    )* {$i = j;})
 ;
 
 rettype[String scope] returns [Variable v = null]:

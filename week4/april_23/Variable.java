@@ -1,5 +1,6 @@
 public class Variable {
 	private Type type;
+    private boolean isFunc;
 	private String name; // name of variable (needed when building struct definitions)
 	private String variableScope; // name of function in which variable is declared
 	private int num_param;
@@ -10,6 +11,7 @@ public class Variable {
 	// used for INTs and BOOLs
 	public Variable(Type type, String scope) {
 		this.type = type;
+        this.isFunc = false;
 		this.variableScope = scope;
 		this.num_param = -1;
 		this.parameters = null;
@@ -20,6 +22,7 @@ public class Variable {
 	// used for functions
 	public Variable(String scope, int num_param) {
 		this.type = Type.FUNC;
+        this.isFunc = true;
 		this.variableScope = scope;
 		this.num_param = num_param;
 		this.parameters = new String[num_param];
@@ -30,6 +33,7 @@ public class Variable {
 	// used for Structs
 	public Variable(String scope, String structType, String structTypeScope) {
 		this.type = Type.STRUCT;
+        this.isFunc = false;
 		this.variableScope = scope;
 		this.num_param = -1;
 		this.parameters = null;
@@ -63,7 +67,7 @@ public class Variable {
 		return this.structTypeScope;
 	}
 	
-	public int getNumParameters() {
+	public int getNumParam() {
 		return this.num_param;
 	}
 	
@@ -74,4 +78,16 @@ public class Variable {
 	public void setStructType(String struct_type) {
 		this.structType = struct_type;
 	}
+
+    public void setIsFunc(boolean newIsFunc){
+        this.isFunc = newIsFunc;
+    }
+
+    public boolean isFunc() {
+		return this.isFunc;
+	}
+
+    public void setNumParam(int num){
+        this.num_param = num;
+    }
 }
