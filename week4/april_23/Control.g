@@ -130,7 +130,7 @@ stmt [Node predNode] returns [Node n = predNode]
           
           {
             if (printNodeAdds)
-               System.out.println("if");
+               System.out.println("if (expression)");
           }
     
     e=expression[predNode] 
@@ -141,6 +141,7 @@ stmt [Node predNode] returns [Node n = predNode]
             e.getSuccNodes().add(thenBlock);
             thenBlock.getPredNodes().add(e);
             if (printNodeAdds) {
+               System.out.println("true: jump from L" + e.getId() + " to L" + thenBlock.getId()); 
                System.out.println("L" + thenBlock.getId() + " THEN");
             }      
           }
@@ -151,15 +152,20 @@ stmt [Node predNode] returns [Node n = predNode]
             //insert explicit jump to if_join block here
             th.getSuccNodes().add(ifJoin);
             ifJoin.getPredNodes().add(th);
+            if (printNodeAdds) {
+              System.out.println("jump from L" + thenBlock.getId() + " to L" 
+               + ifJoin.getId() + " (ifJoin)"); 
+           }   
           }
     
     (
       
           {
-            Node elseBlock = new Node(NodeType.ELSE, (currentIDNum++), "ELSE");
-//           if (printNodeAdds) {
- //              System.out.println("L" + elseBlock.getID() + " ELSE");
-  //          }  
+           Node elseBlock = new Node(NodeType.ELSE, (currentIDNum++), "ELSE");
+           if (printNodeAdds) {
+              System.out.println("false: jump from L" + e.getId() + " to L" + elseBlock.getId()); 
+              System.out.println("L" + elseBlock.getId() + " ELSE");
+           }  
           }
     
     el=stmt[elseBlock]
@@ -168,16 +174,13 @@ stmt [Node predNode] returns [Node n = predNode]
             
            predNode.getSuccNodes().add(elseBlock);
            elseBlock.getPredNodes().add(e1);
-            // Node elseLastBlock = new Node(NodeType.ELSE_LAST, (currentIDNum++), "ELSE_LAST");
-            //el.getSuccNodes().add(elseLastBlock);
-            //elseLastBlock.getPredNodes().add(el);
-            // insert explicit jump to if_join block here
-            //elseLastBlock.getSuccNodes().add(ifJoin);
-            //ifJoin.getPredNodes().add(elseLastBlock);
-           //if (printNodeAdds) {
-           //    System.out.println("L" + elseLastBlock.getId() + "ELSE_LAST");
-          //     System.out.println("L" + ifJoin.getId() + "IF_JOIN");
-          //  }    
+           // insert explicit jump to if_join block here
+           elseBlock.getSuccNodes().add(ifJoin);
+           ifJoin.getPredNodes().add(elseBlock);
+           if (printNodeAdds) {
+              System.out.println("jump to L" + ifJoin.getId() + " (ifJoin)");
+              System.out.println("L" + ifJoin.getId() + " IF_JOIN");
+           }    
           }    
     
     )?)
@@ -201,13 +204,12 @@ stmt [Node predNode] returns [Node n = predNode]
     
          {
             if (printNodeAdds)
-               System.out.println("L" + e1.getId() + "WHILE_BODY exp2");
+               System.out.println("L" + e1.getId() + " WHILE_BODY exp2");
             Node whileBlock = new Node(NodeType.WHILE_BODY, (currentIDNum++), "WHILE_BODY");
             Node whileJoin = new Node(NodeType.WHILE_JOIN, (currentIDNum++), "WHILE_JOIN");
             e1.getSuccNodes().add(whileBlock);
             e1.getSuccNodes().add(whileJoin);
             whileBlock.getPredNodes().add(e1);
-            whileBlock.getPredNodes().add(whileBlock);
             whileBlock.getSuccNodes().add(whileBlock);
             Node after = e1;
          }
@@ -216,7 +218,7 @@ stmt [Node predNode] returns [Node n = predNode]
     
          {
             if (printNodeAdds)
-               System.out.println("L" + w.getId() + "WHILE_JOIN"); 
+               System.out.println("L" + w.getId() + " WHILE_JOIN"); 
             whileBlock.getSuccNodes().add(whileJoin);
             whileJoin.getPredNodes().add(whileBlock);  
             whileJoin.getPredNodes().add(predNode);        
@@ -240,11 +242,10 @@ stmt [Node predNode] returns [Node n = predNode]
     {
       
       if (printNodeAdds)
-         System.out.println("RETURN");
+         System.out.println("RETURN: jump to L" + last.getId());
       current.getSuccNodes().add(last);
       last.getPredNodes().add(current);
-      // allow function to use default return (= predNode)
-      
+      // allow function to use default return (= predNode) THIS IS WRONG?     
     }
     
     )?)                   
@@ -304,13 +305,17 @@ fun:
       {
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), $id.text);
         functions.add(head);
+        Node firstBlock = new Node(NodeType.BLOCK, (currentIDNum++), "Block");
+        head.getSuccNodes().add(firstBlock);
+        firstBlock.getPredNodes().add(head);
         last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
         if (printNodeAdds)
-           System.out.println("L" + head.getId() + "HEAD Node for function " + $id.text);
-        
+           System.out.println("\nL" + head.getId() + " HEAD Node for function " + $id.text);
+           System.out.println("jump from L" + head.getId() + " to L" + firstBlock.getId()); 
+           System.out.println("L" + firstBlock.getId() + " start new Block ");        
       } 
       
-      params rettype decls current=stmts[head]
+      params rettype decls current=stmts[firstBlock]
     
       {   
         
@@ -322,7 +327,7 @@ fun:
         }
         
         if (printNodeAdds)
-           System.out.println("L" + last.getId() + "EXIT Node for function " + $id.text);
+           System.out.println("L" + last.getId() + " EXIT Node for function " + $id.text);
            
       }
           
@@ -344,7 +349,7 @@ construct [StructTypes stypes, SymbolTable stable]
         g_stable = stable; 
         functions = new ArrayList<Node>();
         currentIDNum = 0;
-        printNodeAdds = false;
+        printNodeAdds = true;
         printMini = false;
     }
    : ^(PROGRAM (types) decls funcs)
