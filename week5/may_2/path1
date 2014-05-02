@@ -1,0 +1,5 @@
+In path1, we take the two arguments and create a cmp that puts the result in the
+flag register. The program is smart enough to know that there are only two 
+answers. So it stores the 'else' answer into the return value. If the condition
+is met however, then the return value is saved into the return register instead 
+of the common 'else' return that was previously in there.
