@@ -74,12 +74,14 @@ expression [Node predNode] returns [Node n = predNode]
    |^(NOT expression[predNode])
    |^(NEW ID)
    |^(DOT expression[predNode] expression[predNode])
-   |^(INVOKE id=ID args[predNode])
+   |^(INVOKE id=ID
+      {
+          if (printNodeAdds)
+             System.out.println("invoke " + $id.text);
+      }
+     args[predNode])
    
-   {
-      if (printNodeAdds)
-         System.out.println("invoke " + $id.text);
-   }
+   
    
    |TRUE
    |FALSE
@@ -113,26 +115,31 @@ stmt [Node predNode] returns [Node n = predNode]
     
           
     
-    |^(PRINT (current=expression[predNode]
-    
+    |^(PRINT 
           {
             
             if (printNodeAdds)
                System.out.println("print");
             
           }
+    (current=expression[predNode]
+    
+          
     
     
     )*)
     
-    |^(READ lvalue)
-    
+    |^(READ 
           {
             
             if (printNodeAdds)
                System.out.println("read");
             
           }
+
+    lvalue)
+    
+          
     
     |^(IF 
           
@@ -226,34 +233,44 @@ stmt [Node predNode] returns [Node n = predNode]
             e1.getSuccNodes().add(whileJoin);
             whileBlock.getPredNodes().add(e1);
             whileBlock.getSuccNodes().add(whileBlock);
+            whileBlock.getSuccNodes().add(whileJoin);
+            if (printNodeAdds) {
+                System.out.println("jump from L" + e1.getId() + " to L" 
+                   + whileBlock.getId()); 
+                System.out.println("L" + whileJoin.getId() + " WHILE_JOIN");
+            }   
             Node after = e1;
          }
     
     w=stmt[after] 
     
-         {
+         {//This is the whileJoin block
             if (printNodeAdds)
-               System.out.println("L" + w.getId() + " WHILE_JOIN"); 
-            whileBlock.getSuccNodes().add(whileJoin);
+               System.out.println("L" + w.getId() + " while_after"); 
             whileJoin.getPredNodes().add(whileBlock);  
-            whileJoin.getPredNodes().add(predNode);        
+            whileJoin.getPredNodes().add(e1);
+            whileJoin.getSuccNodes().add(w);
+            w.getPredNodes().add(whileJoin);
+            $n=w;
          }
     
-    e2=expression[predNode])
+    e1=expression[w])
     
     
-    |^(DELETE current=expression[predNode]
+    |^(DELETE 
+        {
+          
+          if (printNodeAdds)
+             System.out.println("delete");
+          
+        }
     
-    {
-      
-      if (printNodeAdds)
-         System.out.println("delete");
-      
-    }
+        current=expression[predNode]
+    
     
     )
 
-    |^(RETURN {/*System.out.println ("STARTING in RETURN");*/ current = null;} (current=expression[predNode])?)
+    |^(RETURN {/*System.out.println ("return");*/ current = null;} (current=expression[predNode])?)
     
         {
           //System.out.println("In RETURN after expression");
@@ -279,23 +296,25 @@ stmt [Node predNode] returns [Node n = predNode]
           // allow function to use default return (= predNode)    
         }
                    
-    |^(INVOKE id=ID current=args[predNode])                                          
+    |^(INVOKE id=ID 
+        {      
+          if (printNodeAdds)
+             System.out.println("invoke " + $id.text);
+          
+        }
+
+    current=args[predNode])                                          
     
-    {      
-      if (printNodeAdds)
-         System.out.println("invoke " + $id.text);
-      
-    }
     
-    |^(ASSIGN current=expression[predNode] 
     
-    {      
-      if (printNodeAdds)
-         System.out.println("assign");
-      
-    }
-    
-     lvalue)
+    |^(ASSIGN 
+        {      
+          if (printNodeAdds)
+             System.out.println("assign");
+          
+        }
+    current=expression[predNode] lvalue
+    )
 ;
 
 args [Node predNode] returns [Node n = predNode]
