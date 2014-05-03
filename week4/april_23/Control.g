@@ -245,7 +245,8 @@ stmt [Node predNode] returns [Node n = predNode]
          System.out.println("RETURN: jump to L" + last.getId());
       current.getSuccNodes().add(last);
       last.getPredNodes().add(current);
-      // allow function to use default return (= predNode) THIS IS WRONG?     
+      n = last; 
+      // allow function to use default return (= predNode)    
     }
     
     )?)                   
