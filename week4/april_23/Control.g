@@ -87,7 +87,11 @@ expression [Node predNode] returns [Node n = predNode]
    |id=ID
    |ENDL
    |NULL
-   |stmts[predNode]
+   |node = stmts[predNode]
+    {
+        $n = node;
+        //System.out.println("In EXPRESSION, n type: " + n.getNodeType());
+    }
 ;
 
 lvalue:
@@ -96,14 +100,18 @@ lvalue:
 ;
 
 stmt [Node predNode] returns [Node n = predNode]
-    :^(BLOCK stmts[predNode])
-    
-          {
+    :^(BLOCK 
+        {
             
             if (printNodeAdds)
                System.out.println("block");
             
-          }
+        }
+    node = stmts[predNode]
+        {$n = node;}
+    )
+    
+          
     
     |^(PRINT (current=expression[predNode]
     
@@ -150,12 +158,16 @@ stmt [Node predNode] returns [Node n = predNode]
     
           {
             //insert explicit jump to if_join block here
-            th.getSuccNodes().add(ifJoin);
-            ifJoin.getPredNodes().add(th);
-            if (printNodeAdds) {
-              System.out.println("jump from L" + thenBlock.getId() + " to L" 
-               + ifJoin.getId() + " (ifJoin)"); 
-           }   
+            //System.out.println("In THEN, th type is: " + th.getNodeType());
+            //System.out.println("In THEN, last type is: " + last.getNodeType());
+            if(th.getNodeType() != NodeType.EXIT){
+                th.getSuccNodes().add(ifJoin);
+                ifJoin.getPredNodes().add(th);
+                if (printNodeAdds) {
+                  System.out.println("jump from L" + thenBlock.getId() + " to L" 
+                   + ifJoin.getId() + " (ifJoin)"); 
+               }   
+            }
           }
     
     (
@@ -168,25 +180,28 @@ stmt [Node predNode] returns [Node n = predNode]
            }  
           }
     
-    el=stmt[elseBlock]
+    {el = null;} el=stmt[elseBlock]
     
           {
             
-           predNode.getSuccNodes().add(elseBlock);
-           elseBlock.getPredNodes().add(e1);
-           // insert explicit jump to if_join block here
-           elseBlock.getSuccNodes().add(ifJoin);
-           ifJoin.getPredNodes().add(elseBlock);
-           if (printNodeAdds) {
-              System.out.println("jump to L" + ifJoin.getId() + " (ifJoin)");
-              System.out.println("L" + ifJoin.getId() + " IF_JOIN");
-           }    
+            predNode.getSuccNodes().add(elseBlock);
+            elseBlock.getPredNodes().add(e1);
+            // insert explicit jump to if_join block here
+            if(el.getNodeType() != NodeType.EXIT){
+                elseBlock.getSuccNodes().add(ifJoin);
+                ifJoin.getPredNodes().add(elseBlock);
+                if (printNodeAdds) {
+                    System.out.println("jump to L" + ifJoin.getId() + " (ifJoin)");
+                    System.out.println("L" + ifJoin.getId() + " IF_JOIN");
+                }    
+            }
           }    
     
     )?)
     
           {
-            n = ifJoin;  
+            if((th != null && th.getNodeType() != NodeType.EXIT) || (el != null && el.getNodeType() != NodeType.EXIT))
+                n = ifJoin;  
             
           }
     
@@ -237,19 +252,33 @@ stmt [Node predNode] returns [Node n = predNode]
     }
     
     )
-    |^(RETURN (current=expression[predNode]
+
+    |^(RETURN {/*System.out.println ("STARTING in RETURN");*/ current = null;} (current=expression[predNode])?)
     
-    {
-      
-      if (printNodeAdds)
-         System.out.println("RETURN: jump to L" + last.getId());
-      current.getSuccNodes().add(last);
-      last.getPredNodes().add(current);
-      n = last; 
-      // allow function to use default return (= predNode)    
-    }
-    
-    )?)                   
+        {
+          //System.out.println("In RETURN after expression");
+          Node newPredNode;
+          if(current == null){
+              //System.out.println("current is null");
+              newPredNode = predNode;
+          }
+          else{
+              //System.out.println("current is NOT null");
+              newPredNode = current;
+          }
+          //System.out.println("In RETURN, predNode type is: " + newPredNode.getNodeType());
+          //System.out.println("In RETURN, last is: " + last.getNodeType());
+          if (printNodeAdds){
+             System.out.println("RETURN: jump to L" + last.getId());
+          }
+          newPredNode.getSuccNodes().add(last);
+          last.getPredNodes().add(newPredNode);
+          //System.out.println("IN RETURN, n is: " + n.getNodeType());
+          $n = last; 
+          //System.out.println("In RETURN, n is: " + n.getNodeType());
+          // allow function to use default return (= predNode)    
+        }
+                   
     |^(INVOKE id=ID current=args[predNode])                                          
     
     {      
@@ -285,6 +314,7 @@ stmts [Node predNode] returns [Node n = predNode]
    (newNode = stmt[predNode]
    
    {
+      //System.out.println("In STMTS newNode type: " + newNode.getNodeType());
       predNode = newNode;     
    
    }
@@ -292,7 +322,8 @@ stmts [Node predNode] returns [Node n = predNode]
    )*)
    
    {
-      n = predNode;
+      $n = predNode;
+      //System.out.println("In STMTS n type: " + n.getNodeType());
    }
 ;
 
@@ -320,15 +351,15 @@ fun:
     
       {   
         
-        if (current != null) {
-            current.getSuccNodes().add(last);
-            last.getPredNodes().add(current);
-        } else {
-            System.out.println("Null return from stmts");
-        }
+        current.getSuccNodes().add(last);
+        last.getPredNodes().add(current);
         
-        if (printNodeAdds)
-           System.out.println("L" + last.getId() + " EXIT Node for function " + $id.text);
+        
+        if (printNodeAdds){
+            if(current.getNodeType() != NodeType.EXIT)
+                System.out.println("jump from L" + current.getId() + " to L" + last.getId()); 
+            System.out.println("L" + last.getId() + " EXIT Node for function " + $id.text);      
+        }
            
       }
           
