@@ -13,6 +13,7 @@ options
    import java.util.Vector;
    import java.util.Iterator;
    import java.io.IOException;
+   import iloc.*;
 }
 
 @members {
@@ -420,7 +421,9 @@ construct [StructTypes stypes, SymbolTable stable]
             System.out.println("started " + name);
             n.printCFGtoDotFile(name); 
             System.out.println("finished " + name);
-           } catch (Exception e) {}        
+         } catch (Exception e) {
+           
+         }        
       }
     }
 ;

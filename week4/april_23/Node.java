@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import iloc.Instruction;
 
 public class Node {
 	private int id;
@@ -13,6 +14,7 @@ public class Node {
 	private String text;
 	private ArrayList<Node> predNodes;
 	private ArrayList<Node> succNodes;
+	private ArrayList<Instruction> instructions;
 	//private ArrayList<Node> domSet;
 	private ArrayList<String> genSet;
 	private ArrayList<String> killSet;
@@ -28,6 +30,7 @@ public class Node {
 		this.predNodes = predNodes;
 		this.succNodes = succNodes;
 		//this.domSet = new ArrayList<Node>();
+		this.instructions = new ArrayList<Instruction>();
 		this.genSet = new ArrayList<String>();
 		this.killSet = new ArrayList<String>();
 		this.liveOut = new ArrayList<String>();
@@ -60,6 +63,7 @@ public class Node {
 		this.predNodes = new ArrayList<Node>();
 		this.succNodes = new ArrayList<Node>();
 		//this.domSet = new ArrayList<Node>();
+	   this.instructions = new ArrayList<Instruction>();
 		this.genSet = new ArrayList<String>();
 		this.killSet = new ArrayList<String>();
 		this.liveOut = new ArrayList<String>();
@@ -76,6 +80,7 @@ public class Node {
 		this.predNodes = new ArrayList<Node>();
 		this.succNodes = new ArrayList<Node>();
 		//this.domSet = new ArrayList<Node>();
+		this.instructions = new ArrayList<Instruction>();
 		this.genSet = new ArrayList<String>();
 		this.killSet = new ArrayList<String>();
 		this.liveOut = new ArrayList<String>();
@@ -121,6 +126,14 @@ public class Node {
 
 	public void setSuccNodes(ArrayList<Node> succNodes) {
 		this.succNodes = succNodes;
+	}
+	
+	public ArrayList<Instruction> getInstructions() {
+		return instructions;
+	}
+	
+	public void setInstructions(ArrayList<Instruction> instructions) {
+		this.instructions = instructions;
 	}
 
 	public ArrayList<String> getGenSet() {
