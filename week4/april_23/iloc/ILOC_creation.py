@@ -7,7 +7,8 @@ import sys
 
 def create_Class(name, size, text):
    new_name = name.capitalize()
-   new_class = "public class " + new_name + " extends Instruction{\n\n"
+   new_class = "package iloc;\n\n"
+   new_class += "public class " + new_name + " extends Instruction{\n\n"
    new_class += "\tpublic " + new_name
    new_class += "("
    if(size >= 1):
