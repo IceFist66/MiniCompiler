@@ -148,7 +148,7 @@ stmt [Node predNode] returns [Node n = predNode]
           {
             if (printNodeAdds)
                System.out.println("if (expression)");
-            //predNode.setNodeType(NodeType.IF); // this line makes the graph print out accurately
+            predNode.setNodeType(NodeType.IF); // this line makes the graph print out accurately
           }
     
     e=expression[predNode] 
@@ -224,7 +224,7 @@ stmt [Node predNode] returns [Node n = predNode]
          {
             if (printNodeAdds)
                System.out.println("while exp1");
-            //predNode.setNodeType(NodeType.WHILE); // this line makes the graph print out accurately
+            predNode.setNodeType(NodeType.WHILE); // this line makes the graph print out accurately
          }
     
     e=expression[predNode]
@@ -237,8 +237,7 @@ stmt [Node predNode] returns [Node n = predNode]
             e.getSuccNodes().add(whileBodyStart);
             e.getSuccNodes().add(whileJoin);
             whileBodyStart.getPredNodes().add(e);
-            whileBodyStart.setBackEdgeTarget(whileBodyStart);
-            whileBodyStart.getSuccNodes().add(whileJoin);
+            //whileBodyStart.getSuccNodes().add(whileJoin);
             if (printNodeAdds) {
                 System.out.println("jump from L" + e.getId() + " to L" 
                    + whileBodyStart.getId()); 
@@ -253,10 +252,12 @@ stmt [Node predNode] returns [Node n = predNode]
                System.out.println("L" + whileJoin.getId() + " while_after"); 
             whileJoin.getPredNodes().add(whileBodyAfter);  
             whileJoin.getPredNodes().add(e);
+            whileBodyAfter.setBackEdgeTarget(whileBodyStart);
+            whileBodyAfter.getSuccNodes().add(whileJoin);
             n = whileJoin;
          }
     
-    e=expression[whileBodyAfter])
+    e=expression[whileBodyAfter] {n = whileJoin;})
     
       {System.out.println("while-join node type = " + n.getNodeType());}
     
@@ -416,9 +417,9 @@ construct [StructTypes stypes, SymbolTable stable]
       for (Node n : functions) { 
          try {        
             String name = funcNames.get(count++);
-            //if(!name.equals("main"))
-           n.printCFGtoDotFile(name); 
-           System.out.println("finished " + name);
+            System.out.println("started " + name);
+            n.printCFGtoDotFile(name); 
+            System.out.println("finished " + name);
            } catch (Exception e) {}        
       }
     }
