@@ -25,6 +25,7 @@ options
     boolean printNodeAdds;
     boolean printMini;
     Node last;
+    private int registerCounter = 0;
 }
 
 error:
@@ -276,30 +277,22 @@ stmt [Node predNode] returns [Node n = predNode]
     
     )
 
-    |^(RETURN {/*System.out.println ("return");*/ current = null;} (current=expression[predNode])?)
+    |^(RETURN {current = null;} (current=expression[predNode])?)
     
         {
-          //System.out.println("In RETURN after expression");
           Node newPredNode;
           if(current == null){
-              //System.out.println("current is null");
               newPredNode = predNode;
           }
           else{
-              //System.out.println("current is NOT null");
               newPredNode = current;
           }
-          //System.out.println("In RETURN, predNode type is: " + newPredNode.getNodeType());
-          //System.out.println("In RETURN, last is: " + last.getNodeType());
           if (printNodeAdds){
              System.out.println("RETURN: jump to L" + last.getId());
           }
           newPredNode.getSuccNodes().add(last);
           last.getPredNodes().add(newPredNode);
-          //System.out.println("IN RETURN, n is: " + n.getNodeType());
           $n = last; 
-          //System.out.println("In RETURN, n is: " + n.getNodeType());
-          // allow function to use default return (= predNode)    
         }
                    
     |^(INVOKE id=ID 
