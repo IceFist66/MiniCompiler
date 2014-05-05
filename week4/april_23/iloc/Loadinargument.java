@@ -8,4 +8,5 @@ public class Loadinargument extends Instruction{
 		this.arg3 = arg3;
 		this.text = "loadinargument " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

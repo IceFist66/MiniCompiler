@@ -8,4 +8,5 @@ public class Loadi extends Instruction{
 		this.arg3 = null;
 		this.text = "loadi " + arg1 + " => " + arg2;
 	}
+
 }

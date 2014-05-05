@@ -8,4 +8,5 @@ public class Jumpi extends Instruction{
 		this.arg3 = null;
 		this.text = "jumpi " + arg1;
 	}
+
 }

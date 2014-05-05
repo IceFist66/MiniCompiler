@@ -8,4 +8,5 @@ public class Cbrge extends Instruction{
 		this.arg3 = arg3;
 		this.text = "cbrge " + arg1 + ", " + arg2 + ", " + arg3;
 	}
+
 }

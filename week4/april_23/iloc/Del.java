@@ -8,4 +8,5 @@ public class Del extends Instruction{
 		this.arg3 = null;
 		this.text = "del " + arg1;
 	}
+
 }

@@ -8,4 +8,5 @@ public class And extends Instruction{
 		this.arg3 = arg3;
 		this.text = "and " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

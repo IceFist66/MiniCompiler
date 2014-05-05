@@ -281,6 +281,8 @@ stmt [Node predNode] returns [Node n = predNode]
     
         {
           Node newPredNode;
+          Ret newReturn = new Ret();
+          System.out.println(newReturn.toString());
           if(current == null){
               newPredNode = predNode;
           }

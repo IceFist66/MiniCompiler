@@ -8,4 +8,5 @@ public class Rsubi extends Instruction{
 		this.arg3 = arg3;
 		this.text = "rsubi " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

@@ -8,4 +8,5 @@ public class Ret extends Instruction{
 		this.arg3 = null;
 		this.text = "ret " + "";
 	}
+
 }

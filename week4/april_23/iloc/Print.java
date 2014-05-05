@@ -8,4 +8,5 @@ public class Print extends Instruction{
 		this.arg3 = null;
 		this.text = "print " + arg1;
 	}
+
 }

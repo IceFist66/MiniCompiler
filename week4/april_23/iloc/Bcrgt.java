@@ -8,4 +8,5 @@ public class Bcrgt extends Instruction{
 		this.arg3 = arg3;
 		this.text = "bcrgt " + arg1 + ", " + arg2 + ", " + arg3;
 	}
+
 }

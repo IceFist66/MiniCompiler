@@ -8,4 +8,5 @@ public class Storeglobal extends Instruction{
 		this.arg3 = null;
 		this.text = "storeglobal " + arg1 + " => " + arg2;
 	}
+
 }

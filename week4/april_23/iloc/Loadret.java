@@ -8,4 +8,5 @@ public class Loadret extends Instruction{
 		this.arg3 = null;
 		this.text = "loadret " + "=> " + arg1;
 	}
+
 }

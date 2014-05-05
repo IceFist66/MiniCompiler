@@ -8,4 +8,5 @@ public class Addi extends Instruction{
 		this.arg3 = arg3;
 		this.text = "addi " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

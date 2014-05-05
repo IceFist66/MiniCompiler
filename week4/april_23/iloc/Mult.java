@@ -8,4 +8,5 @@ public class Mult extends Instruction{
 		this.arg3 = arg3;
 		this.text = "mult " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

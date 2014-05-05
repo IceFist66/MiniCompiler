@@ -8,4 +8,5 @@ public class Storet extends Instruction{
 		this.arg3 = null;
 		this.text = "storet " + arg1;
 	}
+
 }

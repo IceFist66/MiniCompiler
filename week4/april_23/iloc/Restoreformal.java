@@ -8,4 +8,5 @@ public class Restoreformal extends Instruction{
 		this.arg3 = null;
 		this.text = "restoreformal " + arg1 + ", " + arg2;
 	}
+
 }

@@ -8,4 +8,5 @@ public class Xori extends Instruction{
 		this.arg3 = arg3;
 		this.text = "xori " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

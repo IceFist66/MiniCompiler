@@ -8,4 +8,5 @@ public class Sub extends Instruction{
 		this.arg3 = arg3;
 		this.text = "sub " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

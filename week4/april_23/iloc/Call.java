@@ -8,4 +8,5 @@ public class Call extends Instruction{
 		this.arg3 = null;
 		this.text = "call " + arg1;
 	}
+
 }

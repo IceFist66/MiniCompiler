@@ -8,4 +8,5 @@ public class Storeoutargument extends Instruction{
 		this.arg3 = null;
 		this.text = "storeoutargument " + arg1 + " => " + arg2;
 	}
+
 }

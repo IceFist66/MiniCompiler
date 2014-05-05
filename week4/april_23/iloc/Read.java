@@ -8,4 +8,5 @@ public class Read extends Instruction{
 		this.arg3 = null;
 		this.text = "read " + arg1;
 	}
+
 }

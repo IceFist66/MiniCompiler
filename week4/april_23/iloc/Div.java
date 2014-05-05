@@ -8,4 +8,5 @@ public class Div extends Instruction{
 		this.arg3 = arg3;
 		this.text = "div " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

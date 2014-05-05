@@ -8,4 +8,5 @@ public class Movne extends Instruction{
 		this.arg3 = null;
 		this.text = "movne " + arg1 + ", " + arg2;
 	}
+
 }

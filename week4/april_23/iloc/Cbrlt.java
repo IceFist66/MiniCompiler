@@ -8,4 +8,5 @@ public class Cbrlt extends Instruction{
 		this.arg3 = arg3;
 		this.text = "cbrlt " + arg1 + ", " + arg2 + ", " + arg3;
 	}
+
 }

@@ -8,4 +8,5 @@ public class Computeformaladdress extends Instruction{
 		this.arg3 = null;
 		this.text = "computeformaladdress " + arg1 + " => " + arg2;
 	}
+
 }

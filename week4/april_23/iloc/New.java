@@ -8,4 +8,5 @@ public class New extends Instruction{
 		this.arg3 = null;
 		this.text = "new " + arg1 + " => " + arg2;
 	}
+
 }

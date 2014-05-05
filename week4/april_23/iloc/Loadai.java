@@ -8,4 +8,5 @@ public class Loadai extends Instruction{
 		this.arg3 = arg3;
 		this.text = "loadai " + arg1 + ", " + arg2 + " => " + arg3;
 	}
+
 }

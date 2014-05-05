@@ -8,4 +8,5 @@ public class Movgt extends Instruction{
 		this.arg3 = null;
 		this.text = "movgt " + arg1 + ", " + arg2;
 	}
+
 }
