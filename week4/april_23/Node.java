@@ -182,14 +182,14 @@ public class Node {
 		ArrayList<String> edges; 
 		String edge;
 
-      System.out.println("NodeType(head) = " + nodeType);
+      //System.out.println("NodeType(head) = " + nodeType);
 		edges = new ArrayList<String>();
 		fileName = "cfg_" + funcName + ".dot";
 		f = new FileWriter(new File(fileName));
 		f.write("Digraph G {\n");
 		f.write(labelNode(this));
 		for (Node s : succNodes) {
-		   System.out.println("NodeType(not head) = " + s.getNodeType());
+		   //System.out.println("NodeType(not head) = " + s.getNodeType());
 			f.write(labelNode(s));
 			edge = id + " -> " + s.id + ";\n";
 			edges.add(edge);
@@ -223,15 +223,15 @@ public class Node {
 		String edge;		
 		
 		if (n.getNodeType() == NodeType.IF || n.getNodeType() == NodeType.WHILE) {
-		   System.out.println("if or while");
+		   //System.out.println("if or while");
 			Node thenNode = n.getSuccNodes().get(0);
-			System.out.println("Then node = " + thenNode.getNodeType());
+			//System.out.println("Then node = " + thenNode.getNodeType());
 			Node elseNode = null;
 			if (n.getSuccNodes().size() == 2) {
 			   elseNode = n.getSuccNodes().get(1);
-			   System.out.println("2");
+			   //System.out.println("2");
 			} else
-			   System.out.println("no else statement");	
+			   //System.out.println("no else statement");	
 			if (n.getSuccNodes().size() > 2)
 			   System.out.println("Warning: control statement has more than two children!");			   
 			f.write(labelNode(thenNode));
@@ -239,7 +239,7 @@ public class Node {
 			edges.add(edgeTrue);
 			printNode(thenNode, f, edges);
 			if (elseNode != null) {			   
-			   System.out.println("Else node = " + elseNode.getNodeType());
+			   //System.out.println("Else node = " + elseNode.getNodeType());
 			   f.write(labelNode(elseNode));
 			   String edgeFalse = n.getId() + " -> " + elseNode.getId() + " [label = \"false\"];\n";
 			   edges.add(edgeFalse);
@@ -248,13 +248,13 @@ public class Node {
 		} else {
 			for (Node s : n.getSuccNodes()) {			
 			   if (n.getNodeType() == NodeType.WHILE_BODY) {
-		         System.out.println("while-body");
+		         //System.out.println("while-body");
 			      //String backEdge = n.getId() + " -> " + n.getBackEdgeTarget().getId() + ";\n";
 			      String backEdge = n.getId() + " -> " + n.getBackEdgeTarget().getId() + " [label = \"true\"];\n";
 			      edges.add(backEdge);
-			      System.out.println("added backedge");
+			      //System.out.println("added backedge");
 		      }			
-		      System.out.println("node type = " + s.getNodeType());
+		      //System.out.println("node type = " + s.getNodeType());
 			   f.write(labelNode(s));
 			   if (n.getNodeType() == NodeType.WHILE_BODY)
 			      edge = n.getId() + " -> " + s.getId() + " [label = \"false\"];\n";

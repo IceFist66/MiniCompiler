@@ -91,6 +91,11 @@ expression [Node predNode] returns [Node n = predNode]
    |FALSE
    |INTEGER
    |id=ID
+    {
+        Mov newMov = new Mov($id.text, "r"+registerCounter++);
+        System.out.println(newMov.toString());
+        $n.getInstructions().add(newMov);
+    }
    |ENDL
    |NULL
    |node = stmts[predNode]
@@ -281,8 +286,10 @@ stmt [Node predNode] returns [Node n = predNode]
     
         {
           Node newPredNode;
-          Ret newReturn = new Ret();
-          System.out.println(newReturn.toString());
+          Ret newRet = new Ret();
+          System.out.println(newRet.toString());
+          $n.getInstructions().add(newRet);
+
           if(current == null){
               newPredNode = predNode;
           }
@@ -404,7 +411,7 @@ construct [StructTypes stypes, SymbolTable stable]
         functions = new ArrayList<Node>();
         funcNames = new ArrayList<String>();
         currentIDNum = 0;
-        printNodeAdds = true;
+        printNodeAdds = false;
         printMini = false;
     }
    : ^(PROGRAM (types) decls funcs)
