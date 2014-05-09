@@ -337,6 +337,8 @@ stmt [Node predNode] returns [Node n = predNode]
 
           newPredNode.getSuccNodes().add(last);
           last.getPredNodes().add(newPredNode);
+          Ret newRet = new Ret();
+          last.getInstructions().add(newRet);
           $n = last; 
         }
                    
@@ -404,6 +406,8 @@ fun:
         Node firstBlock = new Node(NodeType.BLOCK, (currentIDNum++), "Block");
         head.getSuccNodes().add(firstBlock);
         firstBlock.getPredNodes().add(head);
+        Jumpi newJumpi = new Jumpi("L"+firstBlock.getId());
+        head.getInstructions().add(newJumpi);
         last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
         if (printNodeAdds)
            System.out.println("\nL" + head.getId() + " HEAD Node for function " + $id.text);

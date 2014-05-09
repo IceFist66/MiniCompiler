@@ -20,4 +20,4 @@ antlr.generated.control : Control.g
 	touch antlr.generated.control
 
 clean:
-	\rm *generated* MiniParser.java MiniLexer.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class *.dot
+	\rm *generated* MiniParser.java MiniLexer.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class *.dot *.il

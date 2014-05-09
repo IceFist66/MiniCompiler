@@ -212,9 +212,14 @@ public class Node {
 			shape = "diamond";
 		else
 			shape = "box";
+	   String body = "\\n";
+	   for (Instruction i : n.getInstructions()) {
+	      body = body + i.toString() + "\\l";     
+	   }
 		return n.id + " [label = \"" + "L" + n.id + " "//n.id.replace('s', ' ').trim() 
 				//+ "\\n" + domSetToString(n) + "\\n"
-				+ n.text //+ "\\n" + n.instructions.get(0).toString()
+				//+ n.text 
+				+ body//+ "\\n" + n.instructions.get(0).toString()
 				//+ liveOutSetToString(n)
 				+ "\", shape = " + shape + "];\n";
 	}
@@ -278,14 +283,20 @@ public class Node {
         FileWriter f;
 		String fileName;
 
-		fileName = funcName + ".il";
+		fileName = "il_" + funcName + ".il";
 		f = new FileWriter(new File(fileName));
-        System.out.println(fileName);
-        String line = "L" + this.id + ":\n";
+      System.out.println(fileName);
+      String line = "L" + this.id + ":\n";
 		f.write(line);
-        System.out.print(line);
-        ArrayList<Instruction> instructions;
-		for (Node s : this.succNodes) {
+      System.out.print(line);
+      ArrayList<Instruction> instructions = this.getInstructions();
+      for(Instruction inst : instructions){
+         line = "\t" + inst.toString() + "\n";
+         f.write(line);
+         System.out.print(line);
+      }
+      nodeToString(this, f);
+/*		for (Node s : this.succNodes) {   
             line = "L" + s.id + ":\n";
 			f.write(line);
             System.out.print(line);
@@ -295,11 +306,24 @@ public class Node {
                 f.write(line);
                 System.out.print(line);
             }
-		}
+		}*/
 		f.close();
     }
 
-    public String nodeToString(Node n){
-        return "L" + n.id;
+    public void nodeToString(Node n, FileWriter f) throws IOException {
+      ArrayList<Instruction> instructions;
+      for (Node s : n.succNodes) {
+         String line = "L" + s.id + ":\n";
+	   	f.write(line);
+         System.out.print(line);
+         instructions = s.getInstructions();
+         for(Instruction inst : instructions){
+            line = "\t" + inst.toString() + "\n";
+            f.write(line);
+            System.out.print(line);
+         }
+         nodeToString(s, f);
+		}    
+      return;
     }
 }
