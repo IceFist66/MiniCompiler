@@ -214,7 +214,7 @@ public class Node {
 			shape = "box";
 		return n.id + " [label = \"" + "L" + n.id + " "//n.id.replace('s', ' ').trim() 
 				//+ "\\n" + domSetToString(n) + "\\n"
-				+ n.text + "\\n"
+				+ n.text //+ "\\n" + n.instructions.get(0).toString()
 				//+ liveOutSetToString(n)
 				+ "\", shape = " + shape + "];\n";
 	}

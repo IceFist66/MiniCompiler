@@ -424,7 +424,7 @@ construct [StructTypes stypes, SymbolTable stable]
             n.printCFGtoDotFile(name); 
             System.out.println("finished " + name);
          } catch (Exception e) {
-           
+           System.out.println("Unable to complete DOT file");
          }        
       }
     }
