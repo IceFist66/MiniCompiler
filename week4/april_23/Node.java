@@ -216,6 +216,7 @@ public class Node {
 	   for (Instruction i : n.getInstructions()) {
 	      body = body + i.toString() + "\\l";     
 	   }
+	   shape = "box"; // set all shapes to box
 		return n.id + " [label = \"" + "L" + n.id + " "//n.id.replace('s', ' ').trim() 
 				//+ "\\n" + domSetToString(n) + "\\n"
 				//+ n.text 

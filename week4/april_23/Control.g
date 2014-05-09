@@ -212,6 +212,8 @@ stmt [Node predNode] returns [Node n = predNode]
             if(th.getNodeType() != NodeType.EXIT){
                 th.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(th);
+                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
+                th.getInstructions().add(newJumpi);
                 if (printNodeAdds) {
                   System.out.println("jump from L" + thenBlock.getId() + " to L" 
                    + ifJoin.getId() + " (ifJoin)"); 
@@ -239,6 +241,8 @@ stmt [Node predNode] returns [Node n = predNode]
             if(el.getNodeType() != NodeType.EXIT){
                 el.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(el);
+                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
+                el.getInstructions().add(newJumpi);
                 if (printNodeAdds) {
                     System.out.println("jump to L" + ifJoin.getId() + " (ifJoin)");
                     System.out.println("L" + ifJoin.getId() + " IF_JOIN");
