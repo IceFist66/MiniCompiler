@@ -77,6 +77,7 @@ public class SymbolTable {
 			values = func.keySet();
 			for(String name: values){
 				Variable v = getVariable(scope, name);
+				System.out.println("VARTYPE = " + v.getVarType());
 				if(v == null){
 					System.out.println("In scope: " + scope + ", " + name + " has type: null");
 				}

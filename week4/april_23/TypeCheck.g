@@ -91,7 +91,11 @@ decllist[String scope]:
     
     {    
       if (v!=null) {
-         g_stable.addSymbol(scope, $id.text, v); 
+         if (scope.equals("global"))
+            v.setVarType(Scope.GLOBAL);
+         else
+            v.setVarType(Scope.LOCAL);
+         g_stable.addSymbol(scope, $id.text, v);
          System.out.println("Added symbol " + $id.text + " to the table with scope " + scope);
     	   Variable tt1 = g_stable.getVariable(scope, $id.text);
 		   if (tt1 == null)
@@ -166,6 +170,7 @@ fun [String scope]:
     {
         var.setIsFunc(true);
         var.setNumParam(num);
+        var.setVarType(Scope.FUNCTION);
         g_stable.addSymbol(scope, $id.text, var);
     } decls[$id.text] stmts)
 ;
@@ -175,6 +180,7 @@ params [String scope] returns [int i = 0]:
     {
         /*System.out.println("Get Param name: "+ v.getName());
         System.out.println("Get Param struct_type: "+ v.getStructType());*/
+        v.setVarType(Scope.PARAMETER);
         g_stable.addSymbol(scope, v.getName(), v);
         System.out.println("Symbol " + v.getName() + " was added to " + scope);
         j++;

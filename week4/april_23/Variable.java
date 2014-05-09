@@ -1,12 +1,15 @@
+import java.util.ArrayList;
+
 public class Variable {
 	private Type type;
     private boolean isFunc;
 	private String name; // name of variable (needed when building struct definitions)
 	private String variableScope; // name of function in which variable is declared
 	private int num_param;
-	private String[] parameters;
+	private ArrayList<String> parameters;
 	private String structType;
 	private String structTypeScope;	// name of function in which struct is declared
+	private Scope varType;
 
 	// used for INTs and BOOLs
 	public Variable(Type type, String scope) {
@@ -16,7 +19,7 @@ public class Variable {
 		this.num_param = -1;
 		this.parameters = null;
 		this.structType = null;
-		this.structTypeScope = null;
+		this.structTypeScope = null;	   
 	}
 
 	// used for functions
@@ -25,7 +28,7 @@ public class Variable {
         this.isFunc = true;
 		this.variableScope = scope;
 		this.num_param = num_param;
-		this.parameters = new String[num_param];
+		this.parameters = new ArrayList<String>();//new String[num_param];
 		this.structType = null;
 		this.structTypeScope = null;
 	}
@@ -41,10 +44,13 @@ public class Variable {
 		this.structTypeScope = structTypeScope;
 	}
 
-	public void addParam(int index, String parameter) {
-		if (this.parameters != null && index < this.parameters.length) {
+	public void addParam(String parameter) {
+	   if (this.parameters != null)
+	      parameters.add(parameter);
+	
+	/*	if (this.parameters != null && index < this.parameters.length) {
 			this.parameters[index] = parameter;
-		}
+		}*/
 	}
 
 	public String getName() {
@@ -89,5 +95,13 @@ public class Variable {
 
     public void setNumParam(int num){
         this.num_param = num;
+    }
+    
+    public Scope getVarType() {
+        return this.varType;
+    }
+    
+    public void setVarType(Scope varType) {
+      this.varType = varType;
     }
 }
