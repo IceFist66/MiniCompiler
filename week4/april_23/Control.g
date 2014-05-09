@@ -332,6 +332,9 @@ stmt [Node predNode] returns [Node n = predNode]
           Storeret newStoreret = new Storeret("r"+(registerCounter-1));
           newPredNode.getInstructions().add(newStoreret);
 
+          Jumpi newJumpi = new Jumpi("L"+last.getId());
+          newPredNode.getInstructions().add(newJumpi);
+
           newPredNode.getSuccNodes().add(last);
           last.getPredNodes().add(newPredNode);
           $n = last; 
@@ -415,6 +418,8 @@ fun:
         if (current.getNodeType() != NodeType.EXIT) {
            current.getSuccNodes().add(last);
            last.getPredNodes().add(current);
+           Ret newRet = new Ret();
+           last.getInstructions().add(newRet);
         }
         
         
