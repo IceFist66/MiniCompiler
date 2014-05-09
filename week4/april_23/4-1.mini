@@ -1,0 +1,33 @@
+fun main() int
+{
+   struct A a;
+   int i, j, k;
+   bool b;
+      int h;
+   {
+      i = --2;
+      if (i < g(1,null))
+      {
+         print 1;
+      }
+
+      if (i > g(1,null))
+      {
+         print 1;
+      }
+      else
+      {
+         print 3 endl;
+      }
+      while (true)
+      {
+         print 7;
+      }
+      f(g(1,new B),new B);
+      print 1;
+      bar(new B, g(1,new B));
+      print 2;
+      print f(g(1,new B),new B).i endl;
+   }
+   return 0;
+}
