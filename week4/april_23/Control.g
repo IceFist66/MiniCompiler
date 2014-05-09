@@ -71,12 +71,24 @@ expression [Node predNode] returns [Node n = predNode]
    |^(GT expression[predNode] expression[predNode])
    |^(LE expression[predNode] expression[predNode])
    |^(GE expression[predNode] expression[predNode])
-   |^(PLUS expression[predNode] expression[predNode])
+   |^(PLUS expression[predNode] {int reg1 = registerCounter-1;} expression[predNode] 
+    {
+        Add newAdd = new Add("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
+        $n.getInstructions().add(newAdd);
+    })
    |^(MINUS expression[predNode] expression[predNode])
-   |^(TIMES expression[predNode] expression[predNode])
+   |^(TIMES expression[predNode] {int reg1 = registerCounter-1;} expression[predNode]
+    {
+        Mult newMult = new Mult("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
+        $n.getInstructions().add(newMult);
+    })
    |^(DIVIDE expression[predNode] expression[predNode])
    |^(NOT expression[predNode])
-   |^(NEW ID)
+   |^(NEW id=ID)
+    {
+        New newNew = new New($id.text, "r"+registerCounter++);
+        $n.getInstructions().add(newNew);
+    }
    |^(DOT expression[predNode] expression[predNode])
    |^(INVOKE id=ID
       {
@@ -87,17 +99,37 @@ expression [Node predNode] returns [Node n = predNode]
    
    
    
-   |TRUE
-   |FALSE
-   |INTEGER
+   |tr=TRUE
+    {
+        Mov newMov = new Mov($tr.text, "r"+registerCounter++);
+        $n.getInstructions().add(newMov);
+    }
+   |fa=FALSE
+    {
+        Mov newMov = new Mov($fa.text, "r"+registerCounter++);
+        $n.getInstructions().add(newMov);
+    }
+   |inte=INTEGER
+    {
+        Mov newMov = new Mov($inte.text, "r"+registerCounter++);
+        $n.getInstructions().add(newMov);
+    }
    |id=ID
     {
         Mov newMov = new Mov($id.text, "r"+registerCounter++);
-        System.out.println(newMov.toString());
+        //System.out.println(newMov.toString());
         $n.getInstructions().add(newMov);
     }
-   |ENDL
+   |en=ENDL
+    {
+        Mov newMov = new Mov("endl", "r"+registerCounter++);
+        $n.getInstructions().add(newMov);
+    }
    |NULL
+    {
+        Mov newMov = new Mov("null", "r"+registerCounter++);
+        $n.getInstructions().add(newMov);
+    }
    |node = stmts[predNode]
     {
         $n = node;
@@ -286,9 +318,6 @@ stmt [Node predNode] returns [Node n = predNode]
     
         {
           Node newPredNode;
-          Ret newRet = new Ret();
-          System.out.println(newRet.toString());
-          $n.getInstructions().add(newRet);
 
           if(current == null){
               newPredNode = predNode;
@@ -299,6 +328,10 @@ stmt [Node predNode] returns [Node n = predNode]
           if (printNodeAdds){
              System.out.println("RETURN: jump to L" + last.getId());
           }
+
+          Storeret newStoreret = new Storeret("r"+(registerCounter-1));
+          newPredNode.getInstructions().add(newStoreret);
+
           newPredNode.getSuccNodes().add(last);
           last.getPredNodes().add(newPredNode);
           $n = last; 
@@ -420,9 +453,10 @@ construct [StructTypes stypes, SymbolTable stable]
       for (Node n : functions) { 
          try {        
             String name = funcNames.get(count++);
-            System.out.println("started " + name);
+            //System.out.println("started " + name);
             n.printCFGtoDotFile(name); 
-            System.out.println("finished " + name);
+            n.printCFGtoFile(name);
+            //System.out.println("finished " + name);
          } catch (Exception e) {
            System.out.println("Unable to complete DOT file");
          }        

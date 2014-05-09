@@ -273,4 +273,33 @@ public class Node {
 	    ArrayList<String> res = new ArrayList<String>(set);
 	    return res;
 	}
+
+    public void printCFGtoFile(String funcName) throws IOException {
+        FileWriter f;
+		String fileName;
+
+		fileName = funcName + ".il";
+		f = new FileWriter(new File(fileName));
+        System.out.println(fileName);
+        String line = "L" + this.id + ":\n";
+		f.write(line);
+        System.out.print(line);
+        ArrayList<Instruction> instructions;
+		for (Node s : this.succNodes) {
+            line = "L" + s.id + ":\n";
+			f.write(line);
+            System.out.print(line);
+            instructions = s.getInstructions();
+            for(Instruction inst : instructions){
+                line = "\t" + inst.toString() + "\n";
+                f.write(line);
+                System.out.print(line);
+            }
+		}
+		f.close();
+    }
+
+    public String nodeToString(Node n){
+        return "L" + n.id;
+    }
 }
