@@ -84,11 +84,23 @@ public class SymbolTable {
 				else if(v.getType() == Type.STRUCT){
 				   if(v.isFunc()){
 					   System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString() + " " + v.getStructType() + " is a function with " + v.getNumParam() + " parameters.");
+                       if(v.getParams().size() > 0){
+                            System.out.println("The Parameters are: ");
+                            for(String s: v.getParams()){
+                                System.out.println("\t"+s);
+                            }
+                       }
 				   } else
 					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString() + " " + v.getStructType());
 				}
 				else if(v.isFunc()){
 					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString() + " is a function with " + v.getNumParam() + " parameters.");
+                    if(v.getParams().size() > 0){
+                        System.out.println("The Parameters are: ");
+                        for(String s: v.getParams()){
+                            System.out.println("\t"+s);
+                        }
+                    }
 				}
 				else{
 					System.out.println("In scope: " + scope + ", " + name + " has type: " + v.getType().toString());
@@ -96,5 +108,25 @@ public class SymbolTable {
 			}
 		}
 	}
+
+    public void gatherParams(){
+        Set<String> scopes = this.hashmap.keySet();
+		HashMap<String, Variable> func;
+		Set<String> values;
+		for(String scope: scopes){
+			func = this.hashmap.get(scope);
+			values = func.keySet();
+			for(String name: values){
+                Variable v = getVariable(scope, name);
+                if(v.getVarType() == Scope.PARAMETER){
+                    //get variable from global called 'scope'
+                    Variable temp = this.hashmap.get("global").get(scope);
+                    //save in arraylist this variable name
+                    temp.addParam(name);
+                    System.out.println("GATHER PARAMS: " +name+ " added to value " +scope+ " in global");
+                }
+            }
+        }
+    }
 
 }

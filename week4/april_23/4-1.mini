@@ -6,7 +6,7 @@ fun main() int
    {
       i = 3;
       j = 4;
-      k = i + j;
+      k = i + j + 3;
    }
    return 0;
 }

@@ -62,7 +62,6 @@ decls:
 decllist:
     ^(DECLLIST type ID*)
 ;
-
 expression [Node predNode] returns [Node n = predNode]
    :^(AND expression[predNode] expression[predNode])
    |^(OR expression[predNode] expression[predNode])

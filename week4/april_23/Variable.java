@@ -87,6 +87,9 @@ public class Variable {
 
     public void setIsFunc(boolean newIsFunc){
         this.isFunc = newIsFunc;
+        if(newIsFunc && this.parameters == null){
+            this.parameters = new ArrayList<String>();
+        }
     }
 
     public boolean isFunc() {
@@ -103,5 +106,9 @@ public class Variable {
     
     public void setVarType(Scope varType) {
       this.varType = varType;
+    }
+
+    public ArrayList<String> getParams(){
+        return this.parameters;
     }
 }

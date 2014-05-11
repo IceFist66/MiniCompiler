@@ -196,6 +196,7 @@ rettype[String scope] returns [Variable v = null]:
 verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
     ^(PROGRAM types["global"] decls["global"] funcs["global"])
     { System.out.println("Successfully walked Program tree."); 
+      stable.gatherParams();
       stable.getAll();
     }
 ;
