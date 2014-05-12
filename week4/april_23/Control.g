@@ -25,7 +25,28 @@ options
     boolean printNodeAdds;
     boolean printMini;
     Node last;
+    HashMap<String, String> globalRegisterMap; // this is set once at the start
+    HashMap<String, String> localRegisterMap; // this is set anew for every function
     private int registerCounter = 0;
+    
+    public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames) {
+      HashMap<String, String> registerMap = new HashMap<String, String>();
+      for(String variableName : variableNames) {
+         registerMap.put(variableName, "r" + registerCounter);
+         System.out.println("Assigned variable " + variableName + " to register " + "r" + registerCounter);
+         registerCounter++;
+      }
+      return registerMap;
+    }
+    
+    public String getRegister(String variable) {
+      if (localRegisterMap.containsKey(variable))
+         return localRegisterMap.get(variable);
+      else if (globalRegisterMap.containsKey(variable))
+         return globalRegisterMap.get(variable);
+      else
+         return "ERROR";
+    }
 }
 
 error:
@@ -72,6 +93,17 @@ expression [Node predNode] returns [Node n = predNode]
    |^(GE expression[predNode] expression[predNode])
    |^(PLUS expression[predNode] {int reg1 = registerCounter-1;} expression[predNode] 
     {
+        int numI = $n.getInstructions().size();
+        if ($n.getInstructions().get(numI - 1) instanceof Mov) {
+            System.out.println("Instruction #" + (numI - 1) + " = Mov");
+            // get arg1 of this Mov and if it's an id, get its register in the registerMap
+            }
+        if ($n.getInstructions().get(numI - 2) instanceof Mov) {
+            System.out.println("Instruction #" + (numI - 2) + " = Mov");
+            // get arg2 of this Mov and if it's an id, get its register in the registerMap
+            }
+        // right now this newAdd is incorrect - use the information from the previous two Mov
+        // instructions to build the correct Add instruction
         Add newAdd = new Add("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
         $n.getInstructions().add(newAdd);
     })
@@ -115,7 +147,7 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |id=ID
     {
-        Mov newMov = new Mov($id.text, "r"+registerCounter++);
+        Mov newMov = new Mov($id.text, getRegister($id.text));
         //System.out.println(newMov.toString());
         $n.getInstructions().add(newMov);
     }
@@ -405,6 +437,10 @@ fun:
       {
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
         functions.add(head);
+        head.setLocals(g_stable.gatherVariablesInScope($id.text));
+        head.setRegisterMap(buildRegisterMap(head.getLocals()));
+        localRegisterMap = head.getRegisterMap(); 
+        System.out.println("After mapping vars for function " + $id.text + ", the reg count is " + registerCounter);
         funcNames.add($id.text);
         Node firstBlock = new Node(NodeType.BLOCK, (currentIDNum++), "Block");
         head.getSuccNodes().add(firstBlock);
@@ -458,6 +494,9 @@ construct [StructTypes stypes, SymbolTable stable]
         currentIDNum = 0;
         printNodeAdds = false;
         printMini = false;
+        ArrayList<String> globals = g_stable.gatherVariablesInScope("global");
+        globalRegisterMap = buildRegisterMap(globals);
+        System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }
    : ^(PROGRAM (types) decls funcs)
    { System.out.println("Successfully completed Control.g.");

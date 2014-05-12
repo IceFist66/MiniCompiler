@@ -110,7 +110,7 @@ public class SymbolTable {
 	}
 
     public void gatherParams(){
-        Set<String> scopes = this.hashmap.keySet();
+      Set<String> scopes = this.hashmap.keySet();
 		HashMap<String, Variable> func;
 		Set<String> values;
 		for(String scope: scopes){
@@ -127,6 +127,25 @@ public class SymbolTable {
                 }
             }
         }
+    }
+    
+    // returns a list of all variable names for a given scope (e.g., "global," "foo," etc.)
+    public ArrayList<String> gatherVariablesInScope(String scope) {      
+		ArrayList<String> variables = new ArrayList<String>(); 
+		HashMap<String, Variable> varsHashMap = hashmap.get(scope);
+		Set<String> gatheredVariables = varsHashMap.keySet();
+		Variable v;
+		
+		// remove function names from the list (these won't be assigned registers)		
+		for (String name : gatheredVariables) {
+		   v = varsHashMap.get(name);
+		   if (v.isFunc() == false) {
+		      variables.add(name);
+		      System.out.println("Added variable " + name + " in scope " + scope);
+		   }
+      }      
+		   
+      return variables;    
     }
 
 }

@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import iloc.Instruction;
@@ -10,7 +11,6 @@ import iloc.Instruction;
 public class Node {
 	private int id;
 	private NodeType nodeType;
-	//private AST.Statement command;
 	private String text;
 	private ArrayList<Node> predNodes;
 	private ArrayList<Node> succNodes;
@@ -20,71 +20,21 @@ public class Node {
 	private ArrayList<String> killSet;
 	private ArrayList<String> liveOut;
 	private ArrayList<String> locals; // holds id of params and locals passed into function
+	private HashMap<String, String> registerMap;
 	private Node backEdgeTarget;
 	
-	public Node (NodeType nodeType, int id, /*AST.Statement command,*/ String text, ArrayList<Node> predNodes, ArrayList<Node> succNodes) {
+	public Node (NodeType nodeType, int id, String text) {
 		this.id = id;
 		this.nodeType = nodeType;
-		//this.command = command;
 		this.text = text;
-		this.predNodes = predNodes;
-		this.succNodes = succNodes;
-		//this.domSet = new ArrayList<Node>();
+		this.predNodes = new ArrayList<Node>();
+		this.succNodes = new ArrayList<Node>();
 		this.instructions = new ArrayList<Instruction>();
 		this.genSet = new ArrayList<String>();
 		this.killSet = new ArrayList<String>();
 		this.liveOut = new ArrayList<String>();
 		this.locals = new ArrayList<String>();
-		backEdgeTarget = null;
-	}
-	
-	public Node (NodeType nodeType, int id, /*AST.Statement command,*/ String text, Node predNode, Node succNode) {
-		this.id = id;
-		this.nodeType = nodeType;
-		//this.command = command;
-		this.text = text;
-		this.predNodes = new ArrayList<Node>();
-		this.succNodes = new ArrayList<Node>();
-		//this.domSet = new ArrayList<Node>();
-		this.genSet = new ArrayList<String>();
-		this.killSet = new ArrayList<String>();
-		this.liveOut = new ArrayList<String>();
-		this.locals = new ArrayList<String>();
-		predNodes.add(predNode);
-		succNodes.add(succNode);
-		backEdgeTarget = null;
-	}
-	
-	public Node (NodeType nodeType, int id,/*AST.Statement command,*/ String text, Node predNode) {
-		this.id = id;
-		this.nodeType = nodeType;
-		//this.command = command;
-		this.text = text;
-		this.predNodes = new ArrayList<Node>();
-		this.succNodes = new ArrayList<Node>();
-		//this.domSet = new ArrayList<Node>();
-	   this.instructions = new ArrayList<Instruction>();
-		this.genSet = new ArrayList<String>();
-		this.killSet = new ArrayList<String>();
-		this.liveOut = new ArrayList<String>();
-		this.locals = new ArrayList<String>();
-		predNodes.add(predNode);
-		backEdgeTarget = null;
-	}
-	
-	public Node (NodeType nodeType, int id,/*AST.Statement command,*/ String text) {
-		this.id = id;
-		this.nodeType = nodeType;
-		//this.command = command;
-		this.text = text;
-		this.predNodes = new ArrayList<Node>();
-		this.succNodes = new ArrayList<Node>();
-		//this.domSet = new ArrayList<Node>();
-		this.instructions = new ArrayList<Instruction>();
-		this.genSet = new ArrayList<String>();
-		this.killSet = new ArrayList<String>();
-		this.liveOut = new ArrayList<String>();
-		this.locals = new ArrayList<String>();
+		this.registerMap = new HashMap<String, String>();
 		backEdgeTarget = null;
 	}
 	
@@ -174,6 +124,14 @@ public class Node {
 
 	public void setBackEdgeTarget(Node backEdgeTarget) {
 		this.backEdgeTarget = backEdgeTarget;
+	}
+	
+	public HashMap<String, String> getRegisterMap() {
+	   return this.registerMap;
+	}
+	
+	public void setRegisterMap(HashMap<String, String> registerMap) {
+	   this.registerMap = registerMap;
 	}
 	
 	public void printCFGtoDotFile(String funcName) throws IOException {
@@ -297,17 +255,6 @@ public class Node {
          System.out.print(line);
       }
       nodeToString(this, f);
-/*		for (Node s : this.succNodes) {   
-            line = "L" + s.id + ":\n";
-			f.write(line);
-            System.out.print(line);
-            instructions = s.getInstructions();
-            for(Instruction inst : instructions){
-                line = "\t" + inst.toString() + "\n";
-                f.write(line);
-                System.out.print(line);
-            }
-		}*/
 		f.close();
     }
 
@@ -327,4 +274,5 @@ public class Node {
 		}    
       return;
     }
+    
 }
