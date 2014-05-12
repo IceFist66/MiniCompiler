@@ -142,13 +142,12 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |inte=INTEGER
     {
-        Mov newMov = new Mov($inte.text, "r"+registerCounter++);
-        $n.getInstructions().add(newMov);
+        Loadi newLoadi = new Loadi($inte.text, "r" + registerCounter++);
+        $n.getInstructions().add(newLoadi);
     }
    |id=ID
     {
-        Mov newMov = new Mov($id.text, getRegister($id.text));
-        //System.out.println(newMov.toString());
+        Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
         $n.getInstructions().add(newMov);
     }
    |en=ENDL
@@ -168,9 +167,14 @@ expression [Node predNode] returns [Node n = predNode]
     }
 ;
 
-lvalue:
-   ^(DOT lvalue id=ID) 
-   |id=ID
+lvalue [Node predNode] returns [Node n = predNode]
+   : ^(DOT lvalue[predNode] id=ID) 
+   | id=ID
+      {
+         // need ability to get target of an instruction
+         Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
+         $n.getInstructions().add(newMov);
+      }
 ;
 
 stmt [Node predNode] returns [Node n = predNode]
@@ -209,7 +213,7 @@ stmt [Node predNode] returns [Node n = predNode]
             
           }
 
-    lvalue)
+    lvalue[predNode])
     
           
     
@@ -394,7 +398,10 @@ stmt [Node predNode] returns [Node n = predNode]
              System.out.println("assign");
           
         }
-    current=expression[predNode] lvalue
+    current=expression[predNode] lv=lvalue[current]
+        {
+          $n = lv;
+        }
     )
 ;
 
@@ -454,7 +461,22 @@ fun:
            System.out.println("L" + firstBlock.getId() + " start new Block ");        
       } 
       
-      params rettype decls current=stmts[firstBlock]
+      params 
+      
+      {
+         Variable f = g_stable.getVariable("global", $id.text);
+         int numP = f.getNumParam();
+         int count = 0;
+         System.out.println("numP = " + numP);
+         for (String p : f.getParams()) {
+            System.out.println(p);
+            Loadinargument lia = new Loadinargument(p, count + "", getRegister(p));
+            firstBlock.getInstructions().add(lia);
+            count++;
+         }
+      }
+      
+      rettype decls current=stmts[firstBlock]
     
       {   
         System.out.println("current node type = " + current.getNodeType());

@@ -1,9 +1,10 @@
-fun main() int
+fun main(int ke) int
 {
    int i, j, k;
    bool b;
-      int h;
+   int h;
    {
+      b = true;
       i = 3;
       j = 4;
       k = i + j + 3;
