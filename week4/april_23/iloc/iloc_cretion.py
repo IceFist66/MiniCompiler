@@ -5,7 +5,7 @@ Hope this helps.
 
 import sys
 
-def create_Class(name, size, text):
+def create_Class(name, size, text, target):
    new_name = name.capitalize()
    new_class = "package iloc;\n\n"
    new_class += "public class " + new_name + " extends Instruction{\n\n"
@@ -31,6 +31,7 @@ def create_Class(name, size, text):
    else:
        new_class +="\t\tthis.arg3 = null;\n"
    new_class +="\t\tthis.text = " + text + ";\n"
+   new_class +="\t\tthis.target = " + target + ";\n"
    new_class +="\t}\n\n"
    new_class +="}"
    return new_class
@@ -54,13 +55,14 @@ def main():
     while(i<len(content)):
         args = int(content[i+1])
         text = content[i+2].rstrip()
+        target = content[i+3].rstrip()
         classes = content[i].split()
         j = 0
         while(j<len(classes)):
             name = classes[j]
-            create_file(name, create_Class(name, args, string(name, text)))            
+            create_file(name, create_Class(name, args, string(name, text), target))            
             j+=1
-        i+=4
+        i+=5
 
 #print create_Class("add", 0, string("add", "arg1 + \", \" + arg2 + \" => \" + arg3"))
 

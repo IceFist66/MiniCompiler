@@ -7,6 +7,7 @@ public class Println extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "println " + arg1;
+		this.target = null;
 	}
 
 }

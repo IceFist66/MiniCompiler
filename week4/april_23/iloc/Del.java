@@ -7,6 +7,7 @@ public class Del extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "del " + arg1;
+		this.target = null;
 	}
 
 }

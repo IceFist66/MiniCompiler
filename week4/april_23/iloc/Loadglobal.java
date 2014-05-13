@@ -7,6 +7,7 @@ public class Loadglobal extends Instruction{
 		this.arg2 = arg2;
 		this.arg3 = null;
 		this.text = "loadglobal " + arg1 + " => " + arg2;
+		this.target = arg2;
 	}
 
 }

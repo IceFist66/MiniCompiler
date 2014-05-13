@@ -7,6 +7,7 @@ public class Print extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "print " + arg1;
+		this.target = null;
 	}
 
 }

@@ -7,6 +7,7 @@ public abstract class Instruction{
 	String arg2;
 	String arg3;
 	String text;
+    String target;
 	
 	public String toString(){
 		return this.text;
@@ -34,5 +35,9 @@ public abstract class Instruction{
 
     public void setArg3(String arg3){
         this.arg3=arg3;
+    }
+
+    public String getTarget(){
+        return this.target;
     }
 }

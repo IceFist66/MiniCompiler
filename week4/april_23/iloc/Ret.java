@@ -7,6 +7,7 @@ public class Ret extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "ret " + "";
+		this.target = null;
 	}
 
 }

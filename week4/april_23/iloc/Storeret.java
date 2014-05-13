@@ -7,6 +7,7 @@ public class Storeret extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "storeret " + arg1;
+		this.target = null;
 	}
 
 }

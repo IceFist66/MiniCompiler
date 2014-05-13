@@ -7,6 +7,7 @@ public class And extends Instruction{
 		this.arg2 = arg2;
 		this.arg3 = arg3;
 		this.text = "and " + arg1 + ", " + arg2 + " => " + arg3;
+		this.target = arg3;
 	}
 
 }

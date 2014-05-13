@@ -7,6 +7,7 @@ public class Loadret extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "loadret " + "=> " + arg1;
+		this.target = arg1;
 	}
 
 }

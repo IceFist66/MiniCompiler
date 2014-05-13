@@ -7,6 +7,7 @@ public class Call extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "call " + arg1;
+		this.target = null;
 	}
 
 }
