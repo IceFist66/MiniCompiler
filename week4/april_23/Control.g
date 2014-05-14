@@ -91,7 +91,16 @@ expression [Node predNode] returns [Node n = predNode]
    |^(GT expression[predNode] expression[predNode])
    |^(LE expression[predNode] expression[predNode])
    |^(GE expression[predNode] expression[predNode])
-   |^(PLUS expression[predNode] {int reg1 = registerCounter-1;} expression[predNode] 
+   |^(PLUS expression[predNode] 
+    
+      {
+      
+      //int reg1 = registerCounter-1;
+      
+      } 
+      
+    expression[predNode] 
+    
     {
         int numI = $n.getInstructions().size();
         if ($n.getInstructions().get(numI - 1) instanceof Mov) {
