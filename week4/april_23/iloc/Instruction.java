@@ -7,11 +7,11 @@ public abstract class Instruction{
 	String arg2;
 	String arg3;
 	String text;
-    String target;
+    	String target;
 	
-	public String toString(){
-		return this.text;
-	}
+    public String toString(){
+    	return this.text;
+    }
 
     public String getArg1(){
         return arg1;
