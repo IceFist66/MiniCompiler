@@ -1,0 +1,129 @@
+add_a
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+addi_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+div_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+mult_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+sub_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+rsubi_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+and_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+or_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+xori_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+comp_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+compi_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+loadai_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+loadinargument_a 
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+computeformaladdressa_a
+3
+arg1 + ", " + arg2 + " => " + arg3
+arg3
+
+cbreq_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+cbrge_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+bcrgt_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+cbrle_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+cbrlt_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+cbrne_a
+3
+arg1 + ", " + arg2 + ", " + arg3
+null
+
+jumpi storeret call del print println read
+1
+arg1
+null
+
+loadi loadglobal computeformaladdress storeglobal storeoutargument new
+2
+arg1 + " => " + arg2
+arg2
+
+loadret
+1
+"=> " + arg1
+arg1
+
+restoreformal mov moveq movge movgt movle movlt movne
+2
+arg1 + ", " + arg2
+null
+
+storeai storeinargument
+3
+arg1 + " => " + arg2 + ", " + arg3
+arg2  + " + " + arg3
+
+ret
+0
+""
+null
