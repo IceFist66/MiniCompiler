@@ -4,11 +4,11 @@ arg2 + " += " + arg1
 
 subq
 2
-arg2 + " += " + arg1
+arg2 + " -= " + arg1
 
 imulq
 2
-arg2 + " += " + arg1
+arg2 + " *= " + arg1
 
 idivq
 1
