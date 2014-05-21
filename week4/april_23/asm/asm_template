@@ -98,32 +98,127 @@ cbrne_a
 arg1 + ", " + arg2 + ", " + arg3
 null
 
-jumpi storeret call del print println read
+jumpi_a
 1
 arg1
 null
 
-loadi loadglobal computeformaladdress storeglobal storeoutargument new
+storeret_a
+1
+arg1
+null
+
+call_a
+1
+arg1
+null
+
+del_a
+1
+arg1
+null
+
+print_a
+1
+arg1
+null
+
+println_a
+1
+arg1
+null
+
+read_a
+1
+arg1
+null
+
+loadi_a
 2
 arg1 + " => " + arg2
 arg2
 
-loadret
+loadglobal_a
+2
+arg1 + " => " + arg2
+arg2
+
+computeformaladdress_a
+2
+arg1 + " => " + arg2
+arg2
+
+storeglobal_a
+2
+arg1 + " => " + arg2
+arg2
+
+storeoutargument_a
+2
+arg1 + " => " + arg2
+arg2
+
+new_a
+2
+arg1 + " => " + arg2
+arg2
+
+loadret_a
 1
 "=> " + arg1
 arg1
 
-restoreformal mov moveq movge movgt movle movlt movne
+restoreformal_a
 2
 arg1 + ", " + arg2
 null
 
-storeai storeinargument
+mov_a
+2
+arg1 + ", " + arg2
+null
+
+moveq_a
+2
+arg1 + ", " + arg2
+null
+
+movge_a
+2
+arg1 + ", " + arg2
+null
+
+movgt_a
+2
+arg1 + ", " + arg2
+null
+
+movle_a
+2
+arg1 + ", " + arg2
+null
+
+movlt_a
+2
+arg1 + ", " + arg2
+null
+
+movne_a
+2
+arg1 + ", " + arg2
+null
+
+storeai_a
 3
 arg1 + " => " + arg2 + ", " + arg3
 arg2  + " + " + arg3
 
-ret
+storeinargument_a
+3
+arg1 + " => " + arg2 + ", " + arg3
+arg2  + " + " + arg3
+
+ret_a
 0
 ""
 null

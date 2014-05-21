@@ -7,8 +7,8 @@ import sys
 
 def create_Class(name, size, text, target):
    new_name = name.capitalize()
-   new_class = "package iloc;\n\n"
-   new_class += "public class " + new_name + " extends Instruction{\n\n"
+   new_class = "package asm;\n\n"
+   new_class += "public class " + new_name + " extends Instruction_a{\n\n"
    new_class += "\tpublic " + new_name
    new_class += "("
    if(size >= 1):
@@ -44,6 +44,9 @@ def create_file(name, content):
     f = open(name.capitalize()+".java", "w")
     f.write(content)
     f.close()
+
+def make_asm(pointer):
+    null
 
 def main():
     if(len(sys.argv)<2):
