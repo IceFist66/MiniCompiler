@@ -1,224 +1,75 @@
-add_a
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
+addq
+2
+arg2 + " += " + arg1
 
-addi_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
+subq
+2
+arg2 + " += " + arg1
 
-div_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
+imulq
+2
+arg2 + " += " + arg1
 
-mult_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-sub_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-rsubi_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-and_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-or_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-xori_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-comp_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-compi_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-loadai_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-loadinargument_a 
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-computeformaladdressa_a
-3
-arg1 + ", " + arg2 + " => " + arg3
-arg3
-
-cbreq_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-cbrge_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-bcrgt_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-cbrle_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-cbrlt_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-cbrne_a
-3
-arg1 + ", " + arg2 + ", " + arg3
-null
-
-jumpi_a
+idivq
 1
-arg1
-null
+"rax = rdx:rax / " + arg1
 
-storeret_a
+andq
+2
+arg2 + " &= " + arg1
+
+orgq
+2
+arg2 + " |= " + arg1
+
+xorq
+2
+arg2 + " ^= " + arg1
+
+cmp
+2
+"tmp = " + arg2 + " - " + arg1
+
+jmp je jg jge jl jle jne
 1
-arg1
 null
 
-call_a
+movq
+2
+"move from " + arg1 + " to " + arg2;
+
+call
 1
-arg1
-null
+"call"
 
-del_a
-1
-arg1
-null
-
-print_a
-1
-arg1
-null
-
-println_a
-1
-arg1
-null
-
-read_a
-1
-arg1
-null
-
-loadi_a
-2
-arg1 + " => " + arg2
-arg2
-
-loadglobal_a
-2
-arg1 + " => " + arg2
-arg2
-
-computeformaladdress_a
-2
-arg1 + " => " + arg2
-arg2
-
-storeglobal_a
-2
-arg1 + " => " + arg2
-arg2
-
-storeoutargument_a
-2
-arg1 + " => " + arg2
-arg2
-
-new_a
-2
-arg1 + " => " + arg2
-arg2
-
-loadret_a
-1
-"=> " + arg1
-arg1
-
-restoreformal_a
-2
-arg1 + ", " + arg2
-null
-
-mov_a
-2
-arg1 + ", " + arg2
-null
-
-moveq_a
-2
-arg1 + ", " + arg2
-null
-
-movge_a
-2
-arg1 + ", " + arg2
-null
-
-movgt_a
-2
-arg1 + ", " + arg2
-null
-
-movle_a
-2
-arg1 + ", " + arg2
-null
-
-movlt_a
-2
-arg1 + ", " + arg2
-null
-
-movne_a
-2
-arg1 + ", " + arg2
-null
-
-storeai_a
-3
-arg1 + " => " + arg2 + ", " + arg3
-arg2  + " + " + arg3
-
-storeinargument_a
-3
-arg1 + " => " + arg2 + ", " + arg3
-arg2  + " + " + arg3
-
-ret_a
+ret
 0
-""
-null
+"ret"
+
+cmoveq
+2
+"move if" + arg1 + " = " + arg2
+
+cmovgq
+2
+"move if" + arg1 + " > " + arg2
+
+cmovgeq
+2
+"move if" + arg1 + " >= " + arg2
+
+cmovlq
+2
+"move if" + arg1 + " < " + arg2
+
+cmovleq
+2
+"move if" + arg1 + " <= " + arg2
+
+cmovneq
+2
+"move if" + arg1 + " != " + arg2
+
+shrq
+2
+"logical right shift " + arg1 + " times from " + arg2
