@@ -106,14 +106,13 @@ expression [Node predNode] returns [Node n = predNode]
    |^(GT expression[predNode] expression[predNode])
    |^(LE expression[predNode] expression[predNode])
    |^(GE expression[predNode] expression[predNode])
+   
    |^(PLUS n1=expression[predNode] 
-    
-      {
 
+      {
          String p1 = getLastTarget(n1);
-      
       } 
-      
+     
     n2 = expression[n1] 
     
       {
@@ -124,13 +123,62 @@ expression [Node predNode] returns [Node n = predNode]
       }
       
     )
-   |^(MINUS expression[predNode] expression[predNode])
-   |^(TIMES expression[predNode] {int reg1 = registerCounter-1;} expression[predNode]
-    {
-        Mult newMult = new Mult("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
-        $n.getInstructions().add(newMult);
-    })
-   |^(DIVIDE expression[predNode] expression[predNode])
+    
+   |^(MINUS n1=expression[predNode] 
+   
+      {
+         String m1 = getLastTarget(n1);      
+      } 
+   
+   n2=expression[predNode]
+   
+      {
+         String m2 = getLastTarget(n2);
+         Sub newSub = new Sub(m1, m2, "r" + registerCounter++);
+         n2.getInstructions().add(newSub);
+         $n = n2;
+      }
+   
+   )
+   
+   |^(TIMES 
+   
+   n1=expression[predNode]
+  
+      {
+        String m1 = getLastTarget(n1);
+      }
+      
+   n2=expression[predNode]
+   
+      {
+         String m2 = getLastTarget(n2);
+         Mult newMult = new Mult(m1, m2, "r" + registerCounter++);
+         n2.getInstructions().add(newMult);
+         $n = n2;
+      }
+    
+   )
+   
+   |^(DIVIDE 
+   
+   n1=expression[predNode] 
+   
+      {
+        String d1 = getLastTarget(n1);
+      }
+   
+   n2=expression[predNode]
+   
+      {
+         String d2 = getLastTarget(n2);
+         Div newDiv = new Div(d1, d2, "r" + registerCounter++);
+         n2.getInstructions().add(newDiv);
+         $n = n2;
+      }
+   
+   )
+   
    |^(NOT expression[predNode])
    |^(NEW id=ID)
     {
