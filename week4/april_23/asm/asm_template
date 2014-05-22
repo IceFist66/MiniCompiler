@@ -1,75 +1,75 @@
 addq
 2
-arg2 + " += " + arg1
+arg2 + " , " + arg1
 
 subq
 2
-arg2 + " -= " + arg1
+arg2 + " , " + arg1
 
 imulq
 2
-arg2 + " *= " + arg1
+arg2 + " , " + arg1
 
 idivq
 1
-"rax = rdx:rax / " + arg1
+arg1
 
 andq
 2
-arg2 + " &= " + arg1
+arg2 + " , " + arg1
 
 orgq
 2
-arg2 + " |= " + arg1
+arg2 + " , " + arg1
 
 xorq
 2
-arg2 + " ^= " + arg1
+arg2 + " , " + arg1
 
 cmp
 2
-"tmp = " + arg2 + " - " + arg1
+arg2 + " , " + arg1
 
 jmp je jg jge jl jle jne
 1
-null
+arg1
 
 movq
 2
-"move from " + arg1 + " to " + arg2;
+arg1 + " , " + arg2;
 
 call
 1
-"call"
+arg1
 
 ret
 0
-"ret"
+null
 
 cmoveq
 2
-"move if" + arg1 + " = " + arg2
+arg1 + " , " + arg2
 
 cmovgq
 2
-"move if" + arg1 + " > " + arg2
+arg1 + " , " + arg2
 
 cmovgeq
 2
-"move if" + arg1 + " >= " + arg2
+arg1 + " , " + arg2
 
 cmovlq
 2
-"move if" + arg1 + " < " + arg2
+arg1 + " , " + arg2
 
 cmovleq
 2
-"move if" + arg1 + " <= " + arg2
+arg1 + " , " + arg2
 
 cmovneq
 2
-"move if" + arg1 + " != " + arg2
+arg1 + " , " + arg2
 
 shrq
 2
-"logical right shift " + arg1 + " times from " + arg2
+arg1 + " , " + arg2
