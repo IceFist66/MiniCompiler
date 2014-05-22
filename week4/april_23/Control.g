@@ -91,18 +91,25 @@ expression [Node predNode] returns [Node n = predNode]
    |^(GT expression[predNode] expression[predNode])
    |^(LE expression[predNode] expression[predNode])
    |^(GE expression[predNode] expression[predNode])
-   |^(PLUS expression[predNode] 
+   |^(PLUS n1=expression[predNode] 
     
       {
+        int num1 = n1.getInstructions().size();
+        if (num1 > 0 && n1.getInstructions().get(num1 - 1) instanceof Mov) {
+         System.out.println("Instruction #" + (num1 - 1) + " = Mov");
+         String arg1 = n1.getInstructions().get(num1 - 1).getArg1();
+         System.out.println(arg1);
+         // get arg1 of this Mov and if it's an id, get its register in the registerMap
+         }
       
-      //int reg1 = registerCounter-1;
+      int reg1 = registerCounter-1;
       
       } 
       
-    expression[predNode] 
+    n2 = expression[predNode] 
     
     {
-        int numI = $n.getInstructions().size();
+        /*int numI = $n.getInstructions().size();
         if ($n.getInstructions().get(numI - 1) instanceof Mov) {
             System.out.println("Instruction #" + (numI - 1) + " = Mov");
             // get arg1 of this Mov and if it's an id, get its register in the registerMap
@@ -114,7 +121,7 @@ expression [Node predNode] returns [Node n = predNode]
         // right now this newAdd is incorrect - use the information from the previous two Mov
         // instructions to build the correct Add instruction
         Add newAdd = new Add("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
-        $n.getInstructions().add(newAdd);
+        $n.getInstructions().add(newAdd);*/
     })
    |^(MINUS expression[predNode] expression[predNode])
    |^(TIMES expression[predNode] {int reg1 = registerCounter-1;} expression[predNode]
@@ -410,6 +417,7 @@ stmt [Node predNode] returns [Node n = predNode]
     current=expression[predNode] lv=lvalue[current]
         {
           $n = lv;
+          // mov [lv mov target] = [current mov target]
         }
     )
 ;
