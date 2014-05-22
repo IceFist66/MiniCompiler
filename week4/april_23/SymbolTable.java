@@ -133,18 +133,19 @@ public class SymbolTable {
     public ArrayList<String> gatherVariablesInScope(String scope) {      
 		ArrayList<String> variables = new ArrayList<String>(); 
 		HashMap<String, Variable> varsHashMap = hashmap.get(scope);
-		Set<String> gatheredVariables = varsHashMap.keySet();
-		Variable v;
+		if (varsHashMap != null) {
+		   Set<String> gatheredVariables = varsHashMap.keySet();
+		   Variable v;
 		
-		// remove function names from the list (these won't be assigned registers)		
-		for (String name : gatheredVariables) {
-		   v = varsHashMap.get(name);
-		   if (v.isFunc() == false) {
-		      variables.add(name);
-		      System.out.println("Added variable " + name + " in scope " + scope);
-		   }
-      }      
-		   
+		   // remove function names from the list (these won't be assigned registers)		
+		   for (String name : gatheredVariables) {
+		      v = varsHashMap.get(name);
+		      if (v.isFunc() == false) {
+		         variables.add(name);
+		         System.out.println("Added variable " + name + " in scope " + scope);
+		      }
+         }      
+		}
       return variables;    
     }
 
