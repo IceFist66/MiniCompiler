@@ -47,6 +47,21 @@ options
       else
          return "ERROR";
     }
+    
+    public String getLastTarget(Node n) {
+      Instruction i;
+      int numC = n.getInstructions().size();
+      if (numC > 0) {
+         i = n.getInstructions().get(numC - 1);
+         if (i instanceof Mov && i.getArg1().equals(i.getTarget()))
+            n.getInstructions().remove(numC - 1);
+         return i.getTarget();
+      }
+      else {
+         System.out.println("no instruction!");
+         return "no instruction!";
+      }
+    }
 }
 
 error:
@@ -94,35 +109,21 @@ expression [Node predNode] returns [Node n = predNode]
    |^(PLUS n1=expression[predNode] 
     
       {
-        int num1 = n1.getInstructions().size();
-        if (num1 > 0 && n1.getInstructions().get(num1 - 1) instanceof Mov) {
-         System.out.println("Instruction #" + (num1 - 1) + " = Mov");
-         String arg1 = n1.getInstructions().get(num1 - 1).getArg1();
-         System.out.println(arg1);
-         // get arg1 of this Mov and if it's an id, get its register in the registerMap
-         }
-      
-      int reg1 = registerCounter-1;
+
+         String p1 = getLastTarget(n1);
       
       } 
       
-    n2 = expression[predNode] 
+    n2 = expression[n1] 
     
-    {
-        /*int numI = $n.getInstructions().size();
-        if ($n.getInstructions().get(numI - 1) instanceof Mov) {
-            System.out.println("Instruction #" + (numI - 1) + " = Mov");
-            // get arg1 of this Mov and if it's an id, get its register in the registerMap
-            }
-        if ($n.getInstructions().get(numI - 2) instanceof Mov) {
-            System.out.println("Instruction #" + (numI - 2) + " = Mov");
-            // get arg2 of this Mov and if it's an id, get its register in the registerMap
-            }
-        // right now this newAdd is incorrect - use the information from the previous two Mov
-        // instructions to build the correct Add instruction
-        Add newAdd = new Add("r"+reg1,"r"+(registerCounter-1),"r"+registerCounter++);
-        $n.getInstructions().add(newAdd);*/
-    })
+      {
+         String p2 = getLastTarget(n2);
+         Add newAdd = new Add(p1, p2, "r" + registerCounter++);
+         n2.getInstructions().add(newAdd);
+         $n = n2;
+      }
+      
+    )
    |^(MINUS expression[predNode] expression[predNode])
    |^(TIMES expression[predNode] {int reg1 = registerCounter-1;} expression[predNode]
     {
@@ -163,7 +164,7 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |id=ID
     {
-        Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
+        Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
         $n.getInstructions().add(newMov);
     }
    |en=ENDL
@@ -187,8 +188,7 @@ lvalue [Node predNode] returns [Node n = predNode]
    : ^(DOT lvalue[predNode] id=ID) 
    | id=ID
       {
-         // need ability to get target of an instruction
-         Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
+         Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
          $n.getInstructions().add(newMov);
       }
 ;
@@ -383,8 +383,7 @@ stmt [Node predNode] returns [Node n = predNode]
           if (printNodeAdds){
              System.out.println("RETURN: jump to L" + last.getId());
           }
-
-          Storeret newStoreret = new Storeret("r"+(registerCounter-1));
+          Storeret newStoreret = new Storeret(getLastTarget(newPredNode));
           newPredNode.getInstructions().add(newStoreret);
 
           Jumpi newJumpi = new Jumpi("L"+last.getId());
@@ -412,12 +411,21 @@ stmt [Node predNode] returns [Node n = predNode]
         {      
           if (printNodeAdds)
              System.out.println("assign");
-          
+          System.out.println("assign");
         }
-    current=expression[predNode] lv=lvalue[current]
+    current=expression[predNode]
         {
+         String r = getLastTarget(current);
+         System.out.println("rValue = " + r);
+        }
+    
+    lv=lvalue[current]
+        {
+          String l = getLastTarget(lv);
+          System.out.println("lValue = " + l);
           $n = lv;
-          // mov [lv mov target] = [current mov target]
+          Mov newMov = new Mov(r, l);
+          $n.getInstructions().add(newMov);
         }
     )
 ;

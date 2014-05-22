@@ -9,5 +9,5 @@ fun main(int ke) int
       j = 4;
       k = i + j + 3;
    }
-   return 0;
+   return k;
 }
