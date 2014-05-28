@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import iloc.Instruction;
+import asm.Instruction_a;
 
 public class Node {
 	private int id;
@@ -15,6 +16,7 @@ public class Node {
 	private ArrayList<Node> predNodes;
 	private ArrayList<Node> succNodes;
 	private ArrayList<Instruction> instructions;
+	private ArrayList<Instruction_a> asm_instructions;
 	//private ArrayList<Node> domSet;
 	private ArrayList<String> genSet;
 	private ArrayList<String> killSet;
@@ -30,6 +32,7 @@ public class Node {
 		this.predNodes = new ArrayList<Node>();
 		this.succNodes = new ArrayList<Node>();
 		this.instructions = new ArrayList<Instruction>();
+		this.asm_instructions = new ArrayList<Instruction_a>();
 		this.genSet = new ArrayList<String>();
 		this.killSet = new ArrayList<String>();
 		this.liveOut = new ArrayList<String>();
@@ -82,8 +85,16 @@ public class Node {
 		return instructions;
 	}
 	
+   public ArrayList<Instruction_a> getAsmInstructions() {
+		return asm_instructions;
+	}
+	
 	public void setInstructions(ArrayList<Instruction> instructions) {
 		this.instructions = instructions;
+	}
+	
+	public void setAsmInstructions(ArrayList<Instruction_a> asm_instructions) {
+		this.asm_instructions = asm_instructions;
 	}
 
 	public ArrayList<String> getGenSet() {

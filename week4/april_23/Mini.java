@@ -97,6 +97,7 @@ public class Mini
          // to construct? I assume not.
          tparser.verify(stypes, stable);
          cparser.construct(stypes, stable);
+         // convert to assembly
       }
       catch (org.antlr.runtime.RecognitionException e)
       {
