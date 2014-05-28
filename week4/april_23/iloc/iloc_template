@@ -3,20 +3,25 @@ add addi div mult sub rsubi and or xori comp compi loadai loadinargument compute
 arg1 + ", " + arg2 + " => " + arg3
 arg3
 
-cbreq cbrge bcrgt cbrle cbrlt cbrne
+cbreq cbrge cbrgt cbrle cbrlt cbrne
 3
 arg1 + ", " + arg2 + ", " + arg3
 null
 
-jumpi storeret call del print println read
+jumpi storeret del print println read
 1
 arg1
-null
+arg1
 
-loadi loadglobal computeformaladdress storeglobal storeoutargument new
+loadi loadglobal computeformaladdress storeglobal new
 2
 arg1 + " => " + arg2
 arg2
+
+call storeoutargument
+2
+arg1 + ", " + arg2
+arg1
 
 loadret
 1
@@ -26,7 +31,7 @@ arg1
 restoreformal mov moveq movge movgt movle movlt movne
 2
 arg1 + ", " + arg2
-null
+arg2
 
 storeai storeinargument
 3

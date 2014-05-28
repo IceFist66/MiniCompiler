@@ -1,0 +1,211 @@
+add:
+	loadinargument num, 0, r0
+	new node, [num, next], r2
+	mov r2, r1
+	mov r0, r3
+	mov r1, r4
+	storeai r3, r4, num
+	loadi 0, r5
+	mov r1, r6
+	storeai r5, r6, next
+	loadglobal head, r7
+	loadi 0, r8
+	comp r7, r8, ccr
+	cbrne ccr, L2, L1
+L1:
+	mov r1, r10
+	storeglobal r10, head
+	mov r1, r11
+	storeglobal r11, tail
+	jumpi L3
+L2:
+	mov r1, r12
+	loadglobal tail, r13
+	storeai r12, r13, next
+	mov r1, r14
+	storeglobal r14, tail
+L3:
+L4:
+L5:
+	ret true
+
+printList:
+	loadinargument cur, 0, r0
+	mov r0, r1
+	loadglobal tail, r2
+	comp r1, r2, ccr
+	cbrne ccr, L7, L6
+L6:
+	mov r0, r4
+	loadai r4, num, r5
+	println r5
+	jumpi L8
+L7:
+	mov r0, r6
+	loadai r6, num, r7
+	print r7
+	mov r0, r8
+	loadai r8, next, r9
+	storeoutargument r9, 0
+	call printList, 1
+L8:
+L9:
+L10:
+	ret true
+
+del:
+	loadinargument cur, 0, r0
+	loadinargument num, 1, r1
+	mov r0, r3
+	loadi 0, r4
+	comp r3, r4, ccr
+	cbrne ccr, L24, L23
+L24:
+	loadglobal head, r6
+	loadai r6, num, r7
+	mov r1, r8
+	comp r7, r8, ccr
+	cbrne ccr, L20, L19
+L19:
+	loadglobal head, r10
+	mov r10, r2
+	loadglobal head, r11
+	loadai r11, next, r12
+	storeglobal r12, head
+	mov r2, r13
+	del r13
+	jumpi L21
+L20:
+	mov r0, r14
+	loadai r14, next, r15
+	loadglobal tail, r16
+	comp r15, r16, ccr
+	cbrne ccr, L16, L15
+L15:
+	loadglobal tail, r18
+	mov r18, r2
+	mov r0, r19
+	storeglobal r19, tail
+	loadi 0, r20
+	loadglobal tail, r21
+	storeai r20, r21, next
+	mov r2, r22
+	del r22
+	jumpi L17
+L16:
+	mov r0, r23
+	loadai r23, next, r24
+	loadai r24, num, r25
+	mov r1, r26
+	comp r25, r26, ccr
+	cbrne ccr, L12, L11
+L11:
+	mov r0, r28
+	loadai r28, next, r29
+	mov r29, r2
+	mov r0, r30
+	loadai r30, next, r31
+	loadai r31, next, r32
+	mov r0, r33
+	storeai r32, r33, next
+	mov r2, r34
+	del r34
+	jumpi L13
+L12:
+	mov r0, r35
+	loadai r35, next, r36
+	mov r1, r37
+	storeoutargument r36, 0
+	storeoutargument r37, 1
+	call del, 2
+L13:
+L14:
+L17:
+L18:
+L21:
+L22:
+L23:
+L25:
+L26:
+	ret true
+
+main:
+	addi rarp, x, r3
+	read r3
+	loadai rarp, x, r0
+	addi rarp, y, r4
+	read r4
+	loadai rarp, y, r1
+	loadi 1, r5
+	storeoutargument r5, 0
+	call add, 1
+	loadi 10, r7
+	storeoutargument r7, 0
+	call add, 1
+	loadi 3, r9
+	storeoutargument r9, 0
+	call add, 1
+	loadi 4, r11
+	storeoutargument r11, 0
+	call add, 1
+	mov r0, r13
+	storeoutargument r13, 0
+	call add, 1
+	loadglobal head, r15
+	storeoutargument r15, 0
+	call printList, 1
+	loadi 0, r17
+	mov r17, r2
+	mov r2, r18
+	loadi 50000000, r19
+	comp r18, r19, ccr
+	cbrge ccr, L28, L27
+L27:
+	mov r2, r21
+	storeoutargument r21, 0
+	call add, 1
+	mov r2, r23
+	loadi 1, r24
+	add r23, r24, r25
+	mov r25, r2
+	mov r2, r26
+	loadi 50000000, r27
+	comp r26, r27, ccr
+	cbrlt ccr, L27, L28
+L28:
+	loadi 0, r29
+	mov r29, r2
+	mov r2, r30
+	loadi 50000000, r31
+	comp r30, r31, ccr
+	cbrge ccr, L30, L29
+L29:
+	loadglobal head, r33
+	mov r2, r34
+	storeoutargument r33, 0
+	storeoutargument r34, 1
+	call del, 2
+	mov r2, r36
+	loadi 1, r37
+	add r36, r37, r38
+	mov r38, r2
+	mov r2, r39
+	loadi 50000000, r40
+	comp r39, r40, ccr
+	cbrlt ccr, L29, L30
+L30:
+	loadglobal head, r42
+	mov r1, r43
+	storeoutargument r42, 0
+	storeoutargument r43, 1
+	call del, 2
+	loadglobal head, r45
+	storeoutargument r45, 0
+	call printList, 1
+	loadi 0, r47
+	storeret r47
+L31:
+L32:
+	ret true
+
+
