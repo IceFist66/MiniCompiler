@@ -61,7 +61,7 @@ public class Assembly_Factory {
             list = getAddq(arg1, "$"+arg2, arg3); //$ needed for numbers
         }//whatever else
     	else{
-            list = getMovq("$0", "$0");
+            list = getMovq("----", "----");
     	}
     	return list;
     }
