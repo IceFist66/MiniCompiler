@@ -3,10 +3,10 @@ package asm;
 import java.io.*;
 
 public abstract class Instruction_a{
-	String arg1;
-	String arg2;
-	String arg3;
-	String text;
+    String arg1;
+    String arg2;
+    String arg3;
+    String text;
     String target;
 	
     public String toString(){

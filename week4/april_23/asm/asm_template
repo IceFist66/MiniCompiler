@@ -36,7 +36,7 @@ arg1
 
 movq
 2
-arg1 + " , " + arg2;
+arg1 + " , " + arg2
 
 call
 1
