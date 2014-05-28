@@ -2,6 +2,7 @@ import iloc.*;
 import asm.*;
 
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class Assembly_Factory {
 	private ArrayList<Node> input;
@@ -18,7 +19,8 @@ public class Assembly_Factory {
 		this.input = input;
 	}
 	
-	public void convert(){
+	public void convert() throws IOException {
+
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
@@ -29,6 +31,7 @@ public class Assembly_Factory {
 			successors(n);
             n.printAsm(); //prints the asm instructions to screen
 	    }
+
 	}
 
     public void successors(Node n) {

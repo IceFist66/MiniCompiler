@@ -5,6 +5,7 @@ import org.antlr.stringtemplate.*;
 import java.io.*;
 import java.util.Vector;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Mini
 {
@@ -93,13 +94,15 @@ public class Mini
          StructTypes stypes = new StructTypes();
          SymbolTable stable = new SymbolTable();
 
-         // Do we need to capture these tables from Typecheck and pass them on
-         // to construct? I assume not.
+         // our code
          tparser.verify(stypes, stable);
-         ArrayList<Node> instuctions = cparser.construct(stypes, stable);
-         // convert to assembly
+         ArrayList<Node> instructions = cparser.construct(stypes, stable);
          Assembly_Factory factory = new Assembly_Factory(instructions);
-         factory.getAssembly();
+         try {
+            factory.convert();
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
       }
       catch (org.antlr.runtime.RecognitionException e)
       {
