@@ -286,4 +286,42 @@ public class Node {
       return;
     }
     
+   public void printAsm(String funcName) throws IOException {
+      FileWriter f;
+		String fileName;
+
+		fileName = "asm_" + funcName + ".asm";
+		f = new FileWriter(new File(fileName));
+      System.out.println(fileName);
+      String line = "L" + this.id + ":\n";
+		f.write(line);
+      System.out.print(line);
+      ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
+      for(Instruction_a ainst : asm_instructions){
+         line = "\t" + ainst.toString() + "\n";
+         f.write(line);
+         System.out.print(line);
+      }
+      asmSucc(this, f);
+		f.close();
+    }
+
+    public void asmSucc(Node n, FileWriter f) throws IOException {
+      ArrayList<Instruction_a> asm_instructions;
+      for (Node s : n.succNodes) {
+         String line = "L" + s.id + ":\n";
+	   	f.write(line);
+
+         System.out.print(line);
+         asm_instructions = s.getAsmInstructions();
+         for(Instruction_a ainst : asm_instructions){
+            line = "\t" + ainst.toString() + "\n";
+            f.write(line);
+            System.out.print(line);
+         }
+         asmSucc(s, f);
+		}    
+      return;
+    }
+    
 }
