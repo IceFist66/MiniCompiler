@@ -7,7 +7,7 @@ public class Read extends Instruction{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "read " + arg1;
-		this.target = null;
+		this.target = arg1;
 	}
 
 }

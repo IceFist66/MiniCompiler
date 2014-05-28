@@ -12,6 +12,7 @@ options
    import java.util.HashMap;
    import java.util.Vector;
    import java.util.Iterator;
+   import java.util.Set;
    import java.io.IOException;
    import iloc.*;
 }
@@ -28,6 +29,7 @@ options
     HashMap<String, String> globalRegisterMap; // this is set once at the start
     HashMap<String, String> localRegisterMap; // this is set anew for every function
     private int registerCounter = 0;
+    private String currentScope = "global";
     
     public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames) {
       HashMap<String, String> registerMap = new HashMap<String, String>();
@@ -46,6 +48,28 @@ options
          return globalRegisterMap.get(variable);
       else
          return "ERROR";
+    }
+    
+    public String getVariableNameFromRegister(String register) {
+      boolean found = false;
+      String name = "ERROR";
+      Set<Map.Entry<String, String>> localSetOfEntries = localRegisterMap.entrySet();
+      for(Map.Entry<String, String> entry : localSetOfEntries) {
+         if(entry.getValue().equals(register)) {
+            name = entry.getKey(); 
+            found = true;
+         }
+      }
+      if (!found) {
+         Set<Map.Entry<String, String>> globalSetOfEntries = globalRegisterMap.entrySet();
+         for(Map.Entry<String, String> entry : globalSetOfEntries) {
+            if(entry.getValue().equals(register)) {
+               name = entry.getKey(); 
+               found = true;
+            }
+         }    
+      }
+      return name;
     }
     
     public String getLastTarget(Node n) {
@@ -99,13 +123,103 @@ decllist:
     ^(DECLLIST type ID*)
 ;
 expression [Node predNode] returns [Node n = predNode]
-   :^(AND expression[predNode] expression[predNode])
-   |^(OR expression[predNode] expression[predNode])
-   |^(EQ expression[predNode] expression[predNode])
-   |^(LT expression[predNode] expression[predNode])
-   |^(GT expression[predNode] expression[predNode])
-   |^(LE expression[predNode] expression[predNode])
-   |^(GE expression[predNode] expression[predNode])
+   :^(AND n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      } 
+   
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         And newAnd = new And(p1, p2, "r" + registerCounter++);
+         n2.getInstructions().add(newAnd);
+         $n = n2;
+      }      
+   )
+   
+   |^(OR n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+         
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         Or newOr = new Or(p1, p2, "r" + registerCounter++);
+         n2.getInstructions().add(newOr);
+         $n = n2;
+      }  
+   )
+   |^(EQ n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         Cbrne cn = new Cbrne("ccr", "L*", "L*");
+         n2.getInstructions().add(cn);
+         $n = n2;
+      }  
+   )
+   |^(LT n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         Cbrge cge = new Cbrge("ccr", "L*", "L*");
+         n2.getInstructions().add(cge);
+         $n = n2;
+      }   
+   )
+   |^(GT n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         Cbrle cle = new Cbrle("ccr", "L*", "L*");
+         n2.getInstructions().add(cle);
+         $n = n2;
+      }   
+   )
+   |^(LE n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]   
+      {
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         Cbrgt cgt = new Cbrgt("ccr", "L*", "L*");
+         n2.getInstructions().add(cgt);
+         $n = n2;
+      }
+   )
+   |^(GE n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]
+      {
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         Cbrlt clt = new Cbrlt("ccr", "L*", "L*");
+         n2.getInstructions().add(clt);
+         $n = n2;
+      }   
+   )
    
    |^(PLUS n1=expression[predNode] 
 
@@ -191,7 +305,16 @@ expression [Node predNode] returns [Node n = predNode]
           if (printNodeAdds)
              System.out.println("invoke " + $id.text);
       }
-     args[predNode])
+     current=args[predNode]     
+         
+      {  
+         Variable f = g_stable.getVariable(currentScope, $id.text);
+         int numP = f.getNumParam();
+         Call newCall = new Call($id.text, "" + numP);
+         current.getInstructions().add(newCall);
+      }
+     
+     )
    
    
    
@@ -264,10 +387,42 @@ stmt [Node predNode] returns [Node n = predNode]
           }
     (current=expression[predNode]
     
+          {
+    
+            Print newPrint = new Print(getLastTarget(current));
+            current.getInstructions().add(newPrint);
           
+          }
+          
+    )*
     
+      {
+         // this block of code detects whether a Println is needed
+         Instruction i, j, k;
+         int numC = current.getInstructions().size();
+         int counter = numC - 3;
+         boolean found = false;
+         if (numC > 2) {
+            i = current.getInstructions().get(numC - 2);
+            k = current.getInstructions().get(numC - 1);
+            if (i.getArg1().equals("endl") && k instanceof Print) {
+               while (!found && counter >= 0) {
+                  j = current.getInstructions().get(counter);
+                  if (j instanceof Print) {
+                     Println pl = new Println(j.getTarget());
+                     current.getInstructions().remove(numC - 1);
+                     current.getInstructions().remove(numC - 2);
+                     current.getInstructions().remove(counter);
+                     current.getInstructions().add(pl);
+                  }
+                  counter--;           
+               }            
+            }         
+         }
+         n = current;
+      }
     
-    )*)
+    )
     
     |^(READ 
           {
@@ -277,7 +432,21 @@ stmt [Node predNode] returns [Node n = predNode]
             
           }
 
-    lvalue[predNode])
+    current=lvalue[predNode]
+      
+      {
+         String name = getVariableNameFromRegister(getLastTarget(current));
+         Addi newAddi = new Addi("rarp", name, "r" + registerCounter++);
+         current.getInstructions().add(newAddi);
+         String readTarget = getLastTarget(current);
+         Read newRead = new Read(readTarget);
+         current.getInstructions().add(newRead);
+         Loadai lai = new Loadai("rarp", name, getRegister(name));
+         current.getInstructions().add(lai);
+         n = current;
+      }
+      
+    )
     
           
     
@@ -413,7 +582,13 @@ stmt [Node predNode] returns [Node n = predNode]
         }
     
         current=expression[predNode]
-    
+         
+        {
+           String reg = getLastTarget(current);
+           Del newDel = new Del(reg);
+           current.getInstructions().add(newDel);
+           n = current;
+        }
     
     )
 
@@ -451,7 +626,16 @@ stmt [Node predNode] returns [Node n = predNode]
           
         }
 
-    current=args[predNode])                                          
+    current=args[predNode]
+    
+      {  
+         Variable f = g_stable.getVariable(currentScope, $id.text);
+         int numP = f.getNumParam();
+         Call newCall = new Call($id.text, "" + numP);
+         current.getInstructions().add(newCall);
+      }
+    
+    )                                          
     
     
     
@@ -479,7 +663,22 @@ stmt [Node predNode] returns [Node n = predNode]
 ;
 
 args [Node predNode] returns [Node n = predNode]
-   :^(ARGS (expression[predNode])*)
+
+   :^(ARGS 
+   
+      { int argCounter = 0;}
+   
+   (aNode = expression[predNode]
+   
+      {
+        Mov newMov = new Mov(getLastTarget(aNode), "r" + registerCounter++);
+        aNode.getInstructions().add(newMov);
+        Storeoutargument soa = new Storeoutargument(getLastTarget(aNode), "" + argCounter++);
+        aNode.getInstructions().add(soa);
+        n = aNode;
+      }
+      
+   )*)
 ;
 
 stmts [Node predNode] returns [Node n = predNode]
@@ -515,6 +714,8 @@ fun:
     ^(FUN id=ID
       
       {
+        currentScope = $id.text;
+        registerCounter = 0;
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
         functions.add(head);
         head.setLocals(g_stable.gatherVariablesInScope($id.text));

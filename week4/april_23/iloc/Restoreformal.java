@@ -7,7 +7,7 @@ public class Restoreformal extends Instruction{
 		this.arg2 = arg2;
 		this.arg3 = null;
 		this.text = "restoreformal " + arg1 + ", " + arg2;
-		this.target = null;
+		this.target = arg2;
 	}
 
 }

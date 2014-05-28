@@ -7,7 +7,7 @@ public class Movle extends Instruction{
 		this.arg2 = arg2;
 		this.arg3 = null;
 		this.text = "movle " + arg1 + ", " + arg2;
-		this.target = null;
+		this.target = arg2;
 	}
 
 }
