@@ -1,4 +1,4 @@
-FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java Node.java NodeType.java
+FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java Node.java NodeType.java Assembly_Factory.java
 
 
 Mini.class : antlr.generated ${FILES}

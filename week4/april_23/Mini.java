@@ -96,8 +96,10 @@ public class Mini
          // Do we need to capture these tables from Typecheck and pass them on
          // to construct? I assume not.
          tparser.verify(stypes, stable);
-         cparser.construct(stypes, stable);
+         ArrayList<Node> instuctions = cparser.construct(stypes, stable);
          // convert to assembly
+         Assembly_Factory factory = new Assembly_Factory(instructions);
+         factory.getAssembly();
       }
       catch (org.antlr.runtime.RecognitionException e)
       {
