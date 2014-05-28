@@ -63,7 +63,7 @@ public class Assembly_Factory {
     	return list;
     }
 
-    public Movq getMovq(String arg1, String arg2){
+    public ArrayList<Instruction_a> getMovq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Movq(arg1, arg2)); //r1 -> r2
         return list;
