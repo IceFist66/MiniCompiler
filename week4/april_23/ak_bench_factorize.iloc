@@ -1,0 +1,98 @@
+mod:
+	loadinargument num, 0, r0
+	loadinargument i, 1, r1
+	mov r0, r5
+	mov r1, r6
+	div r5, r6, r7
+	mov r7, r2
+	mov r2, r8
+	mov r1, r9
+	mult r8, r9, r10
+	mov r10, r3
+	mov r0, r11
+	mov r3, r12
+	sub r11, r12, r13
+	mov r13, r4
+	mov r4, r14
+	storeret r14
+L1:
+L2:
+	ret true
+
+factorize:
+	loadinargument num, 0, r0
+	loadi 2, r3
+	mov r3, r1
+	loadi 0, r4
+	mov r4, r2
+	mov r1, r5
+	mov r0, r6
+	loadi 0, r7
+	comp r5, r6, ccr
+	movlei ccr, 1, r7
+	mov r2, r8
+	loadi 0, r9
+	loadi 0, r10
+	comp r8, r9, ccr
+	moveqi ccr, 1, r10
+	and r7, r10, r11
+	brz r11, L4, L3
+L3:
+	mov r0, r12
+	mov r1, r13
+	storeoutargument r12, 0
+	storeoutargument r13, 1
+	call mod, 2
+	loadret r14
+	loadi 0, r15
+	comp r14, r15, ccr
+	cbrne ccr, L6, L5
+L5:
+	mov r1, r17
+	print r17
+	mov r0, r18
+	mov r1, r19
+	div r18, r19, r20
+	storeoutargument r20, 0
+	call factorize, 1
+	loadi 1, r22
+	mov r22, r2
+	jumpi L7
+L6:
+	mov r1, r23
+	loadi 1, r24
+	add r23, r24, r25
+	mov r25, r1
+L7:
+L8:
+	mov r1, r26
+	mov r0, r27
+	loadi 0, r28
+	comp r26, r27, ccr
+	movlei ccr, 1, r28
+	mov r2, r29
+	loadi 0, r30
+	loadi 0, r31
+	comp r29, r30, ccr
+	moveqi ccr, 1, r31
+	and r28, r31, r32
+	brnz r32, L3, L4
+L4:
+L9:
+	ret true
+
+main:
+	addi rarp, num, r1
+	read r1
+	loadai rarp, num, r0
+	mov r0, r2
+	storeoutargument r2, 0
+	call factorize, 1
+	loadi 0, r4
+	println r4
+	loadi 1, r5
+	storeret r5
+L10:
+L11:
+	ret true
+

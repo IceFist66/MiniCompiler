@@ -1,0 +1,234 @@
+tailrecursive:
+	loadinargument num, 0, r0
+	mov r0, r2
+	loadi 0, r3
+	comp r2, r3, ccr
+	cbrgt ccr, L3, L2
+L2:
+	jumpi L1
+L4:
+L3:
+	new foo, [simp, bar, cool], r5
+	mov r5, r1
+	mov r0, r6
+	loadi 1, r7
+	sub r6, r7, r8
+	storeoutargument r8, 0
+	call tailrecursive, 1
+L1:
+L5:
+	ret true
+
+add:
+	loadinargument x, 0, r0
+	loadinargument y, 1, r1
+	mov r0, r2
+	mov r1, r3
+	add r2, r3, r4
+	storeret r4
+L6:
+L7:
+	ret true
+
+domath:
+	loadinargument num, 0, r0
+	new foo, [simp, bar, cool], r4
+	mov r4, r1
+	new simple, [one], r5
+	mov r1, r6
+	storeai r5, r6, simp
+	new foo, [simp, bar, cool], r7
+	mov r7, r2
+	new simple, [one], r8
+	mov r2, r9
+	storeai r8, r9, simp
+	mov r0, r10
+	mov r1, r11
+	storeai r10, r11, bar
+	loadi 3, r12
+	mov r2, r13
+	storeai r12, r13, bar
+	mov r1, r14
+	loadai r14, bar, r15
+	mov r1, r16
+	loadai r16, simp, r17
+	storeai r15, r17, one
+	mov r2, r18
+	loadai r18, bar, r19
+	mov r2, r20
+	loadai r20, simp, r21
+	storeai r19, r21, one
+	mov r0, r22
+	loadi 0, r23
+	comp r22, r23, ccr
+	cbrle ccr, L9, L8
+L8:
+	mov r1, r25
+	loadai r25, bar, r26
+	mov r2, r27
+	loadai r27, bar, r28
+	mult r26, r28, r29
+	mov r29, r3
+	mov r1, r31
+	loadai r31, simp, r32
+	loadai r32, one, r33
+	mov r3, r30
+	mult r30, r33, r34
+	mov r2, r35
+	loadai r35, bar, r36
+	div r34, r36, r37
+	mov r37, r3
+	mov r2, r38
+	loadai r38, simp, r39
+	loadai r39, one, r40
+	mov r1, r41
+	loadai r41, bar, r42
+	storeoutargument r40, 0
+	storeoutargument r42, 1
+	call add, 2
+	loadret r43
+	mov r43, r3
+	mov r2, r44
+	loadai r44, bar, r45
+	mov r1, r46
+	loadai r46, bar, r47
+	sub r45, r47, r48
+	mov r48, r3
+	mov r0, r49
+	loadi 1, r50
+	sub r49, r50, r51
+	mov r51, r0
+	mov r0, r52
+	loadi 0, r53
+	comp r52, r53, ccr
+	cbrgt ccr, L8, L9
+L9:
+	mov r1, r55
+	del r55
+	mov r2, r56
+	del r56
+L10:
+	ret true
+
+objinstantiation:
+	loadinargument num, 0, r0
+	mov r0, r2
+	loadi 0, r3
+	comp r2, r3, ccr
+	cbrle ccr, L12, L11
+L11:
+	new foo, [simp, bar, cool], r5
+	mov r5, r1
+	mov r1, r6
+	del r6
+	mov r0, r7
+	loadi 1, r8
+	sub r7, r8, r9
+	mov r9, r0
+	mov r0, r10
+	loadi 0, r11
+	comp r10, r11, ccr
+	cbrgt ccr, L11, L12
+L12:
+L13:
+	ret true
+
+ackermann:
+	loadinargument m, 0, r0
+	loadinargument n, 1, r1
+	mov r0, r2
+	loadi 0, r3
+	comp r2, r3, ccr
+	cbrne ccr, L16, L15
+L15:
+	mov r1, r5
+	loadi 1, r6
+	add r5, r6, r7
+	storeret r7
+	jumpi L14
+L17:
+L16:
+	mov r1, r8
+	loadi 0, r9
+	comp r8, r9, ccr
+	cbrne ccr, L21, L20
+L20:
+	mov r0, r11
+	loadi 1, r12
+	sub r11, r12, r13
+	loadi 1, r14
+	storeoutargument r13, 0
+	storeoutargument r14, 1
+	call ackermann, 2
+	loadret r15
+	storeret r15
+	jumpi L18
+L21:
+	mov r1, r20
+	loadi 1, r21
+	sub r20, r21, r22
+	mov r0, r19
+	storeoutargument r19, 0
+	storeoutargument r22, 1
+	call ackermann, 2
+	loadret r23
+	mov r0, r16
+	loadi 1, r17
+	sub r16, r17, r18
+	storeoutargument r18, 0
+	storeoutargument r23, 1
+	call ackermann, 2
+	loadret r24
+	storeret r24
+L14:
+L18:
+L19:
+L24:
+	ret true
+
+main:
+	addi rarp, a, r5
+	read r5
+	loadai rarp, a, r0
+	addi rarp, b, r6
+	read r6
+	loadai rarp, b, r1
+	addi rarp, c, r7
+	read r7
+	loadai rarp, c, r2
+	addi rarp, d, r8
+	read r8
+	loadai rarp, d, r3
+	addi rarp, e, r9
+	read r9
+	loadai rarp, e, r4
+	mov r0, r10
+	storeoutargument r10, 0
+	call tailrecursive, 1
+	mov r0, r12
+	println r12
+	mov r1, r13
+	storeoutargument r13, 0
+	call domath, 1
+	mov r1, r15
+	println r15
+	mov r2, r16
+	storeoutargument r16, 0
+	call objinstantiation, 1
+	mov r2, r18
+	println r18
+	mov r3, r19
+	mov r4, r20
+	storeoutargument r19, 0
+	storeoutargument r20, 1
+	call ackermann, 2
+	loadret r21
+	println r21
+	loadi 0, r22
+	storeret r22
+L25:
+L26:
+	ret true
+
+
+
