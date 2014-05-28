@@ -13,6 +13,7 @@ public class Node {
 	private int id;
 	private NodeType nodeType;
 	private String text;
+	private String functionName;
 	private ArrayList<Node> predNodes;
 	private ArrayList<Node> succNodes;
 	private ArrayList<Instruction> instructions;
@@ -38,7 +39,16 @@ public class Node {
 		this.liveOut = new ArrayList<String>();
 		this.locals = new ArrayList<String>();
 		this.registerMap = new HashMap<String, String>();
+		functionName = "";
 		backEdgeTarget = null;
+	}
+	
+	public String getFunctionName() {
+	   return this.functionName;
+	}
+	
+	public void setFunctionName(String functionName) {
+	   this.functionName = functionName;
 	}
 	
 	public int getId() {
@@ -286,11 +296,11 @@ public class Node {
       return;
     }
     
-   public void printAsm(String funcName) throws IOException {
+   public void printAsm() throws IOException {
       FileWriter f;
 		String fileName;
 
-		fileName = "asm_" + funcName + ".asm";
+		fileName = "asm_" + functionName + ".asm";
 		f = new FileWriter(new File(fileName));
       System.out.println(fileName);
       String line = "L" + this.id + ":\n";

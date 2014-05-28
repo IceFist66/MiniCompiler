@@ -717,6 +717,7 @@ fun:
         currentScope = $id.text;
         registerCounter = 0;
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
+        head.setFunctionName($id.text);
         functions.add(head);
         head.setLocals(g_stable.gatherVariablesInScope($id.text));
         head.setRegisterMap(buildRegisterMap(head.getLocals()));
