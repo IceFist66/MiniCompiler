@@ -781,7 +781,7 @@ rettype:
 ;
 
 
-construct [StructTypes stypes, SymbolTable stable] 
+construct [StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = null]
     @init {
         g_stypes = stypes; 
         g_stable = stable; 
@@ -808,5 +808,6 @@ construct [StructTypes stypes, SymbolTable stable]
            System.out.println("Unable to complete DOT file");
          }        
       }
+      f = functions;
     }
 ;
