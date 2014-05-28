@@ -6,7 +6,7 @@ public class Movq extends Instruction_a{
 		this.arg1 = arg1;
 		this.arg2 = arg2;
 		this.arg3 = null;
-		this.text = "movq " + arg1 + " , " + arg2;;
+		this.text = "movq " + arg1 + " , " + arg2;
 	}
 
 }
