@@ -218,7 +218,7 @@ public class Node {
 			} else
 			   //System.out.println("no else statement");	
 			if (n.getSuccNodes().size() > 2)
-			   System.out.println("Warning: control statement has more than two children!");			   
+			   System.out.println("Warning: control statement has more than two children! Type = " + n.getNodeType());			   
 			f.write(labelNode(thenNode));
 			String edgeTrue = n.getId() + " -> " + thenNode.getId() + " [label = \"true\"];\n";			   
 			edges.add(edgeTrue);

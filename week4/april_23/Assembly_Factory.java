@@ -29,7 +29,7 @@ public class Assembly_Factory {
 				n.getAsmInstructions().addAll(asm);
 			}
 			successors(n);
-            n.printAsm(); //prints the asm instructions to screen
+            //n.printAsm(); //prints the asm instructions to screen
 	    }
 
 	}

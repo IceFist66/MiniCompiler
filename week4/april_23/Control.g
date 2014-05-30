@@ -477,36 +477,44 @@ stmt [Node predNode] returns [Node n = predNode]
             //insert explicit jump to if_join block here
             //System.out.println("In THEN, th type is: " + th.getNodeType());
             //System.out.println("In THEN, last type is: " + last.getNodeType());
-            if(th.getNodeType() != NodeType.EXIT){
+            if(th.getNodeType() != NodeType.EXIT) {
                 th.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(th);
-                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
-                th.getInstructions().add(newJumpi);
+                Jumpi newJumpii = new Jumpi("L"+ifJoin.getId());
+                th.getInstructions().add(newJumpii);
                 if (printNodeAdds) {
                   System.out.println("jump from L" + thenBlock.getId() + " to L" 
                    + ifJoin.getId() + " (ifJoin)"); 
-               }   
+                }   
             }
           }
-    
-    (
-      
+          
           {
            Node elseBlock = new Node(NodeType.ELSE, (currentIDNum++), "ELSE");
+             e.getSuccNodes().add(elseBlock);
+             elseBlock.getPredNodes().add(e);
            if (printNodeAdds) {
               System.out.println("false: jump from L" + e.getId() + " to L" + elseBlock.getId()); 
               System.out.println("L" + elseBlock.getId() + " ELSE");
            }  
+           
+                     {el = null;} 
           }
+          
+
     
-    {el = null;} el=stmt[elseBlock]
-    
+    (el=stmt[elseBlock])?   
+
           {
-            
-            e.getSuccNodes().add(elseBlock);
-            elseBlock.getPredNodes().add(e);
+            if (el == null) {
+               el = elseBlock;
+                el.getSuccNodes().add(ifJoin);
+                ifJoin.getPredNodes().add(el);
+                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
+                el.getInstructions().add(newJumpi);
+            }
             // insert explicit jump to if_join block here
-            if(el.getNodeType() != NodeType.EXIT){
+            else if(el.getNodeType() != NodeType.EXIT && el != null){
                 el.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(el);
                 Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
@@ -516,17 +524,21 @@ stmt [Node predNode] returns [Node n = predNode]
                     System.out.println("L" + ifJoin.getId() + " IF_JOIN");
                 }    
             }
-          }    
+
     
-    )?)
-    
-          {
+          
+          
             if((th != null && th.getNodeType() != NodeType.EXIT) || (el != null && el.getNodeType() != NodeType.EXIT))
                 n = ifJoin;
             else
-               n = last;
+                n = last;
             
           }
+    
+    
+    )
+    
+
     
 
     
