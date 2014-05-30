@@ -59,6 +59,18 @@ public class Assembly_Factory {
         }
         else if(i instanceof Addi){
             list = getAddq(arg1, "$"+arg2, arg3); //$ needed for numbers
+        }
+        else if(i instanceof Jumpi){
+            list = getJmp(arg1);
+        }
+        else if(i instanceof Loadi){
+            list = getMovq("$"+arg1, arg2);
+        }
+        else if(i instanceof Storeret){
+            list = getStoreReturn(arg1);
+        }
+        else if(i instanceof Ret){
+            list = getReturn();
         }//whatever else
     	else{
             list = getMovq("----", "----");
@@ -76,6 +88,24 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.addAll(getMovq(arg2, arg3)); //r3 = r2
         list.add(new Addq(arg1, arg3)); //r3 += r1
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJmp(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jmp(arg1)); //jmp label
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getStoreReturn(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg1, "eax")); //move value to return register
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getReturn(){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Ret());
         return list;
     }
 }
