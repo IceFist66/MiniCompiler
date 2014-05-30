@@ -13,6 +13,7 @@ public class Node {
 	private int id;
 	private NodeType nodeType;
 	private String text;
+	private String functionName;
 	private ArrayList<Node> predNodes;
 	private ArrayList<Node> succNodes;
 	private ArrayList<Instruction> instructions;
@@ -24,6 +25,8 @@ public class Node {
 	private ArrayList<String> locals; // holds id of params and locals passed into function
 	private HashMap<String, String> registerMap;
 	private Node backEdgeTarget;
+	private boolean iloc_printed;
+	private boolean asm_printed;
 	
 	public Node (NodeType nodeType, int id, String text) {
 		this.id = id;
@@ -38,7 +41,18 @@ public class Node {
 		this.liveOut = new ArrayList<String>();
 		this.locals = new ArrayList<String>();
 		this.registerMap = new HashMap<String, String>();
+		functionName = "";
 		backEdgeTarget = null;
+		iloc_printed = false;
+		asm_printed = false;
+	}
+	
+	public String getFunctionName() {
+	   return this.functionName;
+	}
+	
+	public void setFunctionName(String functionName) {
+	   this.functionName = functionName;
 	}
 	
 	public int getId() {
@@ -208,7 +222,7 @@ public class Node {
 			} else
 			   //System.out.println("no else statement");	
 			if (n.getSuccNodes().size() > 2)
-			   System.out.println("Warning: control statement has more than two children!");			   
+			   System.out.println("Warning: control statement has more than two children! Type = " + n.getNodeType());			   
 			f.write(labelNode(thenNode));
 			String edgeTrue = n.getId() + " -> " + thenNode.getId() + " [label = \"true\"];\n";			   
 			edges.add(edgeTrue);
@@ -222,9 +236,8 @@ public class Node {
 			}
 		} else {
 			for (Node s : n.getSuccNodes()) {			
-			   if (n.getNodeType() == NodeType.WHILE_BODY) {
-		         //System.out.println("while-body");
-			      //String backEdge = n.getId() + " -> " + n.getBackEdgeTarget().getId() + ";\n";
+			  // if (n.getNodeType() == NodeType.WHILE_BODY) {
+			   if (n.getBackEdgeTarget() != null) {
 			      String backEdge = n.getId() + " -> " + n.getBackEdgeTarget().getId() + " [label = \"true\"];\n";
 			      edges.add(backEdge);
 			      //System.out.println("added backedge");
@@ -255,8 +268,10 @@ public class Node {
 
 		fileName = "il_" + funcName + ".il";
 		f = new FileWriter(new File(fileName));
-      System.out.println(fileName);
-      String line = "L" + this.id + ":\n";
+      //System.out.println(fileName);
+      System.out.println();
+      //String line = "L" + this.id + ":\n";
+      String line = this.getFunctionName() + ":\n";
 		f.write(line);
       System.out.print(line);
       ArrayList<Instruction> instructions = this.getInstructions();
@@ -265,6 +280,7 @@ public class Node {
          f.write(line);
          System.out.print(line);
       }
+      this.iloc_printed = true;
       nodeToString(this, f);
 		f.close();
     }
@@ -272,28 +288,33 @@ public class Node {
     public void nodeToString(Node n, FileWriter f) throws IOException {
       ArrayList<Instruction> instructions;
       for (Node s : n.succNodes) {
-         String line = "L" + s.id + ":\n";
-	   	f.write(line);
-         System.out.print(line);
-         instructions = s.getInstructions();
-         for(Instruction inst : instructions){
-            line = "\t" + inst.toString() + "\n";
-            f.write(line);
+         if (s.iloc_printed == false) {
+            String line = "L" + s.id + ":\n";
+	      	f.write(line);
             System.out.print(line);
+            instructions = s.getInstructions();
+            for(Instruction inst : instructions){
+               line = "\t" + inst.toString() + "\n";
+               f.write(line);
+               System.out.print(line);
+            }
+            s.iloc_printed = true;
+            nodeToString(s, f);            
          }
-         nodeToString(s, f);
-		}    
+		}		   
       return;
     }
     
-   public void printAsm(String funcName) throws IOException {
+   public void printAsm() throws IOException {
       FileWriter f;
 		String fileName;
 
-		fileName = "asm_" + funcName + ".asm";
+		fileName = "asm_" + functionName + ".asm";
 		f = new FileWriter(new File(fileName));
-      System.out.println(fileName);
-      String line = "L" + this.id + ":\n";
+      //System.out.println(fileName);
+      System.out.println();
+      //String line = "L" + this.id + ":\n";
+      String line = this.getFunctionName() + ":\n";
 		f.write(line);
       System.out.print(line);
       ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
@@ -302,6 +323,7 @@ public class Node {
          f.write(line);
          System.out.print(line);
       }
+      this.asm_printed = true;
       asmSucc(this, f);
 		f.close();
     }
@@ -309,17 +331,20 @@ public class Node {
     public void asmSucc(Node n, FileWriter f) throws IOException {
       ArrayList<Instruction_a> asm_instructions;
       for (Node s : n.succNodes) {
-         String line = "L" + s.id + ":\n";
-	   	f.write(line);
+      if (s.asm_printed == false) {
+            String line = "L" + s.id + ":\n";
+	      	f.write(line);
 
-         System.out.print(line);
-         asm_instructions = s.getAsmInstructions();
-         for(Instruction_a ainst : asm_instructions){
-            line = "\t" + ainst.toString() + "\n";
-            f.write(line);
             System.out.print(line);
+            asm_instructions = s.getAsmInstructions();
+            for(Instruction_a ainst : asm_instructions){
+               line = "\t" + ainst.toString() + "\n";
+               f.write(line);
+               System.out.print(line);
+            }
+            this.asm_printed = true;
+            asmSucc(s, f);
          }
-         asmSucc(s, f);
 		}    
       return;
     }

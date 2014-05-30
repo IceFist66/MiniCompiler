@@ -2,6 +2,7 @@ import iloc.*;
 import asm.*;
 
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class Assembly_Factory {
 	private ArrayList<Node> input;
@@ -18,7 +19,8 @@ public class Assembly_Factory {
 		this.input = input;
 	}
 	
-	public void convert(){
+	public void convert() throws IOException {
+
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
@@ -27,8 +29,9 @@ public class Assembly_Factory {
 				n.getAsmInstructions().addAll(asm);
 			}
 			successors(n);
-            n.printAsm(); //prints the asm instructions to screen
+            //n.printAsm(); //prints the asm instructions to screen
 	    }
+
 	}
 
     public void successors(Node n) {
@@ -58,12 +61,12 @@ public class Assembly_Factory {
             list = getAddq(arg1, "$"+arg2, arg3); //$ needed for numbers
         }//whatever else
     	else{
-            list = getMovq("$0", "$0");
+            list = getMovq("----", "----");
     	}
     	return list;
     }
 
-    public Movq getMovq(String arg1, String arg2){
+    public ArrayList<Instruction_a> getMovq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Movq(arg1, arg2)); //r1 -> r2
         return list;

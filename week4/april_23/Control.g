@@ -156,11 +156,35 @@ expression [Node predNode] returns [Node n = predNode]
       }
    n2=expression[n1]
       {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
-         Cbrne cn = new Cbrne("ccr", "L*", "L*");
-         n2.getInstructions().add(cn);
+         //Cbrne cn = new Cbrne("ccr", "L*", "L*");
+         //n2.getInstructions().add(cn);
+         Moveq m = new Moveq("ccr", compResultRegister);
+         n2.getInstructions().add(m);
+         $n = n2;
+      }  
+   )
+   |^(NE n1=expression[predNode]
+      {
+         String p1 = getLastTarget(n1);
+      }
+   n2=expression[n1]
+      {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
+         String p2 = getLastTarget(n2);
+         Comp c = new Comp(p1, p2, "ccr");
+         n2.getInstructions().add(c);
+         //Cbrne cn = new Cbrne("ccr", "L*", "L*");
+         //n2.getInstructions().add(cn);
+         Movne m = new Movne("ccr", compResultRegister);
+         n2.getInstructions().add(m);
          $n = n2;
       }  
    )
@@ -170,11 +194,16 @@ expression [Node predNode] returns [Node n = predNode]
       }
    n2=expression[n1]
       {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
-         Cbrge cge = new Cbrge("ccr", "L*", "L*");
-         n2.getInstructions().add(cge);
+         //Cbrge cge = new Cbrge("ccr", "L*", "L*");
+         //n2.getInstructions().add(cge);
+         Movlt m = new Movlt("ccr", compResultRegister);
+         n2.getInstructions().add(m);
          $n = n2;
       }   
    )
@@ -184,11 +213,16 @@ expression [Node predNode] returns [Node n = predNode]
       }
    n2=expression[n1]
       {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
-         Cbrle cle = new Cbrle("ccr", "L*", "L*");
-         n2.getInstructions().add(cle);
+         //Cbrle cle = new Cbrle("ccr", "L*", "L*");
+         //n2.getInstructions().add(cle);
+         Movgt m = new Movgt("ccr", compResultRegister);
+         n2.getInstructions().add(m);
          $n = n2;
       }   
    )
@@ -198,11 +232,16 @@ expression [Node predNode] returns [Node n = predNode]
       }
    n2=expression[n1]   
       {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
-         Cbrgt cgt = new Cbrgt("ccr", "L*", "L*");
-         n2.getInstructions().add(cgt);
+         //Cbrgt cgt = new Cbrgt("ccr", "L*", "L*");
+         //n2.getInstructions().add(cgt);
+         Movle m = new Movle("ccr", compResultRegister);
+         n2.getInstructions().add(m);
          $n = n2;
       }
    )
@@ -212,11 +251,16 @@ expression [Node predNode] returns [Node n = predNode]
       }
    n2=expression[n1]
       {
+         String compResultRegister = "r" + registerCounter++;
+         Loadi li = new Loadi("0", compResultRegister);
+         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
-         Cbrlt clt = new Cbrlt("ccr", "L*", "L*");
-         n2.getInstructions().add(clt);
+         //Cbrlt clt = new Cbrlt("ccr", "L*", "L*");
+         //n2.getInstructions().add(clt);
+         Movge m = new Movge("ccr", compResultRegister);
+         n2.getInstructions().add(m);
          $n = n2;
       }   
    )
@@ -312,6 +356,8 @@ expression [Node predNode] returns [Node n = predNode]
          int numP = f.getNumParam();
          Call newCall = new Call($id.text, "" + numP);
          current.getInstructions().add(newCall);
+         Loadret lr = new Loadret("r" + registerCounter++);
+         current.getInstructions().add(lr);
       }
      
      )
@@ -335,7 +381,8 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |id=ID
     {
-        Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
+        Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
+        //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
         $n.getInstructions().add(newMov);
     }
    |en=ENDL
@@ -461,8 +508,17 @@ stmt [Node predNode] returns [Node n = predNode]
     e=expression[predNode] 
     
           {
-            Node thenBlock = new Node(NodeType.THEN, (currentIDNum++), "THEN");
-            Node ifJoin = new Node(NodeType.IF_JOIN, (currentIDNum++), "IF_JOIN");
+            String ifGuardResult = getLastTarget(e);
+            int thenBlockID = currentIDNum++;
+            int elseBlockID = currentIDNum++;
+            int ifJoinID = currentIDNum++;
+            Node thenBlock = new Node(NodeType.THEN, (thenBlockID), "THEN");
+            Node elseBlock = new Node(NodeType.ELSE, (elseBlockID), "ELSE");
+            Node ifJoin = new Node(NodeType.IF_JOIN, (ifJoinID), "IF_JOIN");
+            
+            Brnz b = new Brnz(ifGuardResult, "L" + thenBlockID, "L" + elseBlockID);
+            e.getInstructions().add(b); 
+            
             e.getSuccNodes().add(thenBlock);
             thenBlock.getPredNodes().add(e);
             if (printNodeAdds) {
@@ -477,36 +533,44 @@ stmt [Node predNode] returns [Node n = predNode]
             //insert explicit jump to if_join block here
             //System.out.println("In THEN, th type is: " + th.getNodeType());
             //System.out.println("In THEN, last type is: " + last.getNodeType());
-            if(th.getNodeType() != NodeType.EXIT){
+            if(th.getNodeType() != NodeType.EXIT) {
                 th.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(th);
-                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
-                th.getInstructions().add(newJumpi);
+                Jumpi newJumpii = new Jumpi("L"+ifJoin.getId());
+                th.getInstructions().add(newJumpii);
                 if (printNodeAdds) {
                   System.out.println("jump from L" + thenBlock.getId() + " to L" 
                    + ifJoin.getId() + " (ifJoin)"); 
-               }   
+                }   
             }
           }
-    
-    (
-      
+          
           {
-           Node elseBlock = new Node(NodeType.ELSE, (currentIDNum++), "ELSE");
+           //Node elseBlock = new Node(NodeType.ELSE, (currentIDNum++), "ELSE");
+             e.getSuccNodes().add(elseBlock);
+             elseBlock.getPredNodes().add(e);
            if (printNodeAdds) {
               System.out.println("false: jump from L" + e.getId() + " to L" + elseBlock.getId()); 
               System.out.println("L" + elseBlock.getId() + " ELSE");
            }  
+           
+           {el = null;} 
           }
+          
+
     
-    {el = null;} el=stmt[elseBlock]
-    
+    (el=stmt[elseBlock])?   
+
           {
-            
-            e.getSuccNodes().add(elseBlock);
-            elseBlock.getPredNodes().add(e);
+            if (el == null) {
+               el = elseBlock;
+                el.getSuccNodes().add(ifJoin);
+                ifJoin.getPredNodes().add(el);
+                Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
+                el.getInstructions().add(newJumpi);
+            }
             // insert explicit jump to if_join block here
-            if(el.getNodeType() != NodeType.EXIT){
+            else if(el.getNodeType() != NodeType.EXIT && el != null){
                 el.getSuccNodes().add(ifJoin);
                 ifJoin.getPredNodes().add(el);
                 Jumpi newJumpi = new Jumpi("L"+ifJoin.getId());
@@ -516,17 +580,22 @@ stmt [Node predNode] returns [Node n = predNode]
                     System.out.println("L" + ifJoin.getId() + " IF_JOIN");
                 }    
             }
-          }    
+
     
-    )?)
-    
-          {
+          
+          
             if((th != null && th.getNodeType() != NodeType.EXIT) || (el != null && el.getNodeType() != NodeType.EXIT))
                 n = ifJoin;
             else
-               n = last;
+                n = last;
             
+           
           }
+    
+    
+    )
+    
+
     
 
     
@@ -541,10 +610,19 @@ stmt [Node predNode] returns [Node n = predNode]
     e=expression[predNode]
     
          {
+            String guardResult = getLastTarget(e);
+
+
             if (printNodeAdds)
                System.out.println("L" + e.getId() + " WHILE_BODY exp2");
-            Node whileBodyStart = new Node(NodeType.WHILE_BODY, (currentIDNum++), "WHILE_BODY");
-            Node whileJoin = new Node(NodeType.WHILE_JOIN, (currentIDNum++), "WHILE_JOIN");
+            int whileBodyStartID = currentIDNum++;
+            int whileJoinID = currentIDNum++;
+            Node whileBodyStart = new Node(NodeType.WHILE_BODY, (whileBodyStartID), "WHILE_BODY");
+            Node whileJoin = new Node(NodeType.WHILE_JOIN, (whileJoinID), "WHILE_JOIN");
+            
+            Brnz b = new Brnz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
+            e.getInstructions().add(b);
+            
             e.getSuccNodes().add(whileBodyStart);
             e.getSuccNodes().add(whileJoin);
             whileBodyStart.getPredNodes().add(e);
@@ -568,7 +646,17 @@ stmt [Node predNode] returns [Node n = predNode]
             n = whileJoin;
          }
     
-    e=expression[whileBodyAfter] {n = whileJoin;})
+    e=expression[whileBodyAfter] 
+    
+      {
+         guardResult = getLastTarget(e);
+         Brnz bn = new Brnz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
+         e.getInstructions().add(bn);
+         n = whileJoin;
+      }
+      
+      
+    )
     
       {System.out.println("while-join node type = " + n.getNodeType());}
     
@@ -614,8 +702,13 @@ stmt [Node predNode] returns [Node n = predNode]
 
           newPredNode.getSuccNodes().add(last);
           last.getPredNodes().add(newPredNode);
-          Ret newRet = new Ret();
-          last.getInstructions().add(newRet);
+          int numL = last.getInstructions().size();
+          if (numL > 0 && last.getInstructions().get(numL - 1) instanceof Ret) {
+            // do nothing
+          } else {
+            Ret newRet = new Ret();
+            last.getInstructions().add(newRet);          
+          }
           $n = last; 
         }
                    
@@ -633,6 +726,8 @@ stmt [Node predNode] returns [Node n = predNode]
          int numP = f.getNumParam();
          Call newCall = new Call($id.text, "" + numP);
          current.getInstructions().add(newCall);
+         Loadret lr = new Loadret("r" + registerCounter++);
+         current.getInstructions().add(lr);
       }
     
     )                                          
@@ -717,22 +812,23 @@ fun:
         currentScope = $id.text;
         registerCounter = 0;
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
+        head.setFunctionName($id.text);
         functions.add(head);
         head.setLocals(g_stable.gatherVariablesInScope($id.text));
         head.setRegisterMap(buildRegisterMap(head.getLocals()));
         localRegisterMap = head.getRegisterMap(); 
         System.out.println("After mapping vars for function " + $id.text + ", the reg count is " + registerCounter);
         funcNames.add($id.text);
-        Node firstBlock = new Node(NodeType.BLOCK, (currentIDNum++), "Block");
-        head.getSuccNodes().add(firstBlock);
-        firstBlock.getPredNodes().add(head);
-        Jumpi newJumpi = new Jumpi("L"+firstBlock.getId());
-        head.getInstructions().add(newJumpi);
+        //Node firstBlock = new Node(NodeType.BLOCK, (currentIDNum++), "Block");
+        //head.getSuccNodes().add(firstBlock);
+        //firstBlock.getPredNodes().add(head);
+        //Jumpi newJumpi = new Jumpi("L"+firstBlock.getId());
+        //head.getInstructions().add(newJumpi);
         last = new Node(NodeType.EXIT, (currentIDNum++), "Exit");
-        if (printNodeAdds)
+  /*      if (printNodeAdds)
            System.out.println("\nL" + head.getId() + " HEAD Node for function " + $id.text);
            System.out.println("jump from L" + head.getId() + " to L" + firstBlock.getId()); 
-           System.out.println("L" + firstBlock.getId() + " start new Block ");        
+           System.out.println("L" + firstBlock.getId() + " start new Block ");   */     
       } 
       
       params 
@@ -745,20 +841,29 @@ fun:
          for (String p : f.getParams()) {
             System.out.println(p);
             Loadinargument lia = new Loadinargument(p, count + "", getRegister(p));
-            firstBlock.getInstructions().add(lia);
+          //  firstBlock.getInstructions().add(lia);
+            head.getInstructions().add(lia);
             count++;
          }
       }
       
-      rettype decls current=stmts[firstBlock]
+      //rettype decls current=stmts[firstBlock]
+      rettype decls current=stmts[head]
     
       {   
         System.out.println("current node type = " + current.getNodeType());
         if (current.getNodeType() != NodeType.EXIT) {
            current.getSuccNodes().add(last);
            last.getPredNodes().add(current);
-           Ret newRet = new Ret();
-           last.getInstructions().add(newRet);
+           
+          int numL = last.getInstructions().size();
+          if (numL > 0 && last.getInstructions().get(numL - 1) instanceof Ret) {
+            // do nothing
+          } else {
+            Ret newRet = new Ret();
+            last.getInstructions().add(newRet);          
+          }
+
         }
         
         
