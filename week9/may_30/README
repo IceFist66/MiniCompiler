@@ -1,0 +1,8 @@
+Fact is clearly not tail recursive because the code itself jumps up one block 
+based on jump no equal. When the condition is not met, the function ends and the
+integer is returned.
+
+fact2 is tail recursive becuase it copies the tail factrep and puts it into its
+code and that serves as it's tail even though it doesn't jump to that code directly.
+
+
