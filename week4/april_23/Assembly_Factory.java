@@ -69,7 +69,7 @@ public class Assembly_Factory {
         else if(i instanceof Storeret){
             list = getStoreReturn(arg1);
         }
-        else if(i instanceof Ret){
+        else if(i instanceof iloc.Ret){
             list = getReturn();
         }//whatever else
     	else{
@@ -105,7 +105,7 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getReturn(){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Ret());
+        list.add(new asm.Ret()); //just calls "ret"
         return list;
     }
 }
