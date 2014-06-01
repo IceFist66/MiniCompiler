@@ -6,7 +6,7 @@ public class Ret extends Instruction_a{
 		this.arg1 = null;
 		this.arg2 = null;
 		this.arg3 = null;
-		this.text = "ret " + null;
+		this.text = "ret " + "";
 	}
 
 }
