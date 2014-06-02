@@ -76,4 +76,8 @@ arg1 + " , " + arg2
 
 leave
 0
-null
+""
+
+pushq
+1
+arg1
