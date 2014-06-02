@@ -99,7 +99,7 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getStoreReturn(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg1, "eax")); //move value to return register
+        list.addAll(getMovq(arg1, "%eax")); //move value to return register
         return list;
     }
 
