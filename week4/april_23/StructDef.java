@@ -13,7 +13,7 @@ public class StructDef {
 	}
 	
 	public StructDef(){
-                this.struct_types = new ArrayList<String>();
+      this.struct_types = new ArrayList<String>();
 		this.names = new ArrayList<String>();
 		this.types = new ArrayList<Type>();
 	}
@@ -38,6 +38,11 @@ public class StructDef {
 	
 	public String getName() {
 		return this.names.get(0);
+	}
+	
+	
+	public ArrayList<String> getNames() {
+		return this.names;
 	}
 	
 	public void addField(String struct_type, String name, Type type) {

@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class StructTypes {
 
@@ -62,6 +63,15 @@ public class StructTypes {
 			System.out.println("table_key not in hashmap.\n");
 			return null;
 		}
+		
+
 	}
+	
+			public ArrayList<String> getFieldNames(String scope, String varName) {
+		   HashMap<String, StructDef> value_map = structmap.get(scope);
+		   StructDef sd = value_map.get(varName);
+		   ArrayList<String> names = sd.getNames();
+		   return names;
+		}
 	
 }

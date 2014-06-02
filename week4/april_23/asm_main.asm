@@ -1,17 +1,56 @@
 main:
-	movq $num , r1
-	addq r1 , rarp
+	movq $a , r5
+	addq r5 , rarp
 	movq ---- , ----
 	movq ---- , ----
-	movq r0 , r2
-	movq r2 , r3
+	movq $b , r6
+	addq r6 , rarp
+	movq ---- , ----
+	movq ---- , ----
+	movq $c , r7
+	addq r7 , rarp
+	movq ---- , ----
+	movq ---- , ----
+	movq $d , r8
+	addq r8 , rarp
+	movq ---- , ----
+	movq ---- , ----
+	movq $e , r9
+	addq r9 , rarp
+	movq ---- , ----
+	movq ---- , ----
+	movq r4 , r10
+	movq r10 , r11
 	movq ---- , ----
 	movq ---- , ----
 	movq ---- , ----
-	movq $0 , r5
+	movq r4 , r13
 	movq ---- , ----
-	movq $1 , r7
-	movq r7 , eax
-	jmp L10
-L10:
+	movq r2 , r15
+	movq r15 , r16
+	movq ---- , ----
+	movq ---- , ----
+	movq ---- , ----
+	movq r2 , r18
+	movq ---- , ----
+	movq r3 , r20
+	movq r20 , r21
+	movq ---- , ----
+	movq ---- , ----
+	movq ---- , ----
+	movq r3 , r23
+	movq ---- , ----
+	movq r0 , r25
+	movq r25 , r26
+	movq ---- , ----
+	movq r1 , r27
+	movq r27 , r28
+	movq ---- , ----
+	movq ---- , ----
+	movq ---- , ----
+	movq ---- , ----
+	movq $0 , r31
+	movq r31 , eax
+	jmp L24
+L24:
 	ret 

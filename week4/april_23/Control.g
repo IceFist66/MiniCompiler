@@ -340,13 +340,14 @@ expression [Node predNode] returns [Node n = predNode]
    |^(NOT expression[predNode])
    |^(NEW id=ID)
     {
+        ArrayList<String> names = g_stypes.getFieldNames("global", $id.text);
+        
         New newNew = new New($id.text, "r"+registerCounter++);
         $n.getInstructions().add(newNew);
     }
    |^(DOT expression[predNode] expression[predNode])
    |^(INVOKE id=ID
-      {
-          if (printNodeAdds)
+
              System.out.println("invoke " + $id.text);
       }
      current=args[predNode]     
@@ -915,4 +916,5 @@ construct [StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = 
       }
       f = functions;
     }
-;
+;      {
+          if (printNodeAdds)

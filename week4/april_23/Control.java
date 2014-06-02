@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 Control.g 2014-06-01 21:19:59
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 Control.g 2014-06-02 09:37:36
 
    import java.util.Map;
    import java.util.HashMap;
@@ -1136,6 +1136,7 @@ public class Control extends TreeParser {
 
                     match(input, Token.UP, null); 
 
+                            ArrayList<String> names = g_stypes.getFieldNames("global", (id!=null?id.getText():null)); 
                             New newNew = new New((id!=null?id.getText():null), "r"+registerCounter++);
                             n.getInstructions().add(newNew);
                         
@@ -1143,7 +1144,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // Control.g:346:5: ^( DOT expression[predNode] expression[predNode] )
+                    // Control.g:347:5: ^( DOT expression[predNode] expression[predNode] )
                     {
                     match(input,DOT,FOLLOW_DOT_in_expression933); 
 
@@ -1164,7 +1165,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // Control.g:347:5: ^( INVOKE id= ID current= args[predNode] )
+                    // Control.g:348:5: ^( INVOKE id= ID current= args[predNode] )
                     {
                     match(input,INVOKE,FOLLOW_INVOKE_in_expression947); 
 
@@ -1193,7 +1194,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // Control.g:367:5: tr= TRUE
+                    // Control.g:368:5: tr= TRUE
                     {
                     tr=(CommonTree)match(input,TRUE,FOLLOW_TRUE_in_expression1025); 
 
@@ -1204,7 +1205,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // Control.g:372:5: fa= FALSE
+                    // Control.g:373:5: fa= FALSE
                     {
                     fa=(CommonTree)match(input,FALSE,FOLLOW_FALSE_in_expression1039); 
 
@@ -1215,7 +1216,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 19 :
-                    // Control.g:377:5: inte= INTEGER
+                    // Control.g:378:5: inte= INTEGER
                     {
                     inte=(CommonTree)match(input,INTEGER,FOLLOW_INTEGER_in_expression1053); 
 
@@ -1226,7 +1227,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // Control.g:382:5: id= ID
+                    // Control.g:383:5: id= ID
                     {
                     id=(CommonTree)match(input,ID,FOLLOW_ID_in_expression1067); 
 
@@ -1238,7 +1239,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 21 :
-                    // Control.g:388:5: en= ENDL
+                    // Control.g:389:5: en= ENDL
                     {
                     en=(CommonTree)match(input,ENDL,FOLLOW_ENDL_in_expression1081); 
 
@@ -1249,7 +1250,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 22 :
-                    // Control.g:393:5: NULL
+                    // Control.g:394:5: NULL
                     {
                     match(input,NULL,FOLLOW_NULL_in_expression1093); 
 
@@ -1260,7 +1261,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 23 :
-                    // Control.g:398:5: node= stmts[predNode]
+                    // Control.g:399:5: node= stmts[predNode]
                     {
                     pushFollow(FOLLOW_stmts_in_expression1109);
                     node=stmts(predNode);
@@ -1289,14 +1290,14 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "lvalue"
-    // Control.g:405:1: lvalue[Node predNode] returns [Node n = predNode] : ( ^( DOT lvalue[predNode] id= ID ) | id= ID );
+    // Control.g:406:1: lvalue[Node predNode] returns [Node n = predNode] : ( ^( DOT lvalue[predNode] id= ID ) | id= ID );
     public final Node lvalue(Node predNode) throws RecognitionException {
         Node n =  predNode;
 
         CommonTree id=null;
 
         try {
-            // Control.g:406:4: ( ^( DOT lvalue[predNode] id= ID ) | id= ID )
+            // Control.g:407:4: ( ^( DOT lvalue[predNode] id= ID ) | id= ID )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1314,7 +1315,7 @@ public class Control extends TreeParser {
             }
             switch (alt7) {
                 case 1 :
-                    // Control.g:406:6: ^( DOT lvalue[predNode] id= ID )
+                    // Control.g:407:6: ^( DOT lvalue[predNode] id= ID )
                     {
                     match(input,DOT,FOLLOW_DOT_in_lvalue1135); 
 
@@ -1331,7 +1332,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // Control.g:407:6: id= ID
+                    // Control.g:408:6: id= ID
                     {
                     id=(CommonTree)match(input,ID,FOLLOW_ID_in_lvalue1153); 
 
@@ -1356,7 +1357,7 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "stmt"
-    // Control.g:414:1: stmt[Node predNode] returns [Node n = predNode] : ( ^( BLOCK node= stmts[predNode] ) | ^( PRINT (current= expression[predNode] )* ) | ^( READ current= lvalue[predNode] ) | ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? ) | ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] ) | ^( DELETE current= expression[predNode] ) | ^( RETURN (current= expression[predNode] )? ) | ^( INVOKE id= ID current= args[predNode] ) | ^( ASSIGN current= expression[predNode] lv= lvalue[current] ) );
+    // Control.g:415:1: stmt[Node predNode] returns [Node n = predNode] : ( ^( BLOCK node= stmts[predNode] ) | ^( PRINT (current= expression[predNode] )* ) | ^( READ current= lvalue[predNode] ) | ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? ) | ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] ) | ^( DELETE current= expression[predNode] ) | ^( RETURN (current= expression[predNode] )? ) | ^( INVOKE id= ID current= args[predNode] ) | ^( ASSIGN current= expression[predNode] lv= lvalue[current] ) );
     public final Node stmt(Node predNode) throws RecognitionException {
         Node n =  predNode;
 
@@ -1377,7 +1378,7 @@ public class Control extends TreeParser {
 
 
         try {
-            // Control.g:415:5: ( ^( BLOCK node= stmts[predNode] ) | ^( PRINT (current= expression[predNode] )* ) | ^( READ current= lvalue[predNode] ) | ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? ) | ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] ) | ^( DELETE current= expression[predNode] ) | ^( RETURN (current= expression[predNode] )? ) | ^( INVOKE id= ID current= args[predNode] ) | ^( ASSIGN current= expression[predNode] lv= lvalue[current] ) )
+            // Control.g:416:5: ( ^( BLOCK node= stmts[predNode] ) | ^( PRINT (current= expression[predNode] )* ) | ^( READ current= lvalue[predNode] ) | ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? ) | ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] ) | ^( DELETE current= expression[predNode] ) | ^( RETURN (current= expression[predNode] )? ) | ^( INVOKE id= ID current= args[predNode] ) | ^( ASSIGN current= expression[predNode] lv= lvalue[current] ) )
             int alt11=9;
             switch ( input.LA(1) ) {
             case BLOCK:
@@ -1434,7 +1435,7 @@ public class Control extends TreeParser {
 
             switch (alt11) {
                 case 1 :
-                    // Control.g:415:6: ^( BLOCK node= stmts[predNode] )
+                    // Control.g:416:6: ^( BLOCK node= stmts[predNode] )
                     {
                     match(input,BLOCK,FOLLOW_BLOCK_in_stmt1180); 
 
@@ -1458,7 +1459,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // Control.g:428:6: ^( PRINT (current= expression[predNode] )* )
+                    // Control.g:429:6: ^( PRINT (current= expression[predNode] )* )
                     {
                     match(input,PRINT,FOLLOW_PRINT_in_stmt1247); 
 
@@ -1471,7 +1472,7 @@ public class Control extends TreeParser {
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // Control.g:435:5: (current= expression[predNode] )*
+                        // Control.g:436:5: (current= expression[predNode] )*
                         loop8:
                         do {
                             int alt8=2;
@@ -1484,7 +1485,7 @@ public class Control extends TreeParser {
 
                             switch (alt8) {
                         	case 1 :
-                        	    // Control.g:435:6: current= expression[predNode]
+                        	    // Control.g:436:6: current= expression[predNode]
                         	    {
                         	    pushFollow(FOLLOW_expression_in_stmt1269);
                         	    current=expression(predNode);
@@ -1538,7 +1539,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // Control.g:474:6: ^( READ current= lvalue[predNode] )
+                    // Control.g:475:6: ^( READ current= lvalue[predNode] )
                     {
                     match(input,READ,FOLLOW_READ_in_stmt1342); 
 
@@ -1572,7 +1573,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // Control.g:500:6: ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? )
+                    // Control.g:501:6: ^( IF e= expression[predNode] th= stmt[thenBlock] (el= stmt[elseBlock] )? )
                     {
                     match(input,IF,FOLLOW_IF_in_stmt1422); 
 
@@ -1638,7 +1639,7 @@ public class Control extends TreeParser {
                                
                                {el = null;} 
                               
-                    // Control.g:562:5: (el= stmt[elseBlock] )?
+                    // Control.g:563:5: (el= stmt[elseBlock] )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
 
@@ -1647,7 +1648,7 @@ public class Control extends TreeParser {
                     }
                     switch (alt9) {
                         case 1 :
-                            // Control.g:562:6: el= stmt[elseBlock]
+                            // Control.g:563:6: el= stmt[elseBlock]
                             {
                             pushFollow(FOLLOW_stmt_in_stmt1558);
                             el=stmt(elseBlock);
@@ -1696,7 +1697,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // Control.g:602:6: ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] )
+                    // Control.g:603:6: ^( WHILE e= expression[predNode] whileBodyAfter= stmt[whileBodyStart] e= expression[whileBodyAfter] )
                     {
                     match(input,WHILE,FOLLOW_WHILE_in_stmt1618); 
 
@@ -1768,7 +1769,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // Control.g:664:6: ^( DELETE current= expression[predNode] )
+                    // Control.g:665:6: ^( DELETE current= expression[predNode] )
                     {
                     match(input,DELETE,FOLLOW_DELETE_in_stmt1775); 
 
@@ -1797,7 +1798,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // Control.g:683:6: ^( RETURN (current= expression[predNode] )? )
+                    // Control.g:684:6: ^( RETURN (current= expression[predNode] )? )
                     {
                     match(input,RETURN,FOLLOW_RETURN_in_stmt1844); 
 
@@ -1805,7 +1806,7 @@ public class Control extends TreeParser {
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // Control.g:683:33: (current= expression[predNode] )?
+                        // Control.g:684:33: (current= expression[predNode] )?
                         int alt10=2;
                         int LA10_0 = input.LA(1);
 
@@ -1814,7 +1815,7 @@ public class Control extends TreeParser {
                         }
                         switch (alt10) {
                             case 1 :
-                                // Control.g:683:34: current= expression[predNode]
+                                // Control.g:684:34: current= expression[predNode]
                                 {
                                 pushFollow(FOLLOW_expression_in_stmt1851);
                                 current=expression(predNode);
@@ -1863,7 +1864,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // Control.g:715:6: ^( INVOKE id= ID current= args[predNode] )
+                    // Control.g:716:6: ^( INVOKE id= ID current= args[predNode] )
                     {
                     match(input,INVOKE,FOLLOW_INVOKE_in_stmt1898); 
 
@@ -1893,7 +1894,7 @@ public class Control extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // Control.g:737:6: ^( ASSIGN current= expression[predNode] lv= lvalue[current] )
+                    // Control.g:738:6: ^( ASSIGN current= expression[predNode] lv= lvalue[current] )
                     {
                     match(input,ASSIGN,FOLLOW_ASSIGN_in_stmt2012); 
 
@@ -1945,7 +1946,7 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "args"
-    // Control.g:760:1: args[Node predNode] returns [Node n = predNode] : ^( ARGS (aNode= expression[predNode] )* ) ;
+    // Control.g:761:1: args[Node predNode] returns [Node n = predNode] : ^( ARGS (aNode= expression[predNode] )* ) ;
     public final Node args(Node predNode) throws RecognitionException {
         Node n =  predNode;
 
@@ -1953,8 +1954,8 @@ public class Control extends TreeParser {
 
 
         try {
-            // Control.g:762:4: ( ^( ARGS (aNode= expression[predNode] )* ) )
-            // Control.g:762:5: ^( ARGS (aNode= expression[predNode] )* )
+            // Control.g:763:4: ( ^( ARGS (aNode= expression[predNode] )* ) )
+            // Control.g:763:5: ^( ARGS (aNode= expression[predNode] )* )
             {
             match(input,ARGS,FOLLOW_ARGS_in_args2091); 
 
@@ -1962,7 +1963,7 @@ public class Control extends TreeParser {
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // Control.g:766:4: (aNode= expression[predNode] )*
+                // Control.g:767:4: (aNode= expression[predNode] )*
                 loop12:
                 do {
                     int alt12=2;
@@ -1975,7 +1976,7 @@ public class Control extends TreeParser {
 
                     switch (alt12) {
                 	case 1 :
-                	    // Control.g:766:5: aNode= expression[predNode]
+                	    // Control.g:767:5: aNode= expression[predNode]
                 	    {
                 	    pushFollow(FOLLOW_expression_in_args2118);
                 	    aNode=expression(predNode);
@@ -2017,7 +2018,7 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "stmts"
-    // Control.g:779:1: stmts[Node predNode] returns [Node n = predNode] : ^( STMTS (newNode= stmt[predNode] )* ) ;
+    // Control.g:780:1: stmts[Node predNode] returns [Node n = predNode] : ^( STMTS (newNode= stmt[predNode] )* ) ;
     public final Node stmts(Node predNode) throws RecognitionException {
         Node n =  predNode;
 
@@ -2025,8 +2026,8 @@ public class Control extends TreeParser {
 
 
         try {
-            // Control.g:780:4: ( ^( STMTS (newNode= stmt[predNode] )* ) )
-            // Control.g:780:5: ^( STMTS (newNode= stmt[predNode] )* )
+            // Control.g:781:4: ( ^( STMTS (newNode= stmt[predNode] )* ) )
+            // Control.g:781:5: ^( STMTS (newNode= stmt[predNode] )* )
             {
             match(input,STMTS,FOLLOW_STMTS_in_stmts2163); 
 
@@ -2038,7 +2039,7 @@ public class Control extends TreeParser {
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // Control.g:788:4: (newNode= stmt[predNode] )*
+                // Control.g:789:4: (newNode= stmt[predNode] )*
                 loop13:
                 do {
                     int alt13=2;
@@ -2051,7 +2052,7 @@ public class Control extends TreeParser {
 
                     switch (alt13) {
                 	case 1 :
-                	    // Control.g:788:5: newNode= stmt[predNode]
+                	    // Control.g:789:5: newNode= stmt[predNode]
                 	    {
                 	    pushFollow(FOLLOW_stmt_in_stmts2189);
                 	    newNode=stmt(predNode);
@@ -2095,17 +2096,17 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "funcs"
-    // Control.g:804:1: funcs : ^( FUNCS ( fun )* ) ;
+    // Control.g:805:1: funcs : ^( FUNCS ( fun )* ) ;
     public final void funcs() throws RecognitionException {
         try {
-            // Control.g:804:6: ( ^( FUNCS ( fun )* ) )
-            // Control.g:805:5: ^( FUNCS ( fun )* )
+            // Control.g:805:6: ( ^( FUNCS ( fun )* ) )
+            // Control.g:806:5: ^( FUNCS ( fun )* )
             {
             match(input,FUNCS,FOLLOW_FUNCS_in_funcs2232); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // Control.g:805:13: ( fun )*
+                // Control.g:806:13: ( fun )*
                 loop14:
                 do {
                     int alt14=2;
@@ -2118,7 +2119,7 @@ public class Control extends TreeParser {
 
                     switch (alt14) {
                 	case 1 :
-                	    // Control.g:805:13: fun
+                	    // Control.g:806:13: fun
                 	    {
                 	    pushFollow(FOLLOW_fun_in_funcs2234);
                 	    fun();
@@ -2153,15 +2154,15 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "fun"
-    // Control.g:808:1: fun : ^( FUN id= ID params rettype decls current= stmts[head] ) ;
+    // Control.g:809:1: fun : ^( FUN id= ID params rettype decls current= stmts[head] ) ;
     public final void fun() throws RecognitionException {
         CommonTree id=null;
         Node current = null;
 
 
         try {
-            // Control.g:808:4: ( ^( FUN id= ID params rettype decls current= stmts[head] ) )
-            // Control.g:809:5: ^( FUN id= ID params rettype decls current= stmts[head] )
+            // Control.g:809:4: ( ^( FUN id= ID params rettype decls current= stmts[head] ) )
+            // Control.g:810:5: ^( FUN id= ID params rettype decls current= stmts[head] )
             {
             match(input,FUN,FOLLOW_FUN_in_fun2249); 
 
@@ -2263,17 +2264,17 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "params"
-    // Control.g:880:1: params : ^( PARAMS ( decl )* ) ;
+    // Control.g:881:1: params : ^( PARAMS ( decl )* ) ;
     public final void params() throws RecognitionException {
         try {
-            // Control.g:880:7: ( ^( PARAMS ( decl )* ) )
-            // Control.g:881:5: ^( PARAMS ( decl )* )
+            // Control.g:881:7: ( ^( PARAMS ( decl )* ) )
+            // Control.g:882:5: ^( PARAMS ( decl )* )
             {
             match(input,PARAMS,FOLLOW_PARAMS_in_params2372); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // Control.g:881:14: ( decl )*
+                // Control.g:882:14: ( decl )*
                 loop15:
                 do {
                     int alt15=2;
@@ -2286,7 +2287,7 @@ public class Control extends TreeParser {
 
                     switch (alt15) {
                 	case 1 :
-                	    // Control.g:881:14: decl
+                	    // Control.g:882:14: decl
                 	    {
                 	    pushFollow(FOLLOW_decl_in_params2374);
                 	    decl();
@@ -2321,11 +2322,11 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "rettype"
-    // Control.g:884:1: rettype : ^( RETTYPE type ) ;
+    // Control.g:885:1: rettype : ^( RETTYPE type ) ;
     public final void rettype() throws RecognitionException {
         try {
-            // Control.g:884:8: ( ^( RETTYPE type ) )
-            // Control.g:885:5: ^( RETTYPE type )
+            // Control.g:885:8: ( ^( RETTYPE type ) )
+            // Control.g:886:5: ^( RETTYPE type )
             {
             match(input,RETTYPE,FOLLOW_RETTYPE_in_rettype2389); 
 
@@ -2353,7 +2354,7 @@ public class Control extends TreeParser {
 
 
     // $ANTLR start "construct"
-    // Control.g:889:1: construct[StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = null] : ^( PROGRAM ( types ) decls funcs ) ;
+    // Control.g:890:1: construct[StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = null] : ^( PROGRAM ( types ) decls funcs ) ;
     public final ArrayList<Node> construct(StructTypes stypes, SymbolTable stable) throws RecognitionException {
         ArrayList<Node> f =  null;
 
@@ -2370,14 +2371,14 @@ public class Control extends TreeParser {
                 System.out.println("After mapping global vars, the reg count is " + registerCounter);
             
         try {
-            // Control.g:902:4: ( ^( PROGRAM ( types ) decls funcs ) )
-            // Control.g:902:6: ^( PROGRAM ( types ) decls funcs )
+            // Control.g:903:4: ( ^( PROGRAM ( types ) decls funcs ) )
+            // Control.g:903:6: ^( PROGRAM ( types ) decls funcs )
             {
             match(input,PROGRAM,FOLLOW_PROGRAM_in_construct2421); 
 
             match(input, Token.DOWN, null); 
-            // Control.g:902:16: ( types )
-            // Control.g:902:17: types
+            // Control.g:903:16: ( types )
+            // Control.g:903:17: types
             {
             pushFollow(FOLLOW_types_in_construct2424);
             types();

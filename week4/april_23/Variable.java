@@ -111,4 +111,6 @@ public class Variable {
     public ArrayList<String> getParams(){
         return this.parameters;
     }
+    
+    
 }
