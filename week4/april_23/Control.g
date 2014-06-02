@@ -29,15 +29,19 @@ options
     HashMap<String, String> globalRegisterMap; // this is set once at the start
     HashMap<String, String> localRegisterMap; // this is set anew for every function
     private int registerCounter = 0;
+    private int localRegisterReset = 0; // if storing globals, this won't be needed
     private String currentScope = "global";
     
-    public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames) {
+    // remove the boolean argument once figure out how to load and store globals
+    public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames, boolean isGlobalTable) {
       HashMap<String, String> registerMap = new HashMap<String, String>();
       for(String variableName : variableNames) {
          registerMap.put(variableName, "r" + registerCounter);
          System.out.println("Assigned variable " + variableName + " to register " + "r" + registerCounter);
          registerCounter++;
       }
+      if (isGlobalTable) // should not be needed when storing globals
+         localRegisterReset = registerCounter; // currently unused, if needed when reset reg count for each funtion, set to this instead of to 0
       return registerMap;
     }
     
@@ -341,13 +345,27 @@ expression [Node predNode] returns [Node n = predNode]
    |^(NEW id=ID)
     {
         ArrayList<String> names = g_stypes.getFieldNames("global", $id.text);
-        
-        New newNew = new New($id.text, "r"+registerCounter++);
+        String fields = "[";
+        for (String s : names)
+         fields += s + ", ";
+        fields = fields.substring(0, fields.length() - 2);
+        fields += "]";
+        New newNew = new New($id.text, fields, "r"+registerCounter++);
         $n.getInstructions().add(newNew);
     }
-   |^(DOT expression[predNode] expression[predNode])
+   |^(DOT n1 = expression[predNode]
+      {
+         Mov newMov = new Mov(getLastTarget(n1), "r" + registerCounter++);
+         n1.getInstructions().add(newMov);
+      }
+   
+   n2 = expression[n1]
+      {
+         $n = n2;
+      }
+   )
    |^(INVOKE id=ID
-
+      {
              System.out.println("invoke " + $id.text);
       }
      current=args[predNode]     
@@ -403,10 +421,21 @@ expression [Node predNode] returns [Node n = predNode]
     }
 ;
 
-lvalue [Node predNode] returns [Node n = predNode]
+// old working lvalue (doesn't handle dot expressions)
+/*lvalue [Node predNode] returns [Node n = predNode]
    : ^(DOT lvalue[predNode] id=ID) 
    | id=ID
       {
+         Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
+         $n.getInstructions().add(newMov);
+      }
+;*/
+
+lvalue [Node predNode] returns [Node n = predNode]
+   : ^(DOT lvalue[predNode] id=ID {System.out.println("-----DOT EXPR: " + $id.text);}) 
+   | id=ID
+      {
+         {System.out.println("-----DOT EXPR ID: " + $id.text);}
          Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
          $n.getInstructions().add(newMov);
       }
@@ -816,7 +845,7 @@ fun:
         head.setFunctionName($id.text);
         functions.add(head);
         head.setLocals(g_stable.gatherVariablesInScope($id.text));
-        head.setRegisterMap(buildRegisterMap(head.getLocals()));
+        head.setRegisterMap(buildRegisterMap(head.getLocals(), false));
         localRegisterMap = head.getRegisterMap(); 
         System.out.println("After mapping vars for function " + $id.text + ", the reg count is " + registerCounter);
         funcNames.add($id.text);
@@ -897,7 +926,7 @@ construct [StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = 
         printNodeAdds = false;
         printMini = false;
         ArrayList<String> globals = g_stable.gatherVariablesInScope("global");
-        globalRegisterMap = buildRegisterMap(globals);
+        globalRegisterMap = buildRegisterMap(globals, true);
         System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }
    : ^(PROGRAM (types) decls funcs)
@@ -916,5 +945,4 @@ construct [StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = 
       }
       f = functions;
     }
-;      {
-          if (printNodeAdds)
+;
