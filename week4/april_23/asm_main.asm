@@ -1,19 +1,17 @@
-L0:
-	movq ---- , ----
-L1:
-	movq ---- , ----
-	movq true , r6
-	movq r6 , r0
-	movq ---- , ----
-	movq r7 , r5
-	movq ---- , ----
-	movq r8 , r2
+main:
+	movq $num , r1
+	addq r1 , rarp
 	movq ---- , ----
 	movq ---- , ----
-	movq r10 , r11
-	addq r11 , r9
-	movq r11 , r3
+	movq r0 , r2
+	movq r2 , r3
 	movq ---- , ----
 	movq ---- , ----
-L2:
 	movq ---- , ----
+	movq $0 , r5
+	movq ---- , ----
+	movq $1 , r7
+	movq r7 , eax
+	jmp L10
+L10:
+	ret 
