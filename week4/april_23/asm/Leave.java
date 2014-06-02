@@ -6,7 +6,7 @@ public class Leave extends Instruction_a{
 		this.arg1 = null;
 		this.arg2 = null;
 		this.arg3 = null;
-		this.text = "leave " + null;
+		this.text = "leave " + "";
 	}
 
 }

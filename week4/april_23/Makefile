@@ -1,6 +1,8 @@
 FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java Node.java NodeType.java Assembly_Factory.java
 
 
+all : iloc-c asm-c Mini.class
+
 Mini.class : antlr.generated ${FILES}
 	javac *.java
 
@@ -19,5 +21,18 @@ antlr.generated.control : Control.g
 	java org.antlr.Tool Control.g
 	touch antlr.generated.control
 
-clean:
-	\rm *generated* MiniParser.java MiniLexer.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class *.dot *.il
+iloc-c :
+	make -C iloc
+
+asm-c :
+	make -C asm
+
+clean : clean_iloc clean_asm this
+
+this:
+	\rm *generated* MiniParser.java MiniLexer.java Control.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class *.dot *.il
+	
+clean_iloc :
+	make -C iloc clean
+clean_asm :
+	make -C asm clean
