@@ -2,13 +2,23 @@ import iloc.*;
 import asm.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Arrays;
 import java.io.IOException;
 
 public class Assembly_Factory {
+
+        //String[] temp = new String[]{"rdi","rsi","rdx","rcx","r8","r9"};
+        private ArrayList<String> arguments;
+        //String rdi = "rdi";
+        //arguments.add(rdi);
+        //Collections.addAll(arguments, temp);
+
 	private ArrayList<Node> input;
 	
 	public Assembly_Factory(ArrayList<Node> input){
 		this.input = input;
+                this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
 	}
 
 	public ArrayList<Node> getInput() {
@@ -74,7 +84,13 @@ public class Assembly_Factory {
         }
         else if(i instanceof iloc.Ret){
             list = getReturn();
-        }//whatever else
+        }
+        else if(i instanceof Sub){
+            list = getSubq(arg1, arg2, arg3);
+        }
+        /*else if(i instanceof Div){
+            list = getDiv(arg1, arg2, arg3);
+        }*///whatever else
     	else{
             list = getMovq("----", i.toString());
     	}
@@ -102,7 +118,7 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getStoreReturn(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg1, "%eax")); //move value to return register
+        list.addAll(getMovq(arg1, "%rax")); //move value to return register
         return list;
     }
 
@@ -131,7 +147,14 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getSubq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Subq(arg1, arg3)); //r3 += r1
+        list.add(new Subq(arg1, arg3)); //r3 -= r1
         return list;
     }
+    
+    /*public ArrayList<Instruction_a> getDiv(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg2, arg3)); //r3 = r2
+        list.add(new Idivq(arg1, arg3)); //r3 -= r1
+        return list;
+    }*/
 }
