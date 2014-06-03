@@ -24,6 +24,8 @@ public class Assembly_Factory {
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
+                        String prefront = "\t.text\n";// Add .text etc here
+                        String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
                         n.getAsmInstructions().addAll(getStart());
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
@@ -31,9 +33,8 @@ public class Assembly_Factory {
 			}
 			successors(n);
                         //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
-            n.printAsm(); //prints the asm instructions to screen
-	    }
-
+                        n.printAsm(prefront+front); //prints the asm instructions to screen
+	        }
 	}
 
     public void successors(Node n) {
@@ -75,7 +76,7 @@ public class Assembly_Factory {
             list = getReturn();
         }//whatever else
     	else{
-            list = getMovq("----", "----");
+            list = getMovq("----", i.toString());
     	}
     	return list;
     }
@@ -126,4 +127,11 @@ public class Assembly_Factory {
         list.add(new Cfi("endproc"));
         return list;
     }*/
+
+    public ArrayList<Instruction_a> getSubq(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg2, arg3)); //r3 = r2
+        list.add(new Subq(arg1, arg3)); //r3 += r1
+        return list;
+    }
 }

@@ -305,7 +305,7 @@ public class Node {
       return;
     }
     
-   public void printAsm() throws IOException {
+   public void printAsm(String front) throws IOException {
       FileWriter f;
 		String fileName;
 
@@ -315,6 +315,8 @@ public class Node {
       System.out.println();
       //String line = "L" + this.id + ":\n";
       // Add .text etc here
+      f.write(front); //.globl etc
+      System.out.print(front); 
       String line = this.getFunctionName() + ":\n";
 		f.write(line);
       System.out.print(line);
