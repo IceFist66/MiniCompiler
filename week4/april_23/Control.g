@@ -37,6 +37,7 @@ options
     private String dotFieldName = "---";
     private int maxNumParams = 0;
     private String stringConstants = "/t.section/t.rodata";
+    private String filename = "";
     
     // remove the boolean argument once figure out how to load and store globals
     public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames, boolean isGlobalTable) {
@@ -129,6 +130,10 @@ options
     
     public String getStringConstants() {
       return stringConstants;
+    }
+    
+    public String getFilename() {
+      return filename;
     }
 }
 
@@ -990,12 +995,14 @@ rettype:
 ;
 
 
-construct [StructTypes stypes, SymbolTable stable] returns [ArrayList<Node> f = null]
+construct [StructTypes stypes, SymbolTable stable, String filename] returns [ArrayList<Node> f = null]
     @init {
         g_stypes = stypes; 
         g_stable = stable; 
         functions = new ArrayList<Node>();
         funcNames = new ArrayList<String>();
+        filename = filename;
+        System.out.println("*****" + filename + "*****\n");
         currentIDNum = 0;
         printNodeAdds = false;
         printMini = false;

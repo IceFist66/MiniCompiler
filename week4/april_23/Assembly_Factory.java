@@ -5,20 +5,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Arrays;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileWriter;
 
 public class Assembly_Factory {
 
         //String[] temp = new String[]{"rdi","rsi","rdx","rcx","r8","r9"};
         private ArrayList<String> arguments;
+        private String fname;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
 
 	private ArrayList<Node> input;
 	
-	public Assembly_Factory(ArrayList<Node> input){
+	public Assembly_Factory(ArrayList<Node> input, String fname){
 		this.input = input;
-                this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
+		this.fname = fname;
+      this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
 	}
 
 	public ArrayList<Node> getInput() {
@@ -43,7 +47,8 @@ public class Assembly_Factory {
 			}
 			successors(n);
                         //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
-                        n.printAsm(prefront+front); //prints the asm instructions to screen
+                        printAsmAll(fname, input);
+                        //n.printAsm(prefront+front); //prints the asm instructions to screen
 	        }
 	}
 
@@ -157,4 +162,18 @@ public class Assembly_Factory {
         list.add(new Idivq(arg1, arg3)); //r3 -= r1
         return list;
     }*/
+    
+    public void printAsmAll(String fn, ArrayList<Node> funcs) throws IOException {
+      FileWriter f;
+		String fileName = fn.substring(0, fn.length() - 4);
+		fileName = "asm_" + fileName + "s";
+		f = new FileWriter(new File(fileName));
+		for (Node n : funcs) {
+		   String prefront = "\t.text\n";// Add .text etc here
+         String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
+		   front = prefront + front;
+		   f = n.printAsm(front, f);
+		}
+		f.close();
+   }
 }

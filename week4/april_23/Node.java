@@ -305,7 +305,49 @@ public class Node {
       return;
     }
     
-   public void printAsm(String front) throws IOException {
+   
+   public FileWriter printAsm(String front, FileWriter f) throws IOException {
+      System.out.println();
+      //String line = "L" + this.id + ":\n";
+      // Add .text etc here
+      f.write(front); //.globl etc
+      System.out.print(front); 
+      String line = this.getFunctionName() + ":\n";
+		f.write(line);
+      System.out.print(line);
+      ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
+      for(Instruction_a ainst : asm_instructions){
+         line = "\t" + ainst.toString() + "\n";
+         f.write(line);
+         System.out.print(line);
+      }
+      this.asm_printed = true;
+      f = asmSucc(this, f);
+      return f;
+    }
+    
+    public FileWriter asmSucc(Node n, FileWriter f) throws IOException {
+      ArrayList<Instruction_a> asm_instructions;
+      for (Node s : n.succNodes) {
+      if (s.asm_printed == false) {
+            String line = "L" + s.id + ":\n";
+	      	f.write(line);
+
+            System.out.print(line);
+            asm_instructions = s.getAsmInstructions();
+            for(Instruction_a ainst : asm_instructions){
+               line = "\t" + ainst.toString() + "\n";
+               f.write(line);
+               System.out.print(line);
+            }
+            this.asm_printed = true;
+            asmSucc(s, f);
+         }
+		}    
+      return f;
+    }
+    
+/*   public void printAsm(String front) throws IOException {
       FileWriter f;
 		String fileName;
 
@@ -329,9 +371,9 @@ public class Node {
       this.asm_printed = true;
       asmSucc(this, f);
 		f.close();
-    }
+    }*/
 
-    public void asmSucc(Node n, FileWriter f) throws IOException {
+    /*public void asmSucc(Node n, FileWriter f) throws IOException {
       ArrayList<Instruction_a> asm_instructions;
       for (Node s : n.succNodes) {
       if (s.asm_printed == false) {
@@ -351,5 +393,6 @@ public class Node {
 		}    
       return;
     }
+    */
     
 }

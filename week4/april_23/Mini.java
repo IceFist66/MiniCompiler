@@ -96,8 +96,8 @@ public class Mini
 
          // our code
          tparser.verify(stypes, stable);
-         ArrayList<Node> instructions = cparser.construct(stypes, stable);
-         Assembly_Factory factory = new Assembly_Factory(instructions);
+         ArrayList<Node> instructions = cparser.construct(stypes, stable, _inputFile);
+         Assembly_Factory factory = new Assembly_Factory(instructions, _inputFile);
          try {
             factory.convert();
          } catch (IOException e) {
