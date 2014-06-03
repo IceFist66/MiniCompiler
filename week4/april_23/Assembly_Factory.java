@@ -50,6 +50,7 @@ public class Assembly_Factory {
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
 			}
+            createKillGenSet(n);
 			n.setAsmProcessed(true);
 			successors(n);
          //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
@@ -68,6 +69,7 @@ public class Assembly_Factory {
         	    asm = getAssembly(inst);
         	    s.getAsmInstructions().addAll(asm);
                 }
+                createKillGenSet(s);
                 s.setAsmProcessed(true);
                 successors(s);
             }
@@ -211,5 +213,24 @@ public class Assembly_Factory {
          System.out.println("string # " + ct + ": " + c);
          ct++;
       }*/
+   }
+
+   public void createKillGenSet(Node s){
+        for(Instruction_a i_asm : s.getAsmInstructions()){
+            ArrayList<String> kill = s.getKillSet();
+            ArrayList<String> gen = s.getGenSet();
+            String target = i_asm.getTarget();
+            ArrayList<String> sources = i_asm.getSources();
+            for(String source : sources){
+                if(source.charAt(0) == 'r' || source.charAt(0) == '%'){
+                    if(!kill.contains(source)){
+                        gen.add(source);
+                    }
+                }
+            }
+            if(target != null){
+                kill.add(target);
+            }
+        }
    }
 }

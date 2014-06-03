@@ -32,14 +32,12 @@ def create_Class(name, size, text, target, sources):
        new_class +="\t\tthis.arg3 = null;\n"
    new_class +="\t\tthis.text = " + text + ";\n"
    new_class += "\t\tthis.target = " + target + ";\n"
+   new_class+="\t\tsources = new ArrayList<String>();\n"
    if(sources[0] != "null"):
-        new_class+="\t\tsources = new ArrayList<String>();\n"
         x = 0
         while(x<len(sources)):
             new_class+="\t\tsources.add("+sources[x]+");\n"
             x+=1
-   else:
-        new_class+="\t\tsources = null;\n"
    new_class +="\t}\n\n"
    if(name == "imulq"):
        new_class += "\tpublic " + new_name
@@ -53,14 +51,12 @@ def create_Class(name, size, text, target, sources):
        new_class +="\t\tthis.arg3 = arg3;\n"
        new_class +="\t\tthis.text = \"imulq \" + arg3 + \" , \" + arg2  + \" , \" + arg1;\n"
        new_class += "\t\tthis.target = " + target + ";\n"
+       new_class+="\t\tsources = new ArrayList<String>();\n"
        if(sources[0] != "null"):
-            new_class+="\t\tsources = new ArrayList<String>();\n"
             x = 0
             while(x<len(sources)):
                 new_class+="\t\tsources.add("+sources[x]+");\n"
                 x+=1
-       else:
-            new_class+="\t\tsources = null;\n"
        new_class +="\t}\n\n"
    new_class +="}"
    return new_class
