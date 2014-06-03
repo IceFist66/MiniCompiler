@@ -48,9 +48,9 @@ public class Assembly_Factory {
 			n.setAsmProcessed(true);
 			successors(n);
          //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
-         printAsmAll(fname, input);
          //n.printAsm(prefront+front); //prints the asm instructions to screen
 	   }
+	  printAsmAll(fname, input);
 	}
 
     public void successors(Node n) {

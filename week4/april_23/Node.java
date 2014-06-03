@@ -350,7 +350,7 @@ public class Node {
                f.write(line);
                System.out.print(line);
             }
-            this.asm_printed = true;
+            s.asm_printed = true;
             asmSucc(s, f);
          }
 		}    
