@@ -9,7 +9,7 @@ public class File extends Instruction_a{
 		this.arg3 = null;
 		this.text = "file " + "\"" + arg1 + "\"";
 		this.target = null;
-		sources = null;
+		sources = new ArrayList<String>();
 	}
 
 }

@@ -35,6 +35,7 @@ options
     private boolean assignRisField = false;
     private String assignLVisFieldName = "---";
     private String dotFieldName = "---";
+    private String lvDotFieldName = "---";
     private int maxNumParams = 0;
     private ArrayList<String> stringDirectives;
     private String stringConstants;
@@ -408,14 +409,12 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String reg = getLastTarget(n1);
          assignRisField = true;
-        // Loadai lai = new Loadai(reg, dotFieldName, "r" + registerCounter++);
-        // n1.getInstructions().add(lai);
       }
    
    n2 = expression[n1]
       {
-         Loadai lai = new Loadai(reg, dotFieldName, "r" + registerCounter++);
-         n2.getInstructions().add(lai);
+         Loadai lai2 = new Loadai(reg, dotFieldName, "twoD" + registerCounter++);
+         n2.getInstructions().add(lai2);
          $n = n2;
          assignRisField = false;
       }
@@ -462,8 +461,9 @@ expression [Node predNode] returns [Node n = predNode]
         Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
         //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
         $n.getInstructions().add(newMov);
-        dotFieldName = $id.text;
+        //dotFieldName = $id.text;
         }
+        dotFieldName = $id.text; // this WORKS but is this correct?
     }
    |en=ENDL
     {
@@ -499,7 +499,7 @@ lvalue [Node predNode] returns [Node n = predNode]
          assignLVisField = true;
          assignLVisFieldName = $id.text; 
          System.out.println("-----DOT EXPR: " + $id.text);
-         //Loadai lai = new Loadai(getLastTarget(predNode), $id.text, "r" + registerCounter++); // this is needed! make sure it works
+        // Loadai lai = new Loadai(getLastTarget(predNode), $id.text, "LV" + registerCounter++); // this is needed! make sure it works
       }      
       
    ) 
@@ -507,7 +507,7 @@ lvalue [Node predNode] returns [Node n = predNode]
       {
             {System.out.println("-----DOT EXPR ID: " + $id.text);}
             Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
-            predNode.getInstructions().add(newMov);
+            predNode.getInstructions().add(newMov);            
             $n = predNode;
       }
 ;

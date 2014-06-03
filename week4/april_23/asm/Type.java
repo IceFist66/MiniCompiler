@@ -9,7 +9,7 @@ public class Type extends Instruction_a{
 		this.arg3 = null;
 		this.text = "type " + arg1 + ", " + arg2;
 		this.target = null;
-		sources = null;
+		sources = new ArrayList<String>();
 	}
 
 }

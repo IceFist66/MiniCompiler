@@ -57,7 +57,7 @@ domath:
 	mov r1, r14                      //math1.simp.one = math1.bar;             
 	loadai r14, bar, r15
 	mov r1, r16
-	loadai r16, simp, r17
+	loadai r16, simp, r17 <---- not yet
 	storeai r15, r17, one
 	
 	mov r2, r18                      //math2.simp.one = math2.bar;

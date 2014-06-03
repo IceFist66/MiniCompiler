@@ -9,7 +9,7 @@ public class Leave extends Instruction_a{
 		this.arg3 = null;
 		this.text = "leave " + "";
 		this.target = null;
-		sources = null;
+		sources = new ArrayList<String>();
 	}
 
 }
