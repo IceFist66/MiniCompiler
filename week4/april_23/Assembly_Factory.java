@@ -38,30 +38,34 @@ public class Assembly_Factory {
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
-                        String prefront = "\t.text\n";// Add .text etc here
-                        String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
-                        n.getAsmInstructions().addAll(getStart());
+         //String prefront = "\t.text\n";// Add .text etc here
+         //String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
+         n.getAsmInstructions().addAll(getStart());
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
 			}
+			n.setAsmProcessed(true);
 			successors(n);
-                        //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
-                        printAsmAll(fname, input);
-                        //n.printAsm(prefront+front); //prints the asm instructions to screen
-	        }
+         //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
+         printAsmAll(fname, input);
+         //n.printAsm(prefront+front); //prints the asm instructions to screen
+	   }
 	}
 
     public void successors(Node n) {
       ArrayList<Instruction> instructions;
       ArrayList<Instruction_a> asm;
       for (Node s : n.getSuccNodes()) {
+      if (s.getAsmProcessed() == false) {
          instructions = s.getInstructions();
          for(Instruction inst : instructions){
         	 asm = getAssembly(inst);
         	 s.getAsmInstructions().addAll(asm);
          }
+         s.setAsmProcessed(true);
          successors(s);
+         }
       }    
       return;
     }

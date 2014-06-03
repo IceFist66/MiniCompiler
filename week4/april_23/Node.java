@@ -27,6 +27,7 @@ public class Node {
 	private Node backEdgeTarget;
 	private boolean iloc_printed;
 	private boolean asm_printed;
+	private boolean asm_processed;
 	
 	public Node (NodeType nodeType, int id, String text) {
 		this.id = id;
@@ -45,6 +46,15 @@ public class Node {
 		backEdgeTarget = null;
 		iloc_printed = false;
 		asm_printed = false;
+		asm_processed = false;
+	}
+	
+	public boolean getAsmProcessed() {
+	   return asm_processed;
+	}
+	
+	public void setAsmProcessed(boolean b) {
+	   asm_processed = b;
 	}
 	
 	public String getFunctionName() {
