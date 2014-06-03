@@ -35,6 +35,8 @@ options
     private boolean assignRisField = false;
     private String assignLVisFieldName = "---";
     private String dotFieldName = "---";
+    private int maxNumParams = 0;
+    private String stringConstants = "/t.section/t.rodata";
     
     // remove the boolean argument once figure out how to load and store globals
     public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames, boolean isGlobalTable) {
@@ -115,6 +117,18 @@ options
          }
       }
       return tar;
+    }
+    
+    public ArrayList<String> getFuncNames() {
+      return this.funcNames;
+    }
+    
+    public int getMaxNumParams() {
+      return maxNumParams;
+    }
+    
+    public String getStringConstants() {
+      return stringConstants;
     }
 }
 
@@ -404,6 +418,8 @@ expression [Node predNode] returns [Node n = predNode]
       {  
          Variable f = g_stable.getVariable(currentScope, $id.text);
          int numP = f.getNumParam();
+         if (numP > maxNumParams)
+            maxNumParams = numP;
          Call newCall = new Call($id.text, "" + numP);
          current.getInstructions().add(newCall);
          Loadret lr = new Loadret("r" + registerCounter++);
@@ -798,6 +814,8 @@ stmt [Node predNode] returns [Node n = predNode]
       {  
          Variable f = g_stable.getVariable(currentScope, $id.text);
          int numP = f.getNumParam();
+         if (numP > maxNumParams)
+            maxNumParams = numP;
          Call newCall = new Call($id.text, "" + numP);
          current.getInstructions().add(newCall);
          Loadret lr = new Loadret("r" + registerCounter++);
@@ -920,6 +938,8 @@ fun:
       {
          Variable f = g_stable.getVariable("global", $id.text);
          int numP = f.getNumParam();
+         if (numP > maxNumParams)
+            maxNumParams = numP;
          int count = 0;
          System.out.println("numP = " + numP);
          for (String p : f.getParams()) {

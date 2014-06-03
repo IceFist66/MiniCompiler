@@ -314,6 +314,7 @@ public class Node {
       //System.out.println(fileName);
       System.out.println();
       //String line = "L" + this.id + ":\n";
+      // Add .text etc here
       String line = this.getFunctionName() + ":\n";
 		f.write(line);
       System.out.print(line);
