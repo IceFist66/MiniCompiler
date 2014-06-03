@@ -38,9 +38,9 @@ public class Assembly_Factory {
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
-         //String prefront = "\t.text\n";// Add .text etc here
-         //String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
-         n.getAsmInstructions().addAll(getStart());
+                        //String prefront = "\t.text\n";// Add .text etc here
+                        //String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
+                        n.getAsmInstructions().addAll(getStart());
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
@@ -57,15 +57,15 @@ public class Assembly_Factory {
       ArrayList<Instruction> instructions;
       ArrayList<Instruction_a> asm;
       for (Node s : n.getSuccNodes()) {
-      if (s.getAsmProcessed() == false) {
-         instructions = s.getInstructions();
-         for(Instruction inst : instructions){
-        	 asm = getAssembly(inst);
-        	 s.getAsmInstructions().addAll(asm);
-         }
-         s.setAsmProcessed(true);
-         successors(s);
-         }
+            if (s.getAsmProcessed() == false) {
+                instructions = s.getInstructions();
+                for(Instruction inst : instructions){
+        	    asm = getAssembly(inst);
+        	    s.getAsmInstructions().addAll(asm);
+                }
+                s.setAsmProcessed(true);
+                successors(s);
+            }
       }    
       return;
     }
