@@ -24,11 +24,13 @@ public class Assembly_Factory {
 		ArrayList<Instruction_a> asm;
 		for(Node n: input){
 			ArrayList<Instruction> instructions = n.getInstructions();
+                        n.getAsmInstructions().addAll(getStart());
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
 			}
 			successors(n);
+                        //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
             n.printAsm(); //prints the asm instructions to screen
 	    }
 
@@ -105,7 +107,23 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getReturn(){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Leave()); //leave
         list.add(new asm.Ret()); //just calls "ret"
+        list.add(new Cfi("endproc"));
         return list;
     }
+
+    public ArrayList<Instruction_a> getStart(){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cfi("startproc"));
+        list.add(new Pushq("%rbp"));
+        list.addAll(getMovq("%rsp", "%rbp"));
+        return list;
+    }
+    
+    /*public ArrayList<Instruction_a> getEnd(){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cfi("endproc"));
+        return list;
+    }*/
 }

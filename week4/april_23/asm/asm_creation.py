@@ -72,7 +72,14 @@ def main():
         j = 0
         while(j<len(classes)):
             name = classes[j]
-            create_file(name, create_Class(name, args, string(name, text)))            
+            if(name == "cfi"):
+                text = "\".cfi_\" + arg1"
+                create_file(name, create_Class(name, args, text))           
+            else if(name == "text"):
+                text = "\".text\" + arg1"
+                create_file(name, create_Class(name, args, text))           
+            else:
+                create_file(name, create_Class(name, args, string(name, text)))            
             j+=1
         i+=4
 

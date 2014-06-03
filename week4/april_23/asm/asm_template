@@ -81,3 +81,15 @@ leave
 pushq
 1
 arg1
+
+cfi
+1
+_arg1
+
+file
+1
+"\"" + arg1 + "\""
+
+type
+2
+arg1 + ", " + arg2
