@@ -75,7 +75,7 @@ def main():
             if(name == "cfi"):
                 text = "\".cfi_\" + arg1"
                 create_file(name, create_Class(name, args, text))           
-            else if(name == "text"):
+            elif(name == "text"):
                 text = "\".text\" + arg1"
                 create_file(name, create_Class(name, args, text))           
             else:
