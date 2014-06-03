@@ -5,9 +5,9 @@ Hope this helps.
 
 import sys
 
-def create_Class(name, size, text):
+def create_Class(name, size, text, target, sources):
    new_name = name.capitalize()
-   new_class = "package asm;\n\n"
+   new_class = "package asm;\nimport java.util.*;\n\n"
    new_class += "public class " + new_name + " extends Instruction_a{\n\n"
    new_class += "\tpublic " + new_name
    new_class += "("
@@ -31,6 +31,15 @@ def create_Class(name, size, text):
    else:
        new_class +="\t\tthis.arg3 = null;\n"
    new_class +="\t\tthis.text = " + text + ";\n"
+   new_class += "\t\tthis.target = " + target + ";\n"
+   if(sources[0] != "null"):
+        new_class+="\t\tsources = new ArrayList<String>();\n"
+        x = 0
+        while(x<len(sources)):
+            new_class+="\t\tsources.add("+sources[x]+");\n"
+            x+=1
+   else:
+        new_class+="\t\tsources = null;\n"
    new_class +="\t}\n\n"
    if(name == "imulq"):
        new_class += "\tpublic " + new_name
@@ -43,6 +52,15 @@ def create_Class(name, size, text):
        new_class +="\t\tthis.arg2 = arg2;\n"
        new_class +="\t\tthis.arg3 = arg3;\n"
        new_class +="\t\tthis.text = \"imulq \" + arg3 + \" , \" + arg2  + \" , \" + arg1;\n"
+       new_class += "\t\tthis.target = " + target + ";\n"
+       if(sources[0] != "null"):
+            new_class+="\t\tsources = new ArrayList<String>();\n"
+            x = 0
+            while(x<len(sources)):
+                new_class+="\t\tsources.add("+sources[x]+");\n"
+                x+=1
+       else:
+            new_class+="\t\tsources = null;\n"
        new_class +="\t}\n\n"
    new_class +="}"
    return new_class
@@ -69,18 +87,20 @@ def main():
         args = int(content[i+1])
         text = content[i+2].rstrip()
         classes = content[i].split()
+        target = content[i+3].rstrip()
+        sources = content[i+4].split()
         j = 0
         while(j<len(classes)):
             name = classes[j]
             if(name == "cfi"):
                 text = "\".cfi_\" + arg1"
-                create_file(name, create_Class(name, args, text))           
+                create_file(name, create_Class(name, args, text, target, sources))           
             elif(name == "text"):
                 text = "\".text\" + arg1"
-                create_file(name, create_Class(name, args, text))           
+                create_file(name, create_Class(name, args, text, target, sources))           
             else:
-                create_file(name, create_Class(name, args, string(name, text)))            
+                create_file(name, create_Class(name, args, string(name, text), target, sources))            
             j+=1
-        i+=4
+        i+=6
 
 main()

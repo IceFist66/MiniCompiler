@@ -1,95 +1,143 @@
 addq
 2
 arg2 + " , " + arg1
+arg2
+arg1 arg2
 
 subq
 2
 arg2 + " , " + arg1
+arg2
+arg1 arg2
 
 imulq
 2
 arg2 + " , " + arg1
+arg2
+arg1
 
 idivq
 1
+arg1
+arg2
 arg1
 
 andq
 2
 arg2 + " , " + arg1
+null
+arg1 arg2
 
 orgq
 2
 arg2 + " , " + arg1
+null
+arg1 arg2
 
 xorq
 2
 arg2 + " , " + arg1
+null
+arg1 arg2
 
 cmp
 2
 arg2 + " , " + arg1
+null
+arg1 arg2
 
 jmp je jg jge jl jle jne
 1
+arg1
+null
 arg1
 
 movq
 2
 arg1 + " , " + arg2
+arg2
+arg1
 
 call
 1
+arg1
+null
 arg1
 
 ret
 0
 ""
+null
+null
 
 cmoveq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 cmovgq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 cmovgeq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 cmovlq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 cmovleq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 cmovneq
 2
 arg1 + " , " + arg2
+null
+arg1 arg2
 
 shrq
 2
 arg1 + " , " + arg2
+null
+arg2
 
 leave
 0
 ""
+null
+null
 
 pushq
 1
+arg1
+null
 arg1
 
 cfi
 1
 _arg1
+null
+null
 
 file
 1
 "\"" + arg1 + "\""
+null
+null
 
 type
 2
 arg1 + ", " + arg2
+null
+null
