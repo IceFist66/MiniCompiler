@@ -1,4 +1,5 @@
 package asm;
+import java.util.*;
 
 public class Leave extends Instruction_a{
 
@@ -7,6 +8,8 @@ public class Leave extends Instruction_a{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "leave " + "";
+		this.target = null;
+		sources = null;
 	}
 
 }

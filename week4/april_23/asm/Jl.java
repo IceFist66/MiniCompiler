@@ -1,4 +1,5 @@
 package asm;
+import java.util.*;
 
 public class Jl extends Instruction_a{
 
@@ -7,6 +8,9 @@ public class Jl extends Instruction_a{
 		this.arg2 = null;
 		this.arg3 = null;
 		this.text = "jl " + arg1;
+		this.target = null;
+		sources = new ArrayList<String>();
+		sources.add(arg1);
 	}
 
 }

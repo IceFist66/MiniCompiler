@@ -1,4 +1,5 @@
 package asm;
+import java.util.*;
 
 public class Addq extends Instruction_a{
 
@@ -7,6 +8,10 @@ public class Addq extends Instruction_a{
 		this.arg2 = arg2;
 		this.arg3 = null;
 		this.text = "addq " + arg2 + " , " + arg1;
+		this.target = arg2;
+		sources = new ArrayList<String>();
+		sources.add(arg1);
+		sources.add(arg2);
 	}
 
 }

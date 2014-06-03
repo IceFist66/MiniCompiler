@@ -1,13 +1,13 @@
 package asm;
 import java.util.*;
 
-public class Ret extends Instruction_a{
+public class Cfi extends Instruction_a{
 
-	public Ret(){
-		this.arg1 = null;
+	public Cfi(String arg1){
+		this.arg1 = arg1;
 		this.arg2 = null;
 		this.arg3 = null;
-		this.text = "ret " + "";
+		this.text = ".cfi_" + arg1;
 		this.target = null;
 		sources = null;
 	}

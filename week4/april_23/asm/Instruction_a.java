@@ -1,6 +1,7 @@
 package asm;
 
 import java.io.*;
+import java.util.*;
 
 public abstract class Instruction_a{
     String arg1;
@@ -8,6 +9,7 @@ public abstract class Instruction_a{
     String arg3;
     String text;
     String target;
+    ArrayList<String> sources;
 	
     public String toString(){
     	return this.text;
