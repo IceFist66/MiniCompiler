@@ -42,4 +42,8 @@ public abstract class Instruction_a{
     public String getTarget(){
         return this.target;
     }
+
+    public ArrayList<String> getSources(){
+        return this.sources;
+    }
 }
