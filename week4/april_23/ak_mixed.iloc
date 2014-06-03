@@ -32,33 +32,41 @@ L7:
 
 domath:
 	loadinargument num, 0, r0
-	new foo, [simp, bar, cool], r4
+	new foo, [simp, bar, cool], r4   //math1 = new foo;
 	mov r4, r1
-	new simple, [one], r5
+	
+	new simple, [one], r5            //math1.simp = new simple;
 	mov r1, r6
 	storeai r5, r6, simp
-	new foo, [simp, bar, cool], r7
+	
+	new foo, [simp, bar, cool], r7   //math2 = new foo;
 	mov r7, r2
-	new simple, [one], r8
-	mov r2, r9
+	
+	new simple, [one], r8            //math2.simp = new simple;
+	mov r2, r9                      
 	storeai r8, r9, simp
-	mov r0, r10
-	mov r1, r11
+	
+	mov r0, r10                      //math1.bar = num;
+	mov r1, r11                      
 	storeai r10, r11, bar
-	loadi 3, r12
+	
+	loadi 3, r12                     //math2.bar = 3;
 	mov r2, r13
 	storeai r12, r13, bar
-	mov r1, r14
+	
+	mov r1, r14                      //math1.simp.one = math1.bar;             
 	loadai r14, bar, r15
 	mov r1, r16
 	loadai r16, simp, r17
 	storeai r15, r17, one
-	mov r2, r18
+	
+	mov r2, r18                      //math2.simp.one = math2.bar;
 	loadai r18, bar, r19
 	mov r2, r20
 	loadai r20, simp, r21
 	storeai r19, r21, one
-	mov r0, r22
+	
+	mov r0, r22                      //while(num > 0)
 	loadi 0, r23
 	comp r22, r23, ccr
 	cbrle ccr, L9, L8

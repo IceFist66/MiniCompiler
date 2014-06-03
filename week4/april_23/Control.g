@@ -31,6 +31,10 @@ options
     private int registerCounter = 0;
     private int localRegisterReset = 0; // if storing globals, this won't be needed
     private String currentScope = "global";
+    private boolean assignLVisField = false; // used in processiing ASSIGN statements
+    private boolean assignRisField = false;
+    private String assignLVisFieldName = "---";
+    private String dotFieldName = "---";
     
     // remove the boolean argument once figure out how to load and store globals
     public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames, boolean isGlobalTable) {
@@ -81,14 +85,36 @@ options
       int numC = n.getInstructions().size();
       if (numC > 0) {
          i = n.getInstructions().get(numC - 1);
-         if (i instanceof Mov && i.getArg1().equals(i.getTarget()))
+         if (i instanceof Mov && i.getArg1().equals(i.getTarget())) {
             n.getInstructions().remove(numC - 1);
+            //registerCounter--;
+         }
          return i.getTarget();
       }
       else {
          System.out.println("no instruction!");
          return "no instruction!";
       }
+    }
+    
+    public String getLastMovTarget(Node n) {
+      Instruction i;
+      boolean done = false;
+      int numC = n.getInstructions().size();
+      int counter = numC - 1;
+      String tar = "LastMovTargetError";
+      while (counter >= 0 && !done) {
+         i = n.getInstructions().get(counter);
+         if (i instanceof Mov && i.getArg1().equals(i.getTarget())) {
+            n.getInstructions().remove(numC - 1);
+            //registerCounter--;
+         }
+         if (i instanceof Mov) {
+            tar = i.getTarget();
+            done = true;
+         }
+      }
+      return tar;
     }
 }
 
@@ -355,13 +381,18 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |^(DOT n1 = expression[predNode]
       {
-         Mov newMov = new Mov(getLastTarget(n1), "r" + registerCounter++);
-         n1.getInstructions().add(newMov);
+         String reg = getLastTarget(n1);
+         assignRisField = true;
+        // Loadai lai = new Loadai(reg, dotFieldName, "r" + registerCounter++);
+        // n1.getInstructions().add(lai);
       }
    
    n2 = expression[n1]
       {
+         Loadai lai = new Loadai(reg, dotFieldName, "r" + registerCounter++);
+         n2.getInstructions().add(lai);
          $n = n2;
+         assignRisField = false;
       }
    )
    |^(INVOKE id=ID
@@ -400,9 +431,12 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |id=ID
     {
+      if (!assignRisField) {
         Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
         //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
         $n.getInstructions().add(newMov);
+        dotFieldName = $id.text;
+        }
     }
    |en=ENDL
     {
@@ -432,12 +466,22 @@ expression [Node predNode] returns [Node n = predNode]
 ;*/
 
 lvalue [Node predNode] returns [Node n = predNode]
-   : ^(DOT lvalue[predNode] id=ID {System.out.println("-----DOT EXPR: " + $id.text);}) 
+   : ^(DOT lvalue[predNode] id=ID 
+   
+      {
+         assignLVisField = true;
+         assignLVisFieldName = $id.text; 
+         System.out.println("-----DOT EXPR: " + $id.text);
+         //Loadai lai = new Loadai(getLastTarget(predNode), $id.text, "r" + registerCounter++); // this is needed! make sure it works
+      }      
+      
+   ) 
    | id=ID
       {
-         {System.out.println("-----DOT EXPR ID: " + $id.text);}
-         Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
-         $n.getInstructions().add(newMov);
+            {System.out.println("-----DOT EXPR ID: " + $id.text);}
+            Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
+            predNode.getInstructions().add(newMov);
+            $n = predNode;
       }
 ;
 
@@ -778,11 +822,21 @@ stmt [Node predNode] returns [Node n = predNode]
     
     lv=lvalue[current]
         {
-          String l = getLastTarget(lv);
+          String l = getLastMovTarget(lv); // this needs to get the target of the last move
           System.out.println("lValue = " + l);
           $n = lv;
-          Mov newMov = new Mov(r, l);
-          $n.getInstructions().add(newMov);
+          if(assignLVisField) {
+            int tarReg = registerCounter++;         
+            Mov newMov = new Mov(l, "r" + tarReg);
+            $n.getInstructions().add(newMov);
+            Storeai sai = new Storeai(r, "r" + tarReg, assignLVisFieldName);
+            $n.getInstructions().add(sai);
+          } else {
+             Mov newMov = new Mov(r, l);
+             $n.getInstructions().add(newMov);
+          }
+          assignLVisField = false;
+          assignLVisFieldName = "---";
         }
     )
 ;
