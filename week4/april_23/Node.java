@@ -316,10 +316,12 @@ public class Node {
     }
     
    
-   public FileWriter printAsm(String front, FileWriter f) throws IOException {
+   public FileWriter printAsm(String front, FileWriter f, String stringConstants) throws IOException {
       System.out.println();
       //String line = "L" + this.id + ":\n";
       // Add .text etc here
+      f.write(stringConstants);
+      System.out.print(stringConstants);
       f.write(front); //.globl etc
       System.out.print(front); 
       String line = this.getFunctionName() + ":\n";

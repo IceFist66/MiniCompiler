@@ -36,7 +36,9 @@ options
     private String assignLVisFieldName = "---";
     private String dotFieldName = "---";
     private int maxNumParams = 0;
-    private String stringConstants = "/t.section/t.rodata";
+    private ArrayList<String> stringDirectives;
+    private String stringConstants;
+    private int stringCounter = 0;
     private String filename = "";
     
     // remove the boolean argument once figure out how to load and store globals
@@ -130,6 +132,10 @@ options
     
     public String getStringConstants() {
       return stringConstants;
+    }
+    
+    public ArrayList<String> getStringDirectives() {
+      return stringDirectives;
     }
     
     public String getFilename() {
@@ -557,9 +563,18 @@ stmt [Node predNode] returns [Node n = predNode]
                      current.getInstructions().remove(counter);
                      current.getInstructions().add(pl);
                   }
-                  counter--;           
+                  counter--;       
                }            
             }         
+         }
+         String stringLabel = ".LC" + (stringCounter++) + ":\n";
+         String entry = "\t.string ";
+         numC = current.getInstructions().size();
+         i = current.getInstructions().get(numC - 1);
+         if (i instanceof Print) {
+            stringConstants += (stringLabel + entry + "\"\%d\"\n");
+         } else {
+            stringConstants += (stringLabel + entry + "\"\%d\\n\"\n");
          }
          n = current;
       }
@@ -918,6 +933,7 @@ fun:
       {
         currentScope = $id.text;
         registerCounter = 0;
+        stringConstants += "\t.section .rodata\n";
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
         head.setFunctionName($id.text);
         functions.add(head);
@@ -975,6 +991,9 @@ fun:
 
         }
         
+        String newString = stringConstants.substring(0, stringConstants.length());
+        stringDirectives.add(newString);
+        stringConstants = "";
         
         if (printNodeAdds){
             if(current.getNodeType() != NodeType.EXIT)
@@ -1001,6 +1020,8 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         g_stable = stable; 
         functions = new ArrayList<Node>();
         funcNames = new ArrayList<String>();
+        stringDirectives = new ArrayList<String>();
+        stringConstants = "";
         filename = filename;
         System.out.println("*****" + filename + "*****\n");
         currentIDNum = 0;

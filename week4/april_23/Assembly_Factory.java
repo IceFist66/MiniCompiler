@@ -13,15 +13,20 @@ public class Assembly_Factory {
         //String[] temp = new String[]{"rdi","rsi","rdx","rcx","r8","r9"};
         private ArrayList<String> arguments;
         private String fname;
+        private String stringConstants;
+        private ArrayList<String> stringDirectives;
+        private int stringCounter;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
 
 	private ArrayList<Node> input;
 	
-	public Assembly_Factory(ArrayList<Node> input, String fname){
+	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives){
 		this.input = input;
 		this.fname = fname;
+		this.stringDirectives = stringDirectives;
+		stringCounter = 0;
       this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
 	}
 
@@ -50,7 +55,7 @@ public class Assembly_Factory {
          //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
          //n.printAsm(prefront+front); //prints the asm instructions to screen
 	   }
-	  printAsmAll(fname, input);
+	  printAsmAll(fname, input, stringDirectives);
 	}
 
     public void successors(Node n) {
@@ -84,6 +89,9 @@ public class Assembly_Factory {
         }
         else if(i instanceof Jumpi){
             list = getJmp(arg1);
+        }
+        else if(i instanceof Print || i instanceof Println){
+            list = getPrint(arg1);
         }
         else if(i instanceof Loadi){
             list = getMovq("$"+arg1, arg2);
@@ -122,6 +130,15 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getJmp(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Jmp(arg1)); //jmp label
+        return list;
+    }
+    
+    public ArrayList<Instruction_a> getPrint(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Movq(".LC" + stringCounter++, "%rdi"));
+        list.add(new Movq(arg1, "%rsi"));
+        list.add(new Movq("$0", "%rax"));
+        list.add(new asm.Call("printf"));
         return list;
     }
 
@@ -167,8 +184,9 @@ public class Assembly_Factory {
         return list;
     }*/
     
-    public void printAsmAll(String fn, ArrayList<Node> funcs) throws IOException {
+    public void printAsmAll(String fn, ArrayList<Node> funcs, ArrayList<String> stringDirectives) throws IOException {
       FileWriter f;
+      int stringDirSize;
 		String fileName = fn.substring(0, fn.length() - 4);
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
@@ -176,7 +194,11 @@ public class Assembly_Factory {
 		   String prefront = "\t.text\n";// Add .text etc here
          String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
 		   front = prefront + front;
-		   f = n.printAsm(front, f);
+		   stringDirSize = stringDirectives.size();
+		   if (stringDirSize > 0 && stringCounter <= (stringDirSize - 1))
+		      f = n.printAsm(front, f, stringDirectives.get(stringCounter++));
+		   else
+		      f = n.printAsm(front, f, "");
 		}
 		f.close();
    }
