@@ -19,6 +19,7 @@ void factorize (int num)
       if ((mod (num, i)) == 0)
       {
          printf("%d",i);
+         printf("Hello!");
          factorize (num / i);
          flag = 1;
       }

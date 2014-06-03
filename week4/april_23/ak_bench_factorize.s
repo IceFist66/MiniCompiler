@@ -36,6 +36,8 @@ mod:
 	.section	.rodata
 .LC0:
 	.string	"%d"
+.LC1:
+	.string	"Hello!"
 	.text
 .globl factorize
 	.type	factorize, @function
@@ -66,6 +68,10 @@ factorize:
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf
+	movl	$.LC1, %eax
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf
 	movl	-20(%rbp), %eax
 	movl	%eax, %edx
 	sarl	$31, %edx
@@ -90,7 +96,7 @@ factorize:
 .LFE1:
 	.size	factorize, .-factorize
 	.section	.rodata
-.LC1:
+.LC2:
 	.string	"0"
 	.text
 .globl main
@@ -108,7 +114,7 @@ main:
 	movl	-4(%rbp), %eax
 	movl	%eax, %edi
 	call	factorize
-	movl	$.LC1, %edi
+	movl	$.LC2, %edi
 	call	puts
 	movl	$1, %eax
 	leave
