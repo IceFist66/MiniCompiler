@@ -190,6 +190,7 @@ public class Assembly_Factory {
 		String fileName = fn.substring(0, fn.length() - 4);
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
+		stringCounter = 0;
 		for (Node n : funcs) {
 		   String prefront = "\t.text\n";// Add .text etc here
          String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
@@ -201,5 +202,12 @@ public class Assembly_Factory {
 		      f = n.printAsm(front, f, "");
 		}
 		f.close();
+		
+		/*int ct = 0;
+      System.out.println("-*-*-stringDirectives contains:");
+      for (String c : stringDirectives) {
+         System.out.println("string # " + ct + ": " + c);
+         ct++;
+      }*/
    }
 }

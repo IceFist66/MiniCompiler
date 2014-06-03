@@ -32,6 +32,7 @@ fun main () int
    int num;
    read num;
    factorize (num);
+   print 5 endl;
    print 0 endl;
    return 1;
 }

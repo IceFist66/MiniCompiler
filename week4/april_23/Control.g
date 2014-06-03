@@ -1032,7 +1032,16 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }
    : ^(PROGRAM (types) decls funcs)
-   { System.out.println("Successfully completed Control.g.");
+   { 
+      int ct = 0;
+      System.out.println("-*-*-stringDirectives contains:");
+      for (String c : stringDirectives) {
+         System.out.println("string # " + ct + ": " + c);
+         ct++;
+      }
+   
+   
+      System.out.println("Successfully completed Control.g.");
       int count = 0;
       for (Node n : functions) { 
          try {        
