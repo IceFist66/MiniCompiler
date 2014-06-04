@@ -183,6 +183,9 @@ public class Assembly_Factory {
         }
         else if(i instanceof Storeret){
             list = getStoreRet(arg1);
+        }
+        else if(i instanceof iloc.Call){
+            list = getCall(arg1, arg2);
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -409,6 +412,17 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getStoreRet(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.addAll(getMovq(arg1, "%rax")); //rax => r1
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCall(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        int argument_count = Integer.parseInt(arg2);
+        int offset = 8;
+        for(int i = 0; i< argument_count; i++){
+            //storeoutargument r1 -> i1
+        }
+        list.add(new asm.Call(arg1));
         return list;
     }
     
