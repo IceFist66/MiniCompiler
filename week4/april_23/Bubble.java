@@ -5,16 +5,27 @@ public class Bubble implements Comparable<Bubble> {
 	private String id;
 	private Color color;
 	private boolean constrained;
+	private boolean predefined;
 	private ArrayList<Bubble> edges;
 	
 	
 	public Bubble(String id) {
 		this.id = id;
+		if (id.charAt(0) == '%')
+		   predefined = true;
+		else
+		   predefined = false;
 		this.color = Color.UNC;
 		this.constrained = false;
 		this.edges = new ArrayList<Bubble>();
 	}
 	
+	public boolean isPredefined() {
+	   return this.predefined;
+	}
+	public void setPredefined(boolean predefined) {
+	   this.predefined = predefined;
+	}
 	public String getId() {
 		return id;
 	}

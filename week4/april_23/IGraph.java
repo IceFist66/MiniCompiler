@@ -22,16 +22,19 @@ public class IGraph {
 	public ArrayList<Bubble> getBubbles() {
 		return bubbles;
 	}
+	
 	public void setBubbles(ArrayList<Bubble> bubbles) {
 		this.bubbles = bubbles;
 	}
+	
 	public ArrayList<Color> getColors() {
 		return colors;
 	}
+	
 	public void setColors(ArrayList<Color> colors) {
 		this.colors = colors;
 	}
-	
+		
 	public ArrayList<Color> createColorSet() {
 	   ArrayList<Color> col = new ArrayList<Color>(EnumSet.allOf(Color.class));
 	   col.remove(Color.UNC);
@@ -114,16 +117,22 @@ public class IGraph {
 	
 	public void colorGraph() {
 	
-	   // still need to go through list of bubbles and assign colors to predefined registers
-	   // then determine when they will be added
-	
 	   int numColors = colors.size();
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
 	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles);
-	   
-	      // push the unconstrained bubbles first
+	          
+	      // color the predefined registers
 	      for (Bubble b : bubbles) {
-	         if (b.isConstrained() == false) {
+	         if (b.isPredefined() == true) {
+	            for (Color c : colors)
+	               if (b.getId() == c.text())
+	                  b.setColor(c);
+	         }
+	      }
+	   
+	      // push the unconstrained, unpredefined bubbles first
+	      for (Bubble b : bubbles) {
+	         if (b.isConstrained() == false && b.isPredefined() == false) {
 	            copy.remove(b);
                stackOfBubbles.push(b);            
             }
@@ -132,12 +141,19 @@ public class IGraph {
 	      // now sort the constrained bubbles in descending order by degree
 	      Collections.sort(copy);
 	      
-	      // push the now ordered set of constrained bubbles
+	      // push the now ordered set of constrained, unpredefined bubbles
 	      for (Bubble c : copy) {
-            stackOfBubbles.push(c);            
+	         if (c.isPredefined() == false)
+               stackOfBubbles.push(c);            
 	      }
 	      
-	      // empty copy
+	      // push the now ordered set of constrained, predefined bubbles
+	      for (Bubble p : copy) {
+	         if (p.isPredefined() == true)
+	            stackOfBubbles.push(p);
+	      }
+	      
+	      // empty copy (will be used to store results of coloring)
 	      copy.clear();
 	      
 	      // now add the bubbles back to the graph and try to color
@@ -151,31 +167,33 @@ public class IGraph {
 	         count = 0;           // color number
 	         Bubble b = stackOfBubbles.pop();
 	         Color color;
-	         while (done == false && count < numColors) {
-	            color = colors.get(count++);
-	            
-	            // compare current color with each of the bubble's neighbors
-	            // and set conflict to true if there is a clash
-	            for (Bubble n : b.getEdges()) {
-                  if (copy.contains(n) && n.getColor() == color)
-                     conflict = true;   	
-               }
-               
-               // if no conflict was found, apply the color to the bubble and
-               // flag the coloring for this bubble as done
-               if (conflict == false) {
-                  b.setColor(color);
-                  done = true;
-               }
-               // if a conflict was found, reset the flag to check for the next color 
-               else {
-                  conflict = false;
-               }
+	         if (b.getColor() == Color.UNC) { // if the bubble is already colored, don't attempt to color
+	            while (done == false && count < numColors) {
+	               color = colors.get(count++);
+	               
+	               // compare current color with each of the bubble's neighbors
+	               // and set conflict to true if there is a clash
+	               for (Bubble n : b.getEdges()) {
+                     if (copy.contains(n) && n.getColor() == color)
+                        conflict = true;   	
+                  }
+                  
+                  // if no conflict was found, apply the color to the bubble and
+                  // flag the coloring for this bubble as done
+                  if (conflict == false) {
+                     b.setColor(color);
+                     done = true;
+                  }
+                  // if a conflict was found, reset the flag to check for the next color 
+                  else {
+                     conflict = false;
+                  }
+	            }
+	            // if after trying all colors there is still a conflict
+	            // then color the bubble as uncolorable
+	            if (conflict == true)
+	               b.setColor(Color.UNC);
 	         }
-	         // if after trying all colors there is still a conflict
-	         // then color the bubble as uncolorable
-	         if (conflict == true)
-	            b.setColor(Color.UNC);
 	         // the bubble is colored and can now be added back to the graph
 	         copy.add(b);
 	      }
