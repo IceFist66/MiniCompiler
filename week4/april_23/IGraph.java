@@ -120,29 +120,19 @@ public class IGraph {
 	   int numColors = colors.size();
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
 	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles);
-	   ArrayList<Bubble> predefined = new ArrayList<Bubble>(bubbles);
-	   
-	      // remove non-predefined registers from predefined
-	      for (Bubble b : bubbles) {
-	         if (b.getId().charAt(0) == 'r')
-	            predefined.remove(b);
-	      }
-	      
-	      // now remove predefined registers from bubbles
-	      for (Bubble p : predefined) {
-	         bubbles.remove(p);
-	      }
-	            
+	          
 	      // color the predefined registers
-	      for (Bubble p : predefined) {
-	         for (Color c : colors)
-	            if (p.getId() == c.text())
-	               p.setColor(c);
+	      for (Bubble b : bubbles) {
+	         if (b.isPredefined() == true) {
+	            for (Color c : colors)
+	               if (b.getId() == c.text())
+	                  b.setColor(c);
+	         }
 	      }
 	   
-	      // push the unconstrained bubbles first
+	      // push the unconstrained, unpredefined bubbles first
 	      for (Bubble b : bubbles) {
-	         if (b.isConstrained() == false) {
+	         if (b.isConstrained() == false && b.isPredefined() == false) {
 	            copy.remove(b);
                stackOfBubbles.push(b);            
             }
@@ -151,17 +141,19 @@ public class IGraph {
 	      // now sort the constrained bubbles in descending order by degree
 	      Collections.sort(copy);
 	      
-	      // push the now ordered set of constrained bubbles
+	      // push the now ordered set of constrained, unpredefined bubbles
 	      for (Bubble c : copy) {
-            stackOfBubbles.push(c);            
+	         if (c.isPredefined() == false)
+               stackOfBubbles.push(c);            
 	      }
 	      
-	      // now add the predefined registers
-	      for (Bubble p : predefined) {
-	         stackOfBubbles.push(p);
+	      // push the now ordered set of constrained, predefined bubbles
+	      for (Bubble p : copy) {
+	         if (p.isPredefined() == true)
+	            stackOfBubbles.push(p);
 	      }
 	      
-	      // empty copy (will be used to storre results of coloring)
+	      // empty copy (will be used to store results of coloring)
 	      copy.clear();
 	      
 	      // now add the bubbles back to the graph and try to color
@@ -175,7 +167,7 @@ public class IGraph {
 	         count = 0;           // color number
 	         Bubble b = stackOfBubbles.pop();
 	         Color color;
-	         if (b.getColor() == Color.UNC) {
+	         if (b.getColor() == Color.UNC) { // if the bubble is already colored, don't attempt to color
 	            while (done == false && count < numColors) {
 	               color = colors.get(count++);
 	               
