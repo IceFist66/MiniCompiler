@@ -1,0 +1,16 @@
+fun main(int ke) int
+{
+   int i, j, k;
+   bool b;
+   int h;
+   {
+      b = true;
+      i = 3;
+      j = 4;
+      k = i - j + 3;
+   }
+   while(i < 5){
+      i = i + 1;
+   }
+   return k;
+}
