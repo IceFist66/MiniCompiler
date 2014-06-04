@@ -93,6 +93,9 @@ def main():
                 create_file(name, create_Class(name, args, text, target, sources))           
             elif(name == "text"):
                 text = "\".text\" + arg1"
+                create_file(name, create_Class(name, args, text, target, sources))
+            elif(name == "size"):
+                text = "\".size\" + " + text
                 create_file(name, create_Class(name, args, text, target, sources))           
             else:
                 create_file(name, create_Class(name, args, string(name, text), target, sources))            

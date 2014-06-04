@@ -333,6 +333,7 @@ public class Node {
          f.write(line);
          System.out.print(line);
       }
+      printGenKillSet(this, f);
       this.asm_printed = true;
       f = asmSucc(this, f);
       return f;
@@ -352,6 +353,7 @@ public class Node {
                f.write(line);
                System.out.print(line);
             }
+            printGenKillSet(s, f);
             s.asm_printed = true;
             asmSucc(s, f);
          }
@@ -359,52 +361,42 @@ public class Node {
       return f;
     }
     
-/*   public void printAsm(String front) throws IOException {
-      FileWriter f;
-		String fileName;
-
-		fileName = "asm_" + functionName + ".asm";
-		f = new FileWriter(new File(fileName));
-      //System.out.println(fileName);
-      System.out.println();
-      //String line = "L" + this.id + ":\n";
-      // Add .text etc here
-      f.write(front); //.globl etc
-      System.out.print(front); 
-      String line = this.getFunctionName() + ":\n";
-		f.write(line);
-      System.out.print(line);
-      ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
-      for(Instruction_a ainst : asm_instructions){
-         line = "\t" + ainst.toString() + "\n";
-         f.write(line);
-         System.out.print(line);
-      }
-      this.asm_printed = true;
-      asmSucc(this, f);
-		f.close();
-    }*/
-
-    /*public void asmSucc(Node n, FileWriter f) throws IOException {
-      ArrayList<Instruction_a> asm_instructions;
-      for (Node s : n.succNodes) {
-      if (s.asm_printed == false) {
-            String line = "L" + s.id + ":\n";
-	      	f.write(line);
-
-            System.out.print(line);
-            asm_instructions = s.getAsmInstructions();
-            for(Instruction_a ainst : asm_instructions){
-               line = "\t" + ainst.toString() + "\n";
-               f.write(line);
-               System.out.print(line);
-            }
-            this.asm_printed = true;
-            asmSucc(s, f);
-         }
-		}    
-      return;
+    public void printGenKillSet(Node s, FileWriter f) throws IOException{
+        String finalprint = "";
+        finalprint+="gen{";        
+        for(String gen: s.getGenSet()){        
+            finalprint+= gen + ", ";
+        }
+        finalprint+= "}\nkill{";
+        for(String kill: s.getKillSet()){
+            finalprint += kill + ", ";
+        }
+        finalprint += "}\n";
+        System.out.print(finalprint);
+        f.write(finalprint);
     }
-    */
-    
+
+    public boolean calcLiveOut(){
+        boolean changed = false;
+        for(Node s: succNodes){
+            changed = calcLiveOut();
+        }
+        for(Node s: succNodes){
+            for(String g : s.getGenSet()){
+                if(!liveOut.contains(g)){
+                    liveOut.add(g);
+                    changed = true;
+                }
+            }
+        }
+        for (Node s: succNodes){
+            for(String l : liveOut){
+                if(!liveOut.contains(l) && !s.killSet.contains(l)){
+                    liveOut.add(l);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
 }

@@ -16,17 +16,20 @@ public class Assembly_Factory {
         private String stringConstants;
         private ArrayList<String> stringDirectives;
         private int stringCounter;
+        private ArrayList<Node> input;
+        private ArrayList<ArrayList<Node>> allNodes;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
 
-	private ArrayList<Node> input;
+	
 	
 	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives){
 		this.input = input;
 		this.fname = fname;
 		this.stringDirectives = stringDirectives;
 		stringCounter = 0;
+        this.allNodes = new ArrayList<ArrayList<Node>>();
       this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
 	}
 
@@ -57,6 +60,8 @@ public class Assembly_Factory {
          //n.printAsm(prefront+front); //prints the asm instructions to screen
 	   }
 	  printAsmAll(fname, input, stringDirectives);
+        createListAll();
+      
 	}
 
     public void successors(Node n) {
@@ -195,6 +200,7 @@ public class Assembly_Factory {
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
 		stringCounter = 0;
+        int closing_counter = 0;
 		for (Node n : funcs) {
 		   String prefront = "\t.text\n";// Add .text etc here
          String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
@@ -204,15 +210,12 @@ public class Assembly_Factory {
 		      f = n.printAsm(front, f, stringDirectives.get(stringCounter++));
 		   else
 		      f = n.printAsm(front, f, "");
+            
+            String closing = ".LFE" + (closing_counter++) + ":\n\t.size\t" + n.getFunctionName() + ", .-" + n.getFunctionName() + "\n";
+            f.write(closing);
+            System.out.print(closing);
 		}
 		f.close();
-		
-		/*int ct = 0;
-      System.out.println("-*-*-stringDirectives contains:");
-      for (String c : stringDirectives) {
-         System.out.println("string # " + ct + ": " + c);
-         ct++;
-      }*/
    }
 
    public void createKillGenSet(Node s){
@@ -233,4 +236,34 @@ public class Assembly_Factory {
             }
         }
    }
+
+   public void calcLiveOutAll(){
+        boolean changed = true;
+        for(Node n: input){
+            while(changed == true){
+                changed = n.calcLiveOut();
+            }
+        }
+   }
+
+    public void createListAll(){
+        for(Node n: input){
+            ArrayList<Node> nodes = new ArrayList<Node>();
+            allNodes.add(createList(nodes, n));
+        }
+    }
+
+    public ArrayList<Node> createList(ArrayList<Node> nodes, Node n){ 
+        nodes.add(n);
+        System.out.println("Node added: L" + n.getId());    
+        for(Node s: n.getSuccNodes()){
+            if(!nodes.contains(s)){
+                nodes.addAll(createList(nodes, s));
+            }
+            else{
+                System.out.println("Did not Add: L" + s.getId());
+            }
+        }
+        return nodes;
+    }
 }

@@ -147,3 +147,9 @@ type
 arg1 + ", " + arg2
 null
 null
+
+size
+2
+arg1 + ", " + arg2
+null
+null
