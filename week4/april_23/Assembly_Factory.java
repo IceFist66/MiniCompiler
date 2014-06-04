@@ -59,9 +59,9 @@ public class Assembly_Factory {
          //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
          //n.printAsm(prefront+front); //prints the asm instructions to screen
 	   }
-	  printAsmAll(fname, input, stringDirectives);
         createListAll();
-      
+        calcLiveOutAll();
+	  printAsmAll(fname, input, stringDirectives);
 	}
 
     public void successors(Node n) {
@@ -226,25 +226,76 @@ public class Assembly_Factory {
             ArrayList<String> sources = i_asm.getSources();
             for(String source : sources){
                 if(source.charAt(0) == 'r' || source.charAt(0) == '%'){
-                    if(!kill.contains(source)){
+                    if(!kill.contains(source) && !gen.contains(source)){
                         gen.add(source);
                     }
                 }
             }
-            if(target != null){
+            if(target != null 
+                && (target.charAt(0) == 'r' || target.charAt(0) == '%') 
+                && !kill.contains(target)){
                 kill.add(target);
             }
         }
    }
 
    public void calcLiveOutAll(){
-        boolean changed = true;
-        for(Node n: input){
-            while(changed == true){
-                changed = n.calcLiveOut();
-            }
+        for(ArrayList<Node> nodes: allNodes){
+            calcLiveOut(nodes);
         }
    }
+
+    // Function takes an array containing one copy of each node in the cfg.
+	public void calcLiveOut (ArrayList<Node> a) {
+		boolean done = false;
+		boolean change; 
+		while (!done) {
+			change = false;
+			for (Node n : a) {
+				
+				// handle any backedges - will only occur in while-join nodes
+				if (n.getBackEdgeTarget() != null) {
+					for (String g : n.getBackEdgeTarget().getGenSet()) {
+						if(!n.getLiveOut().contains(g)) {
+							n.getLiveOut().add(g);
+							change = true;
+						}
+					}
+					for (String l : n.getBackEdgeTarget().getLiveOut()) {
+						if(!n.getLiveOut().contains(l) && !n.getBackEdgeTarget().getKillSet().contains(l)) {
+							n.getLiveOut().add(l);
+							change = true;
+						}
+					}					
+				}				
+				
+				// add succ.genSet to n.liveOut
+				for (Node s : n.getSuccNodes()) {
+					for (String g : s.getGenSet()) {
+						if(!n.getLiveOut().contains(g)) {
+							n.getLiveOut().add(g);
+							change = true;
+						}
+					}
+				}
+				
+				// add succ.liveOut - succ.killSet to n.liveOut
+				for (Node s : n.getSuccNodes()) {
+					for (String l : s.getLiveOut()) {
+						if(!n.getLiveOut().contains(l) && !s.getKillSet().contains(l)) {
+							n.getLiveOut().add(l);
+							change = true;
+						}
+					}
+				}
+				
+
+				
+			}
+			if (!change)
+				done = true;
+		}
+	}
 
     public void createListAll(){
         for(Node n: input){
@@ -266,4 +317,6 @@ public class Assembly_Factory {
         }
         return nodes;
     }
+
+    
 }

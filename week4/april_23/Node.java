@@ -334,6 +334,7 @@ public class Node {
          System.out.print(line);
       }
       printGenKillSet(this, f);
+        printLiveOutSet(this, f);
       this.asm_printed = true;
       f = asmSucc(this, f);
       return f;
@@ -354,6 +355,7 @@ public class Node {
                System.out.print(line);
             }
             printGenKillSet(s, f);
+            printLiveOutSet(s, f);
             s.asm_printed = true;
             asmSucc(s, f);
          }
@@ -376,7 +378,18 @@ public class Node {
         f.write(finalprint);
     }
 
-    public boolean calcLiveOut(){
+    public void printLiveOutSet(Node s, FileWriter f) throws IOException{
+        String finalprint = "";
+        finalprint+="LiveOut{";        
+        for(String l: s.getLiveOut()){        
+            finalprint+= l + ", ";
+        }
+        finalprint += "}\n";
+        System.out.print(finalprint);
+        f.write(finalprint);
+    }
+
+    /*public boolean calcLiveOut(){
         boolean changed = false;
         for(Node s: succNodes){
             changed = calcLiveOut();
@@ -398,5 +411,5 @@ public class Node {
             }
         }
         return changed;
-    }
+    }*/
 }
