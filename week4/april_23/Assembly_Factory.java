@@ -118,9 +118,72 @@ public class Assembly_Factory {
         else if(i instanceof Sub){
             list = getSubq(arg1, arg2, arg3);
         }
-        /*else if(i instanceof Div){
+        else if(i instanceof Mult){
+            list = getMult(arg1, arg2, arg3);
+        }
+        else if(i instanceof Div){
             list = getDiv(arg1, arg2, arg3);
-        }*///whatever else
+        }
+        else if(i instanceof And){
+            list = getAndq(arg1, arg2, arg3);
+        }
+        else if(i instanceof Or){
+            list = getOrq(arg1, arg2, arg3);
+        }
+        else if(i instanceof Comp){
+            list = getCmp(arg1, arg2);
+        }
+        else if(i instanceof Cbreq){
+            list = getJe(arg2, arg3);
+        }
+        else if(i instanceof Cbrge){
+            list = getJge(arg2, arg3);
+        }
+        else if(i instanceof Cbrgt){
+            list = getJg(arg2, arg3);
+        }
+        else if(i instanceof Cbrle){
+            list = getJle(arg2, arg3);
+        }
+        else if(i instanceof Cbrlt){
+            list = getJl(arg2, arg3);
+        }
+        else if(i instanceof Cbrne){
+            list = getJne(arg2, arg3);
+        }
+        else if(i instanceof Jumpi){
+            list = getJmp(arg2, arg3);
+        }
+        else if(i instanceof Moveq){
+            list = getCmoveq(arg1, arg2);
+        }
+        else if(i instanceof Movge){
+            list = getCmovgeq(arg1, arg2);
+        }
+        else if(i instanceof Movgt){
+            list = getCmovgq(arg1, arg2);
+        }
+        else if(i instanceof Movle){
+            list = getCmovleq(arg1, arg2);
+        }
+        else if(i instanceof Movlt){
+            list = getCmovlq(arg1, arg2);
+        }
+        else if(i instanceof Movne){
+            list = getCmovneq(arg1, arg2);
+        }
+        else if(i instanceof Loadai){
+            list = getLoadai(arg1, arg2, arg3);
+        }
+        else if(i instanceof Loadret){
+            list = getLoadRet(arg1);
+        }
+        else if(i instanceof Storeai){
+            list = getStoreai(arg1, arg2, arg3);
+        }
+        else if(i instanceof Storeret){
+            list = getStoreRet(arg1);
+        }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
     	}
@@ -148,10 +211,30 @@ public class Assembly_Factory {
     
     public ArrayList<Instruction_a> getPrint(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%rdi"));
+        list.add(new Pushq("%rsi"));
+        list.add(new Pushq("%rax"));
         list.add(new Movq(".LC" + stringCounter++, "%rdi"));
         list.add(new Movq(arg1, "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("printf"));
+        list.add(new Popq("%rax"));
+        list.add(new Popq("%rsi"));
+        list.add(new Popq("%rax"));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getAndq(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg2, arg3)); //r3 = r2
+        list.add(new Andq(arg1, arg3)); //r3 &&= r1
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getOrq(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg2, arg3)); //r3 = r2
+        list.add(new Orq(arg1, arg3)); //r3 ||= r1
         return list;
     }
 
@@ -191,13 +274,143 @@ public class Assembly_Factory {
         list.add(new Subq(arg1, arg3)); //r3 -= r1
         return list;
     }
-    
-    /*public ArrayList<Instruction_a> getDiv(String arg1, String arg2, String arg3){
+
+    public ArrayList<Instruction_a> getMult(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Idivq(arg1, arg3)); //r3 -= r1
+        list.add(new Imulq(arg1, arg2, arg3)); //r3 *= r1 * r2
         return list;
-    }*/
+    }
+    
+    public ArrayList<Instruction_a> getDiv(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%rdx")); //push %rdx
+        list.add(new Pushq("%rax")); //push %rax
+        list.addAll(getMovq(arg1, "%rax")); //r1 -> rax
+        list.add(new Cqto()); //cqto- sign extend rax to rdx:rax
+        list.add(new Idivq(arg2)); //rax /= r2
+        list.addAll(getMovq("%rax", arg3)); //rax -> r3
+        list.add(new Popq("%rax")); //pop rax
+        list.add(new Popq("%rdx")); //pop rdx
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmp(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmp(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJe(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Je(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJge(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jge(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJg(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jg(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJle(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jle(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJl(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jl(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJne(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jne(arg1));
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getJmp(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Jmp(arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmoveq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmoveq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmovgq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmovgq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmovgeq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmovgeq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmovlq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmovlq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmovleq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmovleq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getCmovneq(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Cmovneq(arg1, arg2));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getLoadai(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        int offset = 8; //64 bits
+        offset *= Integer.parseInt(arg2); //create an offset from arg2
+        list.addAll(getMovq((offset+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getLoadRet(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq("%rax", arg1)); //rax => r1
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getStoreai(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        int offset = 8; //64 bits
+        offset *= Integer.parseInt(arg3); //create an offset from arg2
+        list.addAll(getMovq(arg1, offset+"("+arg2+")")); //movq offset(arg1), arg3
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getStoreRet(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.addAll(getMovq(arg1, "%rax")); //rax => r1
+        return list;
+    }
     
     public void printAsmAll(String fn, ArrayList<Node> funcs, ArrayList<String> stringDirectives) throws IOException {
       FileWriter f;

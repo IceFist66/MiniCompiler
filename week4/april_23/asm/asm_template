@@ -12,7 +12,7 @@ arg1 arg2
 
 imulq
 2
-arg2 + " , " + arg1
+arg1 + " , " + arg2
 arg2
 arg1
 
@@ -28,7 +28,7 @@ arg2 + " , " + arg1
 null
 arg1 arg2
 
-orgq
+orq
 2
 arg2 + " , " + arg1
 null
@@ -151,5 +151,11 @@ null
 size
 2
 arg1 + ", " + arg2
+null
+null
+
+cqto
+0
+""
 null
 null

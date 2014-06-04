@@ -49,7 +49,7 @@ def create_Class(name, size, text, target, sources):
        new_class +="\t\tthis.arg1 = arg1;\n"
        new_class +="\t\tthis.arg2 = arg2;\n"
        new_class +="\t\tthis.arg3 = arg3;\n"
-       new_class +="\t\tthis.text = \"imulq \" + arg3 + \" , \" + arg2  + \" , \" + arg1;\n"
+       new_class +="\t\tthis.text = \"imulq \" + arg1 + \" , \" + arg2  + \" , \" + arg3;\n"
        new_class += "\t\tthis.target = " + target + ";\n"
        new_class+="\t\tsources = new ArrayList<String>();\n"
        if(sources[0] != "null"):
