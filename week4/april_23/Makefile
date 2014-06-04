@@ -1,4 +1,4 @@
-FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java Node.java NodeType.java Assembly_Factory.java
+FILES=Mini.java SymbolTable.java Type.java StructDef.java Scope.java StructTypes.java Variable.java Node.java NodeType.java Assembly_Factory.java Bubble.java IGraph.java
 
 
 all : iloc-c asm-c Mini.class

@@ -18,6 +18,7 @@ public class Assembly_Factory {
         private int stringCounter;
         private ArrayList<Node> input;
         private ArrayList<ArrayList<Node>> allNodes;
+        private ArrayList<IGraph> iGraphs;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
@@ -31,6 +32,7 @@ public class Assembly_Factory {
 		stringCounter = 0;
         this.allNodes = new ArrayList<ArrayList<Node>>();
       this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
+        this.iGraphs = new ArrayList<IGraph>();
 	}
 
 	public ArrayList<Node> getInput() {
@@ -62,6 +64,8 @@ public class Assembly_Factory {
         createListAll();
         calcLiveOutAll();
 	  printAsmAll(fname, input, stringDirectives);
+        generateIGraphs();
+        printIGraphs();
 	}
 
     public void successors(Node n) {
@@ -316,6 +320,22 @@ public class Assembly_Factory {
             }
         }
         return nodes;
+    }
+
+    public void generateIGraphs(){
+        System.out.println("Before the generate loop" + allNodes.size());
+        for(ArrayList<Node> nodes : allNodes){
+            System.out.println("In Generate Loop");
+            iGraphs.add(new IGraph(nodes));
+        }
+    }
+
+    public void printIGraphs(){
+        System.out.println("Before the loop " + iGraphs.size());
+        for(IGraph graph : iGraphs){
+            System.out.println("In the loop");
+            graph.printBubbles();
+        }
     }
 
     
