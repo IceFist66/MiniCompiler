@@ -119,23 +119,26 @@ public class IGraph {
 	
 	   int numColors = colors.size();
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
+	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles);
 	   
 	      // push the unconstrained bubbles first
 	      for (Bubble b : bubbles) {
 	         if (b.isConstrained() == false) {
-	            bubbles.remove(b);
+	            copy.remove(b);
                stackOfBubbles.push(b);            
             }
 	      }
 	      
 	      // now sort the constrained bubbles in descending order by degree
-	      Collections.sort(bubbles);
+	      Collections.sort(copy);
 	      
 	      // push the now ordered set of constrained bubbles
-	      for (Bubble c : bubbles) {
-            bubbles.remove(c);
+	      for (Bubble c : copy) {
             stackOfBubbles.push(c);            
 	      }
+	      
+	      // empty copy
+	      copy.clear();
 	      
 	      // now add the bubbles back to the graph and try to color
 	      // assign Color.UNC to bubbles that can't be colored
@@ -154,7 +157,7 @@ public class IGraph {
 	            // compare current color with each of the bubble's neighbors
 	            // and set conflict to true if there is a clash
 	            for (Bubble n : b.getEdges()) {
-                  if (bubbles.contains(n) && n.getColor() == color)
+                  if (copy.contains(n) && n.getColor() == color)
                      conflict = true;   	
                }
                
@@ -174,24 +177,31 @@ public class IGraph {
 	         if (conflict == true)
 	            b.setColor(Color.UNC);
 	         // the bubble is colored and can now be added back to the graph
-	         bubbles.add(b);
-	      }	      
+	         copy.add(b);
+	      }
 	      
+	      // move the copy with colored bubbles back into bubbles
+	      bubbles.clear();
+	      bubbles.addAll(copy);
+	      	      
 	}
 	
 	public void printBubbleColors() {
+	   System.out.println("\n***Bubble COLORS***");
 	   for (Bubble b : bubbles) {
-	      System.out.println("Bubble " + b.getId() + " (" + b.getColor().text() + ")");
+	      System.out.print("Bubble " + b.getId() + " (" + b.getColor().text() + "):\t");
 	      for(Bubble n : b.getEdges()){
-				System.out.print(n.getId() + " (" + n.getColor().text() + ")");
+				System.out.print(n.getId() + " (" + n.getColor().text() + "), ");
 			}
 			System.out.println();
 	   }
+	   System.out.println();
 	}
 	
 	public void printBubbles(){
+	   System.out.println("\n***Bubble EDGES***");
 		for(Bubble b: bubbles){
-			System.out.print("Bubble " + b.getId()+": ");
+			System.out.print("Bubble " + b.getId()+":\t");
 			for(Bubble sb : b.getEdges()){
 				System.out.print(sb.getId() + " ");
 			}

@@ -66,6 +66,8 @@ public class Assembly_Factory {
 	  printAsmAll(fname, input, stringDirectives);
         generateIGraphs();
         printIGraphs();
+        colorIGraphs();
+        printIGraphColorings();
 	}
 
     public void successors(Node n) {
@@ -337,6 +339,16 @@ public class Assembly_Factory {
             graph.printBubbles();
         }
     }
-
     
+    public void colorIGraphs(){
+        for(IGraph graph : iGraphs){
+            graph.colorGraph();
+        }
+    }
+    
+    public void printIGraphColorings(){
+        for(IGraph graph : iGraphs){
+            graph.printBubbleColors();
+        }
+    }
 }
