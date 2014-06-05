@@ -5,7 +5,7 @@ Hope this helps.
 
 import sys
 
-def create_Class(name, size, text, target, sources):
+def create_Class(name, size, text, targets, sources):
    new_name = name.capitalize()
    new_class = "package asm;\nimport java.util.*;\n\n"
    new_class += "public class " + new_name + " extends Instruction_a{\n\n"
@@ -31,12 +31,23 @@ def create_Class(name, size, text, target, sources):
    else:
        new_class +="\t\tthis.arg3 = null;\n"
    new_class +="\t\tthis.text = " + text + ";\n"
-   new_class += "\t\tthis.target = " + target + ";\n"
+   new_class +="\t\tthis.targets = new ArrayList<String>();\n"
+   if(targets[0] != "null"):
+        x = 0
+        while(x<len(targets)):
+            if(targets[x].find("%") != -1):
+                new_class+="\t\ttargets.add(\""+targets[x]+"\");\n"
+            else:
+                new_class+="\t\ttargets.add("+targets[x]+");\n"
+            x+=1
    new_class+="\t\tsources = new ArrayList<String>();\n"
    if(sources[0] != "null"):
         x = 0
         while(x<len(sources)):
-            new_class+="\t\tsources.add("+sources[x]+");\n"
+            if(sources[x].find("%") != -1):
+                new_class+="\t\tsources.add(\""+sources[x]+"\");\n"
+            else:
+                new_class+="\t\tsources.add("+sources[x]+");\n"
             x+=1
    new_class +="\t}\n\n"
    if(name == "imulq"):
@@ -50,12 +61,23 @@ def create_Class(name, size, text, target, sources):
        new_class +="\t\tthis.arg2 = arg2;\n"
        new_class +="\t\tthis.arg3 = arg3;\n"
        new_class +="\t\tthis.text = \"imulq \" + arg1 + \" , \" + arg2  + \" , \" + arg3;\n"
-       new_class += "\t\tthis.target = " + target + ";\n"
+       new_class +="\t\tthis.targets = new ArrayList<String>();\n"
+       if(targets[0] != "null"):
+           x = 0
+           while(x<len(targets)):
+               if(targets[x].find("%") != -1):
+                    new_class+="\t\ttargets.add(\""+targets[x]+"\");\n"
+               else:
+                    new_class+="\t\ttargets.add("+targets[x]+");\n"
+               x+=1
        new_class+="\t\tsources = new ArrayList<String>();\n"
        if(sources[0] != "null"):
             x = 0
             while(x<len(sources)):
-                new_class+="\t\tsources.add("+sources[x]+");\n"
+                if(sources[x].find("%") != -1):
+                    new_class+="\t\tsources.add(\""+sources[x]+"\");\n"
+                else:
+                    new_class+="\t\tsources.add("+sources[x]+");\n"
                 x+=1
        new_class +="\t}\n\n"
    new_class +="}"
@@ -83,22 +105,22 @@ def main():
         args = int(content[i+1])
         text = content[i+2].rstrip()
         classes = content[i].split()
-        target = content[i+3].rstrip()
+        targets = content[i+3].split()
         sources = content[i+4].split()
         j = 0
         while(j<len(classes)):
             name = classes[j]
             if(name == "cfi"):
                 text = "\".cfi_\" + arg1"
-                create_file(name, create_Class(name, args, text, target, sources))           
+                create_file(name, create_Class(name, args, text, targets, sources))           
             elif(name == "text"):
                 text = "\".text\" + arg1"
-                create_file(name, create_Class(name, args, text, target, sources))
+                create_file(name, create_Class(name, args, text, targets, sources))
             elif(name == "size"):
                 text = "\".size\" + " + text
-                create_file(name, create_Class(name, args, text, target, sources))           
+                create_file(name, create_Class(name, args, text, targets, sources))           
             else:
-                create_file(name, create_Class(name, args, string(name, text), target, sources))            
+                create_file(name, create_Class(name, args, string(name, text), targets, sources))            
             j+=1
         i+=6
 

@@ -19,7 +19,7 @@ arg1
 idivq
 1
 arg1
-arg2
+%rax %rdx
 arg1
 
 andq

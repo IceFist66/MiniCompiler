@@ -8,7 +8,7 @@ public abstract class Instruction_a{
     String arg2;
     String arg3;
     String text;
-    String target;
+    ArrayList<String> targets;
     ArrayList<String> sources;
 	
     public String toString(){
@@ -39,8 +39,8 @@ public abstract class Instruction_a{
         this.arg3=arg3;
     }
 
-    public String getTarget(){
-        return this.target;
+    public ArrayList<String> getTargets(){
+        return this.targets;
     }
 
     public ArrayList<String> getSources(){

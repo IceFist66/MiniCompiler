@@ -455,7 +455,7 @@ public class Assembly_Factory {
         for(Instruction_a i_asm : s.getAsmInstructions()){
             ArrayList<String> kill = s.getKillSet();
             ArrayList<String> gen = s.getGenSet();
-            String target = i_asm.getTarget();
+            ArrayList<String> targets = i_asm.getTargets();
             ArrayList<String> sources = i_asm.getSources();
             for(String source : sources){
                 if(source.charAt(0) == 'r' || source.charAt(0) == '%'){
@@ -464,10 +464,11 @@ public class Assembly_Factory {
                     }
                 }
             }
-            if(target != null 
-                && (target.charAt(0) == 'r' || target.charAt(0) == '%') 
-                && !kill.contains(target)){
-                kill.add(target);
+            for(String target : targets){
+                if((target.charAt(0) == 'r' || target.charAt(0) == '%') 
+                    && !kill.contains(target)){
+                    kill.add(target);
+                }
             }
         }
    }
