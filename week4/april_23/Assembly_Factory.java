@@ -63,11 +63,13 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	  printAsmAll(fname, input, stringDirectives);
+	  //printAsmAll(fname, input, stringDirectives);
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
         printIGraphColorings();
+        applyColor();
+        printAsmAll(fname, input, stringDirectives);
 	}
 
     public void successors(Node n) {
@@ -577,6 +579,33 @@ public class Assembly_Factory {
     public void printIGraphColorings(){
         for(IGraph graph : iGraphs){
             graph.printBubbleColors();
+        }
+    }
+
+    public void applyColor(){
+        int association = 0;
+        for(ArrayList<Node> nodes : allNodes){ //for each list of nodes
+            IGraph graph = iGraphs.get(0); //grab associated Igraph
+            //ArrayList<Bubble> bubbles = graph.getBubbles();//getBubbles
+            for(Node n : nodes){//for each Node
+                for(Instruction_a inst : n.getAsmInstructions()){
+                    ArrayList<String> sources = inst.getSources();//getSources
+                    ArrayList<String> targets = inst.getTargets();//getTargets
+                    for(String source : sources){//for each source
+                        if(source.charAt(0) == 'r'){
+                            Bubble sb = graph.getBubble(source); //get bubble id from graph
+                            sources.set(sources.indexOf(source), sb.getColor().text()); //save source to have the color of the bubbles register
+                        }
+                    }
+                    for(String target : targets){//for each target
+                        if(target.charAt(0) == 'r'){
+                            Bubble tb = graph.getBubble(target); //get bubble id from graph
+                            targets.set(targets.indexOf(target), tb.getColor().text()); //save target to have the color of the bubbles register
+                        }
+                    }
+                }
+            }
+            association++;//increment association
         }
     }
 }
