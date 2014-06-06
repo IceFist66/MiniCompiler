@@ -1069,6 +1069,7 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         printMini = false;
         ArrayList<String> globals = g_stable.gatherVariablesInScope("global");
         globalRegisterMap = buildRegisterMap(globals, true);
+        stringDirectives = stringConstants += ("LLS1" + ".string \"\%ld\\n\"\n");
         System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }
    : ^(PROGRAM (types) decls funcs)
