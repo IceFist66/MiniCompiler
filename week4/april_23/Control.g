@@ -593,9 +593,9 @@ stmt [Node predNode] returns [Node n = predNode]
          numC = current.getInstructions().size();
          i = current.getInstructions().get(numC - 1);
          if (i instanceof Print) {
-            stringConstants += (stringLabel + entry + "\"\%d\"\n");
+            stringConstants += (stringLabel + entry + "\"\%ld \"\n");
          } else {
-            stringConstants += (stringLabel + entry + "\"\%d\\n\"\n");
+            stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
          }
          n = current;
       }
@@ -1029,6 +1029,7 @@ fun:
         }
         
         String newString = stringConstants.substring(0, stringConstants.length());
+        newString += (".LS1:\n\t.string \"\%ld\"\n");
         stringDirectives.add(newString);
         stringConstants = "";
         
@@ -1069,7 +1070,6 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         printMini = false;
         ArrayList<String> globals = g_stable.gatherVariablesInScope("global");
         globalRegisterMap = buildRegisterMap(globals, true);
-        stringDirectives = stringConstants += ("LLS1" + ".string \"\%ld\\n\"\n");
         System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }
    : ^(PROGRAM (types) decls funcs)

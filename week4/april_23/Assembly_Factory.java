@@ -19,20 +19,26 @@ public class Assembly_Factory {
         private ArrayList<Node> input;
         private ArrayList<ArrayList<Node>> allNodes;
         private ArrayList<IGraph> iGraphs;
+        private ArrayList<String> caller;
+        private ArrayList<String> globals;
+        private boolean store;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
 
 	
 	
-	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives){
+	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives, ArrayList<String> globals){
 		this.input = input;
 		this.fname = fname;
 		this.stringDirectives = stringDirectives;
+        this.globals = globals;
 		stringCounter = 0;
         this.allNodes = new ArrayList<ArrayList<Node>>();
-      this.arguments = new ArrayList<String>(Arrays.asList("rdi","rsi","rdx","rcx","r8","r9"));
+      this.arguments = new ArrayList<String>(Arrays.asList("%rdi","%rsi","%rdx","%rcx","%r8","%r9"));
+        this.caller = new ArrayList<String>(Arrays.asList("%rax", "%rcx", "%rdi", "%rsi", "%r8", "%r9", "%r10", "%r11"));
         this.iGraphs = new ArrayList<IGraph>();
+        this.store = false;
 	}
 
 	public ArrayList<Node> getInput() {
@@ -191,6 +197,9 @@ public class Assembly_Factory {
         }
         else if(i instanceof Storeoutargument){
             list = getStoreOutArgument(arg1, arg2);
+        }
+        else if(i instanceof New){
+            
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -395,7 +404,7 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getLoadai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int offset = 8; //64 bits
-        offset *= Integer.parseInt(arg2); //create an offset from arg2
+        //offset *= Integer.parseInt(arg2); //create an offset from arg2
         list.addAll(getMovq((offset+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
         return list;
     }
@@ -403,6 +412,11 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getLoadRet(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.addAll(getMovq("%rax", arg1)); //rax => r1
+        //pop all the callers
+        for(int i = this.caller.size() - 1; i >= 0; i--){
+            list.add(new Popq(caller.get(i)));
+        }
+        this.store = false;
         return list;
     }
 
@@ -424,17 +438,24 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument_count = Integer.parseInt(arg2);
         int offset = 8;
+        //fix for more than 6 arguments
         list.add(new asm.Call(arg1));
-        for(int i = argument_count - 1; i > 0; i++){//pop Enum Register
+        /*for(int i = argument_count - 1; i > 0; i++){//pop Enum Register
             list.add(new Popq(arguments.get(i)));
-        }
+        }*/
         return list;
     }
 
     public ArrayList<Instruction_a> getStoreOutArgument(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument = Integer.parseInt(arg2);
-        list.add(new Pushq(arguments.get(argument)));
+        if(this.store == false){ //Only do this for the first StoreOut
+            for(int i = 0; i<caller.size(); i++){
+                list.add(new Pushq(caller.get(i)));
+            }
+            this.store = true;
+        }
+        //list.add(new Pushq(arguments.get(argument)));
         list.add(new Movq(arg1, arguments.get(argument)));
         return list;
     }
