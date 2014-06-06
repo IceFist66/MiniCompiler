@@ -97,12 +97,12 @@ public class Mini
          // our code
          tparser.verify(stypes, stable);
          ArrayList<Node> instructions = cparser.construct(stypes, stable, _inputFile);
-         Assembly_Factory factory = new Assembly_Factory(instructions, _inputFile, cparser.getStringDirectives());
+        /* Assembly_Factory factory = new Assembly_Factory(instructions, _inputFile, cparser.getStringDirectives());
          try {
             factory.convert();
          } catch (IOException e) {
             e.printStackTrace();
-         }
+         }*/
       }
       catch (org.antlr.runtime.RecognitionException e)
       {

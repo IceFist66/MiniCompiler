@@ -38,8 +38,11 @@ options
     private String lvDotFieldName = "---";
     private int maxNumParams = 0;
     private ArrayList<String> stringDirectives;
+    private ArrayList<String> lsDotFieldNames; // used to determine fields in calls to lvalue which need to be loaded
+    private ArrayList<String> rsDotFieldNames; // used to determine fields in calls to DOT expressions which need to be loaded
     private String stringConstants;
     private int stringCounter = 0;
+    private int lsDotCounter = 0;
     private String filename = "";
     
     // remove the boolean argument once figure out how to load and store globals
@@ -442,13 +445,17 @@ expression [Node predNode] returns [Node n = predNode]
    
    |tr=TRUE
     {
-        Mov newMov = new Mov($tr.text, "r"+registerCounter++);
-        $n.getInstructions().add(newMov);
+        Loadi newLoadi = new Loadi("1", "r" + registerCounter++);
+        $n.getInstructions().add(newLoadi);
+        //Mov newMov = new Mov($tr.text, "r"+registerCounter++);
+        //$n.getInstructions().add(newMov);
     }
    |fa=FALSE
     {
-        Mov newMov = new Mov($fa.text, "r"+registerCounter++);
-        $n.getInstructions().add(newMov);
+        Loadi newLoadi = new Loadi("0", "r" + registerCounter++);
+        $n.getInstructions().add(newLoadi);
+        //Mov newMov = new Mov($fa.text, "r"+registerCounter++);
+        //$n.getInstructions().add(newMov);
     }
    |inte=INTEGER
     {
@@ -458,10 +465,13 @@ expression [Node predNode] returns [Node n = predNode]
    |id=ID
     {
       if (!assignRisField) {
-        Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
-        //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
-        $n.getInstructions().add(newMov);
-        //dotFieldName = $id.text;
+           Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
+           //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
+           $n.getInstructions().add(newMov);
+           //dotFieldName = $id.text;
+           
+           rsDotFieldNames.add($id.text);
+           System.out.println("Added " + $id.text + " to rsDotFieldNames");
         }
         dotFieldName = $id.text; // this WORKS but is this correct?
     }
@@ -472,8 +482,10 @@ expression [Node predNode] returns [Node n = predNode]
     }
    |NULL
     {
-        Mov newMov = new Mov("null", "r"+registerCounter++);
-        $n.getInstructions().add(newMov);
+        Loadi newLoadi = new Loadi("0", "r" + registerCounter++);
+        $n.getInstructions().add(newLoadi);
+        //Mov newMov = new Mov("null", "r"+registerCounter++);
+        //$n.getInstructions().add(newMov);
     }
    |node = stmts[predNode]
     {
@@ -496,16 +508,20 @@ lvalue [Node predNode] returns [Node n = predNode]
    : ^(DOT lvalue[predNode] id=ID 
    
       {
+         lsDotCounter++;
          assignLVisField = true;
          assignLVisFieldName = $id.text; 
-         System.out.println("-----DOT EXPR: " + $id.text);
-        // Loadai lai = new Loadai(getLastTarget(predNode), $id.text, "LV" + registerCounter++); // this is needed! make sure it works
+         //System.out.println("-----DOT EXPR: " + $id.text);
+         lsDotFieldNames.add($id.text);
+         //System.out.println("The field " + $id.text + " was added to lsDotFieldNames.");
+         //System.out.println("lsDotCounter = " + lsDotCounter);
+         //System.out.println("lsDotFieldNames.size() = " + lsDotFieldNames.size());
       }      
       
    ) 
    | id=ID
       {
-            {System.out.println("-----DOT EXPR ID: " + $id.text);}
+            //{System.out.println("-----DOT EXPR ID: " + $id.text);}
             Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
             predNode.getInstructions().add(newMov);            
             $n = predNode;
@@ -856,18 +872,32 @@ stmt [Node predNode] returns [Node n = predNode]
         {
          String r = getLastTarget(current);
          System.out.println("rValue = " + r);
+         assignRisField = false;
         }
     
     lv=lvalue[current]
         {
-          String l = getLastMovTarget(lv); // this needs to get the target of the last move
+          String l = getLastTarget(lv);
           System.out.println("lValue = " + l);
           $n = lv;
-          if(assignLVisField) {
+          if(assignLVisField) {      
             int tarReg = registerCounter++;         
-            Mov newMov = new Mov(l, "r" + tarReg);
-            $n.getInstructions().add(newMov);
-            Storeai sai = new Storeai(r, "r" + tarReg, assignLVisFieldName);
+            Mov newMov = new Mov(l, "A" + tarReg);
+            lv.getInstructions().add(newMov);
+            if (lsDotFieldNames.size() > 1) {
+               lsDotFieldNames.remove(lsDotFieldNames.size()-1); // this removes the last id in the dot expression which does not need to be loaded
+               int countdown = lsDotFieldNames.size() - 1; // this is needed to determine when encountering the last loadai, since it won't be followed by a move
+               for (String s : lsDotFieldNames) {
+                  Loadai lai = new Loadai(getLastTarget(lv), s, "LV" + registerCounter++); // this is needed somewhere but is wrong here
+                  lv.getInstructions().add(lai);
+                  if (countdown > 0) {       // this means we're going to have to do another load, so move the result from the last load into a register
+                     Mov anotherMov = new Mov(getLastTarget(lv), "r" + registerCounter++);
+                     lv.getInstructions().add(anotherMov);
+                     countdown--;
+                  }
+               }            
+            }
+            Storeai sai = new Storeai(r, getLastTarget(lv), assignLVisFieldName);
             $n.getInstructions().add(sai);
           } else {
              Mov newMov = new Mov(r, l);
@@ -875,6 +905,8 @@ stmt [Node predNode] returns [Node n = predNode]
           }
           assignLVisField = false;
           assignLVisFieldName = "---";
+          lsDotFieldNames.clear();
+          lsDotCounter = 0;
         }
     )
 ;
@@ -1021,6 +1053,8 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         functions = new ArrayList<Node>();
         funcNames = new ArrayList<String>();
         stringDirectives = new ArrayList<String>();
+        lsDotFieldNames = new ArrayList<String>();
+        rsDotFieldNames = new ArrayList<String>();
         stringConstants = "";
         filename = filename;
         System.out.println("*****" + filename + "*****\n");

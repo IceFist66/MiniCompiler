@@ -29,36 +29,36 @@ add:
 L6:
 L7:
 	ret true
-
+                                                                     // r0 = num, r1 = math1 (contains address of math1), r2 = math2 (contains address of math2)
 domath:
-	loadinargument num, 0, r0
-	new foo, [simp, bar, cool], r4   //math1 = new foo;
-	mov r4, r1
+	loadinargument num, 0, r0                                         // move the argument passed in %rdi to r0
+	new foo, [simp, bar, cool], r4   //math1 = new foo;               // register containing address of newly created math1 is in r4
+	mov r4, r1                                                        // move r4 (contains address of math1) into r1 (math1's assigned register)
 	
-	new simple, [one], r5            //math1.simp = new simple;
-	mov r1, r6
-	storeai r5, r6, simp
+	new simple, [one], r5            //math1.simp = new simple;       // register containing address of newly created simp is in r5
+	mov r1, r6                                                        // move r1 (contains address of math1) into r6
+	storeai r5, r6, simp                                              // register containing address of simp (r5) is stored in register containing address of foo (r9) offset by simp (0*8)
 	
-	new foo, [simp, bar, cool], r7   //math2 = new foo;
-	mov r7, r2
+	new foo, [simp, bar, cool], r7   //math2 = new foo;               // register containing address of newly created math2 is in r7
+	mov r7, r2                                                        // move r7 (contains address of math1) into r2 (math2's assigned register)
 	
-	new simple, [one], r8            //math2.simp = new simple;
-	mov r2, r9                      
-	storeai r8, r9, simp
+	new simple, [one], r8            //math2.simp = new simple;       // register containing address of newly created simp is in r8   
+	mov r2, r9                                                        // move r2 (contains address of math2) to r9
+	storeai r8, r9, simp                                              // register containing address of simp (r8) is stored in register containing address of foo (r9) offset by simp (0*8)
 	
-	mov r0, r10                      //math1.bar = num;
-	mov r1, r11                      
-	storeai r10, r11, bar
+	mov r0, r10                      //math1.bar = num;               // move r0 (contains num) into r10
+	mov r1, r11                                                       // move r1 (contains address of math1) into r11
+	storeai r10, r11, bar                                             // register containing num (r0) is stored in register containing address of math1 (r11) offset by bar (1*8)
 	
-	loadi 3, r12                     //math2.bar = 3;
-	mov r2, r13
-	storeai r12, r13, bar
+	loadi 3, r12                     //math2.bar = 3;                 // move $3 into r12
+	mov r2, r13                                                       // move r2 (contains address of math2) into r13
+	storeai r12, r13, bar                                             // register containing $3 (r12) is stored in register containing address of math2 (r13) offset by bar (1*8)
 	
-	mov r1, r14                      //math1.simp.one = math1.bar;             
-	loadai r14, bar, r15
-	mov r1, r16
-	loadai r16, simp, r17 <---- not yet
-	storeai r15, r17, one
+	mov r1, r14                      //math1.simp.one = math1.bar;    // move r1 (contains address of math1) to r14     
+	loadai r14, bar, r15                                              // move the base address in r14 (contains address of math1) offset by bar (2*8) into r15
+	mov r1, r16                                                       // move r1 (contains address of math1) to r16
+	loadai r16, simp, r17 <---- not yet                               // move the base address in r16 (contains address of math1) offset by simp (1*8) into r17
+	storeai r15, r17, one                                             // register containing address of math1.bar (r15) is stored in register containing address of math1.simp (r17) offset by one (0*8)
 	
 	mov r2, r18                      //math2.simp.one = math2.bar;
 	loadai r18, bar, r19
