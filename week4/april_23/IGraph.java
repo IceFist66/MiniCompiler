@@ -45,7 +45,7 @@ public class IGraph {
 	   return col;
 	}
 	
-	public void createGraph(){
+	/*public void createGraph2(){
 		ArrayList<Instruction_a> reverse = new ArrayList<Instruction_a>();
 		ArrayList<String> liveNow = new ArrayList<String>();
 		ArrayList<String> targets;
@@ -55,8 +55,8 @@ public class IGraph {
 		for(Node n : nodes){
 			reverse.addAll(n.getAsmInstructions());
 			Collections.reverse(reverse);
-			liveNow.clear();
-			liveNow.addAll(n.getLiveOut());
+			liveNow.clear(); //make sure to clean LiveNow from previous Node
+			liveNow.addAll(n.getLiveOut()); //get LiveOut and save to LiveNow
 			for(Instruction_a a : reverse){
 				targets = a.getTargets();
                 for(String target : targets){
@@ -95,6 +95,67 @@ public class IGraph {
 					        System.out.println("BTarget is null!!");
 				        }
                     }
+                }
+			}
+		}
+	}*/
+
+    public void createGraph(){
+		ArrayList<Instruction_a> reverse = new ArrayList<Instruction_a>();
+		ArrayList<String> liveNow = new ArrayList<String>();
+		ArrayList<String> targets = new ArrayList<String>();
+		ArrayList<String> sources = new ArrayList<String>();
+		int numColors = colors.size();
+		
+        //System.out.println("Size of nodes: " + nodes.size());
+		for(Node n : nodes){
+            reverse.clear(); //make sure to clean reverse from previous Node
+			reverse.addAll(n.getAsmInstructions());
+			Collections.reverse(reverse);
+			liveNow.clear(); //make sure to clean LiveNow from previous Node
+			liveNow.addAll(n.getLiveOut()); //get LiveOut and save to LiveNow
+			for(Instruction_a a : reverse){
+				targets = a.getTargets();
+                //System.out.println(a.toString() + " Instruciton target size: " + a.getTargets().size());
+                for(String target : targets){
+				    liveNow.remove(target);
+                    if((target.charAt(0) == 'r' || target.charAt(0) == '%')){
+				        addBubble(target);
+                    }
+                }
+		        sources = a.getSources();
+		        for(String source : sources){
+                    if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%'))
+                        liveNow.add(source);
+			            addBubble(source);
+		        }
+                for(String target : targets){
+		            Bubble btarget = getBubble(target);
+		            if(btarget != null){
+			            for(String s : liveNow){
+				            Bubble bsource = getBubble(s);
+				            if(bsource != null){
+					            if(!btarget.getEdges().contains(bsource)) {
+						            btarget.getEdges().add(bsource);
+						            if (btarget.getEdges().size() >= numColors)
+						              if (btarget.isConstrained() == false)
+						                 btarget.setConstrained(true);
+						        }
+					            if(!bsource.getEdges().contains(btarget)) {
+						            bsource.getEdges().add(btarget);
+						            if (bsource.getEdges().size() >= numColors)
+						              if (bsource.isConstrained() == false)
+						                 bsource.setConstrained(true);
+						        }
+				            }
+				            else{
+					            System.out.println("BSource is null: " + s);
+				            }
+			            }
+		            }
+		            else{
+			            System.out.println("BTarget is null!!: "+ target);
+		            }
                 }
 			}
 		}

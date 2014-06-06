@@ -1,68 +1,68 @@
 addq
 2
-arg2 + " , " + arg1
-arg2
-arg1 arg2
+arg1 + " , " + arg2
+this.arg2
+this.arg1 this.arg2
 
 subq
 2
-arg2 + " , " + arg1
-arg2
-arg1 arg2
+arg1 + " , " + arg2
+this.arg2
+this.arg1 this.arg2
 
 imulq
 2
 arg1 + " , " + arg2
-arg2
-arg1
+this.arg2
+this.arg1
 
 idivq
 1
 arg1
 %rax %rdx
-arg1
+this.arg1
 
 andq
 2
-arg2 + " , " + arg1
+arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 orq
 2
-arg2 + " , " + arg1
+arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 xorq
 2
-arg2 + " , " + arg1
+arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmp
 2
-arg2 + " , " + arg1
+arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 jmp je jg jge jl jle jne
 1
 arg1
 null
-arg1
+this.arg1
 
 movq
 2
 arg1 + " , " + arg2
-arg2
-arg1
+this.arg2
+this.arg1
 
 call
 1
 arg1
 null
-arg1
+this.arg1
 
 ret
 0
@@ -74,43 +74,43 @@ cmoveq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmovgq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmovgeq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmovlq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmovleq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 cmovneq
 2
 arg1 + " , " + arg2
 null
-arg1 arg2
+this.arg1 this.arg2
 
 shrq
 2
 arg1 + " , " + arg2
 null
-arg2
+this.arg2
 
 leave
 0
@@ -122,13 +122,13 @@ pushq
 1
 arg1
 null
-arg1
+this.arg1
 
 popq
 1
 arg1
 null
-arg1
+this.arg1
 
 cfi
 1

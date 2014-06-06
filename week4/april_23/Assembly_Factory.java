@@ -63,7 +63,7 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	  //printAsmAll(fname, input, stringDirectives);
+	    printAsmAll(fname, input, stringDirectives);
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
@@ -203,8 +203,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getAddq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Addq(arg1, arg3)); //r3 += r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r2
+        list.add(new Addq(arg2, arg3)); //r3 += r1
         return list;
     }
 
@@ -238,8 +238,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getOrq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Orq(arg1, arg3)); //r3 ||= r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r2
+        list.add(new Orq(arg2, arg3)); //r3 ||= r1
         return list;
     }
 
@@ -275,8 +275,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getSubq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Subq(arg1, arg3)); //r3 -= r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r1
+        list.add(new Subq(arg2, arg3)); //r3 -= r2
         return list;
     }
 
@@ -537,6 +537,7 @@ public class Assembly_Factory {
         for(Node n: input){
             ArrayList<Node> nodes = new ArrayList<Node>();
             allNodes.add(createList(nodes, n));
+            System.out.println("Size of nodes after creatList: " + nodes.size());
         }
     }
 
@@ -545,7 +546,7 @@ public class Assembly_Factory {
         System.out.println("Node added: L" + n.getId());    
         for(Node s: n.getSuccNodes()){
             if(!nodes.contains(s)){
-                nodes.addAll(createList(nodes, s));
+                createList(nodes, s);
             }
             else{
                 System.out.println("Did not Add: L" + s.getId());
@@ -555,9 +556,9 @@ public class Assembly_Factory {
     }
 
     public void generateIGraphs(){
-        System.out.println("Before the generate loop" + allNodes.size());
+        System.out.println("Before the generate loop " + allNodes.size());
         for(ArrayList<Node> nodes : allNodes){
-            System.out.println("In Generate Loop");
+            System.out.println("In Generate Loop " + nodes.size());
             iGraphs.add(new IGraph(nodes));
         }
     }
@@ -585,27 +586,61 @@ public class Assembly_Factory {
     public void applyColor(){
         int association = 0;
         for(ArrayList<Node> nodes : allNodes){ //for each list of nodes
-            IGraph graph = iGraphs.get(0); //grab associated Igraph
+            IGraph graph = iGraphs.get(association); //grab associated Igraph
             //ArrayList<Bubble> bubbles = graph.getBubbles();//getBubbles
             for(Node n : nodes){//for each Node
                 for(Instruction_a inst : n.getAsmInstructions()){
-                    ArrayList<String> sources = inst.getSources();//getSources
-                    ArrayList<String> targets = inst.getTargets();//getTargets
-                    for(String source : sources){//for each source
-                        if(source.charAt(0) == 'r'){
-                            Bubble sb = graph.getBubble(source); //get bubble id from graph
-                            sources.set(sources.indexOf(source), sb.getColor().text()); //save source to have the color of the bubbles register
+                    String arg1 = inst.getArg1();
+                    String arg2 = inst.getArg2();
+                    String arg3 = inst.getArg3();
+                    if(arg1 != null && arg1.charAt(0) == 'r'){
+                        //System.out.println("Before: " + inst.getArg1() + " text " + inst.toString());
+                        Bubble sb = graph.getBubble(arg1);
+                        if(sb == null){
+                            System.out.println("This is null from arg1: " + arg1 + " in Node: " + n.getId());
                         }
+                        inst.setArg1(sb.getColor().text());
+                        if(inst instanceof Imulq && arg3 != null){
+                            inst.resetText2();
+                        }
+                        else{
+                            inst.resetText();
+                        }
+                        //System.out.println("After: " + inst.getArg1() + " text " + inst.toString());
                     }
-                    for(String target : targets){//for each target
-                        if(target.charAt(0) == 'r'){
-                            Bubble tb = graph.getBubble(target); //get bubble id from graph
-                            targets.set(targets.indexOf(target), tb.getColor().text()); //save target to have the color of the bubbles register
+                    if(arg2 != null && arg2.charAt(0) == 'r'){
+                        //System.out.println("Before: " + inst.getArg2() + " text " + inst.toString());
+                        Bubble sb = graph.getBubble(arg2);
+                        inst.setArg2(sb.getColor().text());
+                        if(inst instanceof Imulq && arg3 != null){
+                            inst.resetText2();
                         }
+                        else{
+                            inst.resetText();
+                        }
+                        //System.out.println("After: " + inst.getArg2() + " text " + inst.toString());
+                    }
+                    if(arg3 != null && arg3.charAt(0) == 'r'){
+                        //System.out.println("Before: " + inst.getArg3() + " text " + inst.toString());
+                        Bubble sb = graph.getBubble(arg3);
+                        inst.setArg3(sb.getColor().text());
+                        if(inst instanceof Imulq && arg3 != null){
+                            inst.resetText2();
+                        }
+                        else{
+                            inst.resetText();
+                        }
+                        //System.out.println("After: " + inst.getArg3() + " text " + inst.toString());
                     }
                 }
             }
             association++;//increment association
+        }
+    }
+
+    public void removeRedundantMovq(Node n, Instruction_a inst){
+        if(inst instanceof Movq && inst.getArg1().equals(inst.getArg2())){
+            n.getAsmInstructions().remove(inst);
         }
     }
 }

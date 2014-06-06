@@ -80,6 +80,8 @@ def create_Class(name, size, text, targets, sources):
                     new_class+="\t\tsources.add("+sources[x]+");\n"
                 x+=1
        new_class +="\t}\n\n"
+       new_class +="\tpublic void resetText2(){\n\t\tthis.text = \"imulq \" + arg1 + \" , \" + arg2  + \" , \" + arg3;\n}\n"
+   new_class += "\tpublic void resetText(){\n\t\tthis.text = " + text + ";\n\t}\n\n"
    new_class +="}"
    return new_class
 

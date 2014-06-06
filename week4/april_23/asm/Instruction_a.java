@@ -46,4 +46,10 @@ public abstract class Instruction_a{
     public ArrayList<String> getSources(){
         return this.sources;
     }
+    
+    public void resetText(){
+    }
+
+    public void resetText2(){
+    }
 }
