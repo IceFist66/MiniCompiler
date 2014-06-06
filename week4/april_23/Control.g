@@ -28,6 +28,7 @@ options
     Node last;
     HashMap<String, String> globalRegisterMap; // this is set once at the start
     HashMap<String, String> localRegisterMap; // this is set anew for every function
+    ArrayList<String> globals; // sent to AsseemblyFactory to add .comm entries
     private int registerCounter = 0;
     private int localRegisterReset = 0; // if storing globals, this won't be needed
     private String currentScope = "global";
@@ -140,6 +141,10 @@ options
     
     public ArrayList<String> getStringDirectives() {
       return stringDirectives;
+    }
+    
+    public ArrayList<String> getGlobals() {
+      return globals;
     }
     
     public String getFilename() {
@@ -416,7 +421,7 @@ expression [Node predNode] returns [Node n = predNode]
    
    n2 = expression[n1]
       {
-         Loadai lai2 = new Loadai(reg, dotFieldName, "twoD" + registerCounter++);
+         Loadai lai2 = new Loadai(reg, dotFieldName, "r" + registerCounter++);
          n2.getInstructions().add(lai2);
          $n = n2;
          assignRisField = false;
@@ -882,13 +887,13 @@ stmt [Node predNode] returns [Node n = predNode]
           $n = lv;
           if(assignLVisField) {      
             int tarReg = registerCounter++;         
-            Mov newMov = new Mov(l, "A" + tarReg);
+            Mov newMov = new Mov(l, "r" + tarReg);
             lv.getInstructions().add(newMov);
             if (lsDotFieldNames.size() > 1) {
                lsDotFieldNames.remove(lsDotFieldNames.size()-1); // this removes the last id in the dot expression which does not need to be loaded
                int countdown = lsDotFieldNames.size() - 1; // this is needed to determine when encountering the last loadai, since it won't be followed by a move
                for (String s : lsDotFieldNames) {
-                  Loadai lai = new Loadai(getLastTarget(lv), s, "LV" + registerCounter++); // this is needed somewhere but is wrong here
+                  Loadai lai = new Loadai(getLastTarget(lv), s, "r" + registerCounter++); // this is needed somewhere but is wrong here
                   lv.getInstructions().add(lai);
                   if (countdown > 0) {       // this means we're going to have to do another load, so move the result from the last load into a register
                      Mov anotherMov = new Mov(getLastTarget(lv), "r" + registerCounter++);
@@ -1055,6 +1060,7 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         stringDirectives = new ArrayList<String>();
         lsDotFieldNames = new ArrayList<String>();
         rsDotFieldNames = new ArrayList<String>();
+        globals = new ArrayList<String>();
         stringConstants = "";
         filename = filename;
         System.out.println("*****" + filename + "*****\n");
