@@ -188,6 +188,9 @@ public class Assembly_Factory {
         }
         else if(i instanceof iloc.Call){
             list = getCall(arg1, arg2);
+        }
+        else if(i instanceof Storeoutargument){
+            list = getStoreOutArgument(arg1, arg2);
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -421,10 +424,18 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument_count = Integer.parseInt(arg2);
         int offset = 8;
-        for(int i = 0; i< argument_count; i++){
-            //storeoutargument r1 -> i1
-        }
         list.add(new asm.Call(arg1));
+        for(int i = argument_count - 1; i > 0; i++){//pop Enum Register
+            list.add(new Popq(arguments.get(i)));
+        }
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getStoreOutArgument(String arg1, String arg2){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        int argument = Integer.parseInt(arg2);
+        list.add(new Pushq(arguments.get(argument)));
+        list.add(new Movq(arg1, arguments.get(argument)));
         return list;
     }
     
