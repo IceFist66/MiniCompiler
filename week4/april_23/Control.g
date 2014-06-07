@@ -1006,6 +1006,10 @@ fun:
         stringConstants += "\t.section .rodata\n";
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
         head.setFunctionName($id.text);
+        if($id.text.equals("main")){
+            head.setIsMainHead(true);
+            System.out.println("*******FOUND THE MAIN******");
+        }
         functions.add(head);
         head.setLocals(g_stable.gatherVariablesInScope($id.text));
         head.setRegisterMap(buildRegisterMap(head.getLocals(), false));

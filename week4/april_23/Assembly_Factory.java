@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.HashMap;
+import java.util.Set;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -19,6 +21,7 @@ public class Assembly_Factory {
         private int stringCounter;
         private ArrayList<Node> input;
         private ArrayList<ArrayList<Node>> allNodes;
+        private ArrayList<ArrayList<String>> allCalleeRegisters;
         private ArrayList<IGraph> iGraphs;
         private ArrayList<String> caller;
         private ArrayList<String> globals;
@@ -30,13 +33,14 @@ public class Assembly_Factory {
 	
 	
 	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives, ArrayList<String> globals){
-		this.input = input;
-		this.fname = fname;
-		this.stringDirectives = stringDirectives;
+        this.input = input;
+        this.fname = fname;
+        this.stringDirectives = stringDirectives;
         this.globals = globals;
-		stringCounter = 0;
+        stringCounter = 0;
         this.allNodes = new ArrayList<ArrayList<Node>>();
-      this.arguments = new ArrayList<String>(Arrays.asList("%rdi","%rsi","%rdx","%rcx","%r8","%r9"));
+        this.allCalleeRegisters = new ArrayList<ArrayList<String>>();
+        this.arguments = new ArrayList<String>(Arrays.asList("%rdi","%rsi","%rdx","%rcx","%r8","%r9"));
         this.caller = new ArrayList<String>(Arrays.asList("%rax", "%rcx", "%rdi", "%rsi", "%r8", "%r9", "%r10", "%r11"));
         this.iGraphs = new ArrayList<IGraph>();
         this.store = false;
@@ -76,10 +80,21 @@ public class Assembly_Factory {
         colorIGraphs();
         printIGraphColorings();
         applyColor();
+        int association = 0;
+        for(Node n : input){//settting up the callee saved registers
+            IGraph graph = iGraphs.get(association); //grab associated Igraph
+            getCalleeRegisters(n, graph);
+            association++;
+        }
         int i = 0;
         for(Node n: input){ //inserting getStartproperly
             IGraph graph = iGraphs.get(i);
             ArrayList<Instruction_a> insts = getStart(graph.getSpillSpace()); //Dynamic getStart
+            if(!n.getIsMainHead()){
+                for(String call : allCalleeRegisters.get(i)){
+                    insts.add(new Pushq(call));
+                }
+            }
             for(int j = insts.size() - 1; j >= 0; j--){
                 n.getAsmInstructions().add(0, insts.get(j));
             }
@@ -756,4 +771,32 @@ public class Assembly_Factory {
             n.getAsmInstructions().remove(inst);
         }
     }
+   public void getCalleeRegisters(Node n, IGraph graph){
+       ArrayList<String> callee = new ArrayList<String>();
+       HashMap<String, String> hashmap = n.getRegisterMap();
+       Set<String> keys = hashmap.keySet();
+       ArrayList<String> reg = new ArrayList<String>();
+       for(String k: keys){
+           reg.add(hashmap.get(k));
+           System.out.println("Key found: " + k + ", " + hashmap.get(k));
+       }
+       for(String r: reg){
+           if(r != null && r.charAt(0) == 'r'){
+               Bubble sb = graph.getBubble(r);
+               if(sb == null){
+                   System.out.println("This is null from reg: " + r + " in Node: " + n.getId());
+               }
+               else{
+                   if(caller!= null && !caller.contains(sb.getColor().text())){
+                       callee.add(sb.getColor().text());
+                       System.out.println("Added register: " + r + ", " + sb.getColor().text());
+                   }
+                   else{
+                       System.out.println("DID NOT ADD register: " + r + ", " + sb.getColor().text());
+                   }
+               }
+           }
+       }
+       allCalleeRegisters.add(callee);
+   }
 }

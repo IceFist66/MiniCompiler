@@ -1,4 +1,5 @@
 // see notes 4-16
+// May need to consider removing rbp and rsp
 
 public enum Color {
 	RAX("%rax"), RBX("%rbx"), RCX("%rcx"), RDX("%rdx"), RSP("%rsp"), RBP("%rbp"),

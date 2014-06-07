@@ -25,6 +25,7 @@ public class Node {
 	private ArrayList<String> locals; // holds id of params and locals passed into function
 	private HashMap<String, String> registerMap;
 	private Node backEdgeTarget;
+    private boolean isMainHead;
 	private boolean iloc_printed;
 	private boolean asm_printed;
 	private boolean asm_processed;
@@ -47,6 +48,7 @@ public class Node {
 		iloc_printed = false;
 		asm_printed = false;
 		asm_processed = false;
+        isMainHead = false;
 	}
 	
 	public boolean getAsmProcessed() {
@@ -412,4 +414,11 @@ public class Node {
         }
         return changed;
     }*/
+    public boolean getIsMainHead(){
+        return this.isMainHead;
+    }
+    
+    public void setIsMainHead(boolean isMainHead){
+        this.isMainHead = isMainHead;
+    }
 }

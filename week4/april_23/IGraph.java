@@ -81,15 +81,18 @@ public class IGraph {
                 //System.out.println(a.toString() + " Instruciton target size: " + a.getTargets().size());
                 for(String target : targets){
 				    liveNow.remove(target);
-                    if((target.charAt(0) == 'r' || target.charAt(0) == '%')){
+                    if(target != null && (target.charAt(0) == 'r' || target.charAt(0) == '%')){
 				        addBubble(target);
                     }
                 }
 		        sources = a.getSources();
 		        for(String source : sources){
-                    if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%'))
+                    if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%')){
                         liveNow.add(source);
 			            addBubble(source);
+                        System.out.println("Added a bubble: " + source);
+                    }
+                    
 		        }
                 for(String target : targets){
 		            Bubble btarget = getBubble(target);
