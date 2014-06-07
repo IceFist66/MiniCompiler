@@ -13,7 +13,7 @@ jumpi storeret del print println read
 arg1
 arg1
 
-loadi loadglobal computeformaladdress storeglobal
+loadi loadglobal computeglobaladdress storeglobal
 2
 arg1 + " => " + arg2
 arg2

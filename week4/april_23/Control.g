@@ -68,6 +68,15 @@ options
          return "ERROR";
     }
     
+    public boolean isGlobal(String variable) {
+      if (localRegisterMap.containsKey(variable))
+         return false;
+      else if (globalRegisterMap.containsKey(variable))
+         return true;
+      else
+         return false;
+    }
+    
     public String getVariableNameFromRegister(String register) {
       boolean found = false;
       String name = "ERROR";
@@ -470,13 +479,21 @@ expression [Node predNode] returns [Node n = predNode]
    |id=ID
     {
       if (!assignRisField) {
+         if(isGlobal($id.text)) {
+            Variable v = g_stable.getVariable("global", $id.text);
+            if(v.getType() == Type.STRUCT) {
+               Computeglobaladdress cga = new Computeglobaladdress($id.text, "r" + registerCounter++);
+               $n.getInstructions().add(cga);
+            } else {
+               Loadglobal lg = new Loadglobal($id.text, "r" + registerCounter++);
+               $n.getInstructions().add(lg);
+            }         
+         } else {
            Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
-           //Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
-           $n.getInstructions().add(newMov);
-           //dotFieldName = $id.text;
-           
+           $n.getInstructions().add(newMov);           
            rsDotFieldNames.add($id.text);
            System.out.println("Added " + $id.text + " to rsDotFieldNames");
+           }
         }
         dotFieldName = $id.text; // this WORKS but is this correct?
     }
@@ -498,16 +515,6 @@ expression [Node predNode] returns [Node n = predNode]
         //System.out.println("In EXPRESSION, n type: " + n.getNodeType());
     }
 ;
-
-// old working lvalue (doesn't handle dot expressions)
-/*lvalue [Node predNode] returns [Node n = predNode]
-   : ^(DOT lvalue[predNode] id=ID) 
-   | id=ID
-      {
-         Mov newMov = new Mov(getRegister($id.text), getRegister($id.text));
-         $n.getInstructions().add(newMov);
-      }
-;*/
 
 lvalue [Node predNode] returns [Node n = predNode]
    : ^(DOT lvalue[predNode] id=ID 
@@ -873,7 +880,7 @@ stmt [Node predNode] returns [Node n = predNode]
                lsDotFieldNames.remove(lsDotFieldNames.size()-1); // this removes the last id in the dot expression which does not need to be loaded
                int countdown = lsDotFieldNames.size() - 1; // this is needed to determine when encountering the last loadai, since it won't be followed by a move
                for (String s : lsDotFieldNames) {
-                  Loadai lai = new Loadai(getLastTarget(lv), s, "r" + registerCounter++); // this is needed somewhere but is wrong here
+                  Loadai lai = new Loadai(getLastTarget(lv), s, "r" + registerCounter++);
                   lv.getInstructions().add(lai);
                   if (countdown > 0) {       // this means we're going to have to do another load, so move the result from the last load into a register
                      Mov anotherMov = new Mov(getLastTarget(lv), "r" + registerCounter++);
