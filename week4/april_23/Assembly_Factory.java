@@ -434,7 +434,7 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getStoreai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int offset = 8; //64 bits
-        offset *= Integer.parseInt(arg3); //create an offset from arg2
+        //offset *= Integer.parseInt(arg3); //create an offset from arg2
         list.addAll(getMovq(arg1, offset+"("+arg2+")")); //movq offset(arg1), arg3
         return list;
     }
