@@ -545,8 +545,6 @@ stmt [Node predNode] returns [Node n = predNode]
         {$n = node;}
     )
     
-          
-    
     |^(PRINT 
           {
             
@@ -554,52 +552,34 @@ stmt [Node predNode] returns [Node n = predNode]
                System.out.println("print");
             
           }
-    (current=expression[predNode]
+    current=expression[predNode] 
     
-          {
+    {
+         String tar = getLastTarget(current);
+         System.out.println(tar);
+         boolean ln = false; 
+    }
     
-            Print newPrint = new Print(getLastTarget(current));
-            current.getInstructions().add(newPrint);
-          
-          }
-          
-    )*
+    (en=expression[current])?
     
-      {
-         // this block of code detects whether a Println is needed
-         Instruction i, j, k;
-         int numC = current.getInstructions().size();
-         int counter = numC - 3;
-         boolean found = false;
-         if (numC > 2) {
-            i = current.getInstructions().get(numC - 2);
-            k = current.getInstructions().get(numC - 1);
-            if (i.getArg1().equals("endl") && k instanceof Print) {
-               while (!found && counter >= 0) {
-                  j = current.getInstructions().get(counter);
-                  if (j instanceof Print) {
-                     Println pl = new Println(j.getTarget());
-                     current.getInstructions().remove(numC - 1);
-                     current.getInstructions().remove(numC - 2);
-                     current.getInstructions().remove(counter);
-                     current.getInstructions().add(pl);
-                  }
-                  counter--;       
-               }            
-            }         
+         {
+            String stringLabel = ".LC" + (stringCounter++) + ":\n";
+            String entry = "\t.string ";
+            
+            if (en != null && getLastTarget(en).equals("endl")) {
+               ln = true;
+               Println pl = new Println(tar);
+               en.getInstructions().add(pl);
+               stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
+               n = en;        
+            } else {
+               Print newPrint = new Print(tar);
+               current.getInstructions().add(newPrint);
+               stringConstants += (stringLabel + entry + "\"\%ld \"\n");
+               n = current;       
+            }
          }
-         String stringLabel = ".LC" + (stringCounter++) + ":\n";
-         String entry = "\t.string ";
-         numC = current.getInstructions().size();
-         i = current.getInstructions().get(numC - 1);
-         if (i instanceof Print) {
-            stringConstants += (stringLabel + entry + "\"\%ld \"\n");
-         } else {
-            stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
-         }
-         n = current;
-      }
-    
+         
     )
     
     |^(READ 
@@ -613,14 +593,14 @@ stmt [Node predNode] returns [Node n = predNode]
     current=lvalue[predNode]
       
       {
-         String name = getVariableNameFromRegister(getLastTarget(current));
-         Addi newAddi = new Addi("rarp", name, "r" + registerCounter++);
-         current.getInstructions().add(newAddi);
+         //String name = getVariableNameFromRegister(getLastTarget(current));
+         //Addi newAddi = new Addi("rarp", name, "r" + registerCounter++);
+         //current.getInstructions().add(newAddi);
          String readTarget = getLastTarget(current);
          Read newRead = new Read(readTarget);
          current.getInstructions().add(newRead);
-         Loadai lai = new Loadai("rarp", name, getRegister(name));
-         current.getInstructions().add(lai);
+         //Loadai lai = new Loadai("rarp", name, getRegister(name));
+         //current.getInstructions().add(lai);
          n = current;
       }
       
