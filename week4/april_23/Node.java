@@ -1,3 +1,6 @@
+import asm.*;
+
+import java.util.Collections;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -318,7 +321,7 @@ public class Node {
     }
     
    
-   public FileWriter printAsm(String front, FileWriter f, String stringConstants) throws IOException {
+   public FileWriter printAsm(String front, FileWriter f, String stringConstants, boolean isMain, ArrayList<String> callee) throws IOException {
       System.out.println();
       //String line = "L" + this.id + ":\n";
       // Add .text etc here
@@ -331,18 +334,25 @@ public class Node {
       System.out.print(line);
       ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
       for(Instruction_a ainst : asm_instructions){
-         line = "\t" + ainst.toString() + "\n";
+          line = "";
+          if(ainst instanceof Leave){
+              //System.out.println("FOUND A Leave");
+              if(!isMain){
+              line += addCalleePops(callee);
+              }
+          }
+         line += "\t" + ainst.toString() + "\n";
          f.write(line);
          System.out.print(line);
       }
       //printGenKillSet(this, f);
       //printLiveOutSet(this, f);
       this.asm_printed = true;
-      f = asmSucc(this, f);
+      f = asmSucc(this, f, isMain, callee);
       return f;
     }
     
-    public FileWriter asmSucc(Node n, FileWriter f) throws IOException {
+    public FileWriter asmSucc(Node n, FileWriter f, boolean isMain, ArrayList<String> callee) throws IOException {
       ArrayList<Instruction_a> asm_instructions;
       for (Node s : n.succNodes) {
       if (s.asm_printed == false) {
@@ -352,14 +362,21 @@ public class Node {
             System.out.print(line);
             asm_instructions = s.getAsmInstructions();
             for(Instruction_a ainst : asm_instructions){
-               line = "\t" + ainst.toString() + "\n";
+                line = "";
+                if(ainst instanceof Leave){
+                    //System.out.println("FOUND A Leave");
+                    if(!isMain){
+                        line += addCalleePops(callee);
+                    }
+                }
+               line += "\t" + ainst.toString() + "\n";
                f.write(line);
                System.out.print(line);
             }
             //printGenKillSet(s, f);
             //printLiveOutSet(s, f);
             s.asm_printed = true;
-            asmSucc(s, f);
+            asmSucc(s, f, isMain, callee);
          }
 		}    
       return f;
@@ -420,5 +437,15 @@ public class Node {
     
     public void setIsMainHead(boolean isMainHead){
         this.isMainHead = isMainHead;
+    }
+    
+    public String addCalleePops(ArrayList<String> callee){
+        String line = "";
+        ArrayList<String> reverse = new ArrayList<String>(callee);
+        Collections.reverse(reverse);
+        for(String s: reverse){
+            line += "\t" + (new Popq(s)).toString() + "\n";
+        }
+        return line;
     }
 }

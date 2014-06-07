@@ -570,9 +570,9 @@ public class Assembly_Factory {
 		   front = prefront + front;
 		   stringDirSize = stringDirectives.size();
 		   if (stringDirSize > 0 && stringCounter <= (stringDirSize - 1))
-		      f = n.printAsm(front, f, stringDirectives.get(stringCounter++));
+		      f = n.printAsm(front, f, stringDirectives.get(stringCounter++), n.getIsMainHead(), allCalleeRegisters.get(input.indexOf(n)));
 		   else
-		      f = n.printAsm(front, f, "");
+		      f = n.printAsm(front, f, "", n.getIsMainHead(), allCalleeRegisters.get(input.indexOf(n)));
             
             String closing = ".LFE" + (closing_counter++) + ":\n\t.size\t" + n.getFunctionName() + ", .-" + n.getFunctionName() + "\n";
             f.write(closing);
