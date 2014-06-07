@@ -15,11 +15,13 @@ public class IGraph {
 	private ArrayList<Bubble> bubbles;
 	private ArrayList<Color> colors;
 	private ArrayList<Node> nodes;
+    private int spillSpace;
 	
 	public IGraph(ArrayList<Node> nodes) {
 		this.bubbles = new ArrayList<Bubble>();
 		this.colors = createColorSet();
 		this.nodes = nodes;
+        this.spillSpace = 0;
         createGraph();
 	}
 	
@@ -44,61 +46,21 @@ public class IGraph {
 	   col.remove(Color.UNC);
 	   return col;
 	}
-	
-	/*public void createGraph2(){
-		ArrayList<Instruction_a> reverse = new ArrayList<Instruction_a>();
-		ArrayList<String> liveNow = new ArrayList<String>();
-		ArrayList<String> targets;
-		ArrayList<String> sources = new ArrayList<String>();
-		int numColors = colors.size();
-		
-		for(Node n : nodes){
-			reverse.addAll(n.getAsmInstructions());
-			Collections.reverse(reverse);
-			liveNow.clear(); //make sure to clean LiveNow from previous Node
-			liveNow.addAll(n.getLiveOut()); //get LiveOut and save to LiveNow
-			for(Instruction_a a : reverse){
-				targets = a.getTargets();
-                for(String target : targets){
-				    liveNow.remove(target);
-                    if((target.charAt(0) == 'r' || target.charAt(0) == '%')){
-				        addBubble(target);
-				        sources = a.getSources();
-				        for(String source : sources){
-                            if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%'))
-					            addBubble(source);
-				        }
-				        Bubble btarget = getBubble(target);
-				        if(btarget != null){
-					        for(String s : liveNow){
-						        Bubble bsource = getBubble(s);
-						        if(bsource != null){
-							        if(!btarget.getEdges().contains(bsource)) {
-								        btarget.getEdges().add(bsource);
-								        if (btarget.getEdges().size() >= numColors)
-								          if (btarget.isConstrained() == false)
-								             btarget.setConstrained(true);
-								     }
-							        if(!bsource.getEdges().contains(btarget)) {
-								        bsource.getEdges().add(btarget);
-								        if (bsource.getEdges().size() >= numColors)
-								          if (bsource.isConstrained() == false)
-								             bsource.setConstrained(true);
-								     }
-						        }
-						        else{
-							        System.out.println("BSource is null");
-						        }
-					        }
-				        }
-				        else{
-					        System.out.println("BTarget is null!!");
-				        }
-                    }
+
+    public void setSpillSpace(){
+        if(spillSpace == 0){        
+            for(Bubble b: bubbles){
+                if(b.getColor() == Color.UNC){
+                    spillSpace++;
+                    b.setSpill(spillSpace);
                 }
-			}
-		}
-	}*/
+            }
+        }
+    }
+
+    public int getSpillSpace(){
+        return this.spillSpace;
+    }
 
     public void createGraph(){
 		ArrayList<Instruction_a> reverse = new ArrayList<Instruction_a>();
@@ -268,6 +230,7 @@ public class IGraph {
 	      // move the copy with colored bubbles back into bubbles
 	      bubbles.clear();
 	      bubbles.addAll(copy);
+          setSpillSpace();
 	      	      
 	}
 	

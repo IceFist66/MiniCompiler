@@ -4,6 +4,7 @@ import asm.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -56,7 +57,7 @@ public class Assembly_Factory {
 			ArrayList<Instruction> instructions = n.getInstructions();
                         //String prefront = "\t.text\n";// Add .text etc here
                         //String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
-                        n.getAsmInstructions().addAll(getStart());
+                        //n.getAsmInstructions().addAll(getStart()); //Static getStart
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
@@ -69,12 +70,21 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	    printAsmAll(fname, input, stringDirectives);
+	    //printAsmAll(fname, input, stringDirectives);
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
         printIGraphColorings();
         applyColor();
+        int i = 0;
+        for(Node n: input){ //inserting getStartproperly
+            IGraph graph = iGraphs.get(i);
+            ArrayList<Instruction_a> insts = getStart(graph.getSpillSpace()); //Dynamic getStart
+            for(int j = insts.size() - 1; j >= 0; j--){
+                n.getAsmInstructions().add(0, insts.get(j));
+            }
+            i++;
+        }
         printAsmAll(fname, input, stringDirectives);
 	}
 
@@ -199,7 +209,7 @@ public class Assembly_Factory {
             list = getStoreOutArgument(arg1, arg2);
         }
         else if(i instanceof New){
-            
+            list = getNew(arg1, arg2, arg3);
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -271,11 +281,12 @@ public class Assembly_Factory {
         return list;
     }
 
-    public ArrayList<Instruction_a> getStart(){
+    public ArrayList<Instruction_a> getStart(int spillSpace){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Cfi("startproc"));
         list.add(new Pushq("%rbp"));
         list.addAll(getMovq("%rsp", "%rbp"));
+        list.add(new Subq("$"+(48+spillSpace), "%rsp"));
         return list;
     }
     
@@ -446,6 +457,36 @@ public class Assembly_Factory {
         return list;
     }
 
+    public ArrayList<Instruction_a> getNew(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        StringTokenizer st = new StringTokenizer(arg2, " ,");
+        int i = 1;
+        while(st.hasMoreTokens()){
+            i++;
+            st.nextToken();
+        }
+        list.add(new Pushq("%rdi"));
+        list.add(new Pushq("%rax"));
+        list.add(new Movq("$"+8*i, "%rdi"));
+        list.add(new asm.Call("malloc"));
+        list.add(new Movq("%rax", arg3));
+        list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getDel(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%rdi"));
+        //list.add(new Pushq("%rax"));
+        list.add(new Movq(arg1, "%rdi"));
+        list.add(new asm.Call("free"));
+        //list.add(new Movq("%rax", arg3));
+        //list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
+        return list;
+    }
+
     public ArrayList<Instruction_a> getStoreOutArgument(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument = Integer.parseInt(arg2);
@@ -459,6 +500,24 @@ public class Assembly_Factory {
         list.add(new Movq(arg1, arguments.get(argument)));
         return list;
     }
+
+    public ArrayList<Instruction_a> getRead(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%rdi"));
+        list.add(new Pushq("%rsi"));
+        list.add(new Pushq("%rax"));
+        list.add(new Movq("$.LS1", "%rdi"));
+        list.add(new Movq("$.scan", "%rsi"));
+        list.add(new Movq("$0", "%rax"));
+        list.add(new asm.Call("scanf"));
+        list.add(new Movq(".scan", "%r15"));
+        list.add(new Popq("%rax"));
+        list.add(new Popq("%rsi"));
+        list.add(new Popq("%rax"));
+        //list.add(new Movq("%r15", "%rax"));
+        list.add(new Movq("%r15", arg1));
+        return list;
+    }
     
     public void printAsmAll(String fn, ArrayList<Node> funcs, ArrayList<String> stringDirectives) throws IOException {
       FileWriter f;
@@ -469,6 +528,7 @@ public class Assembly_Factory {
 		stringCounter = 0;
         int closing_counter = 0;
 		for (Node n : funcs) {
+           //add .comm globals based on globals private variable (find example on web)
 		   String prefront = "\t.text\n";// Add .text etc here
          String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
 		   front = prefront + front;

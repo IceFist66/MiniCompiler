@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Bubble implements Comparable<Bubble> {
 	private String id;
 	private Color color;
+    private int spill;
 	private boolean constrained;
 	private boolean predefined;
 	private ArrayList<Bubble> edges;
@@ -18,6 +19,7 @@ public class Bubble implements Comparable<Bubble> {
 		this.color = Color.UNC;
 		this.constrained = false;
 		this.edges = new ArrayList<Bubble>();
+        this.spill = 0;
 	}
 	
 	public boolean isPredefined() {
@@ -54,5 +56,11 @@ public class Bubble implements Comparable<Bubble> {
 	   int compareDegree = ((Bubble) compareBubble).edges.size();
 	   return compareDegree - this.edges.size();
 	}
+    public int getSpill(){
+        return this.spill;
+    }
+    public void setSpill(int spill){
+        this.spill = spill;
+    }
 }
 
