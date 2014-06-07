@@ -231,8 +231,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrne cn = new Cbrne("ccr", "L*", "L*");
@@ -250,8 +250,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrne cn = new Cbrne("ccr", "L*", "L*");
@@ -269,8 +269,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrge cge = new Cbrge("ccr", "L*", "L*");
@@ -288,8 +288,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrle cle = new Cbrle("ccr", "L*", "L*");
@@ -307,8 +307,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrgt cgt = new Cbrgt("ccr", "L*", "L*");
@@ -326,8 +326,8 @@ expression [Node predNode] returns [Node n = predNode]
       {
          String compResultRegister = "r" + registerCounter++;
          Loadi li = new Loadi("0", compResultRegister);
-         n2.getInstructions().add(li);
          String p2 = getLastTarget(n2);
+         n2.getInstructions().add(li);
          Comp c = new Comp(p1, p2, "ccr");
          n2.getInstructions().add(c);
          //Cbrlt clt = new Cbrlt("ccr", "L*", "L*");
@@ -410,7 +410,53 @@ expression [Node predNode] returns [Node n = predNode]
    
    )
    
-   |^(NOT expression[predNode])
+   |^(NOT n1=expression[predNode]
+      {
+         int size = n1.getInstructions().size();
+         if (size > 0) {
+            Instruction i = n1.getInstructions().get(size - 1);
+            String a1 = "Error in NOT (a1)";
+            String a2 = "Error in NOT (a2)";
+            if (i != null && i.getArg1() != null)
+               a1 = i.getArg1();
+            if (i != null && i.getArg2() != null)
+               a2 = i.getArg2();
+            if (i instanceof Moveq) {
+               n1.getInstructions().remove(i);
+               Movne m = new Movne(a1, a2);
+               n1.getInstructions().add(m);
+            }
+            else if (i instanceof Movne) {
+               n1.getInstructions().remove(i);
+               Moveq m = new Moveq(a1, a2);
+               n1.getInstructions().add(m);
+            }
+            else if (i instanceof Movge) {
+               n1.getInstructions().remove(i);
+               Movlt m = new Movlt(a1, a2);
+               n1.getInstructions().add(m);
+            }
+            else if (i instanceof Movgt) {
+               n1.getInstructions().remove(i);
+               Movle m = new Movle(a1, a2);
+               n1.getInstructions().add(m);
+            }
+            else if (i instanceof Movle) {
+               n1.getInstructions().remove(i);
+               Movgt m = new Movgt(a1, a2);
+               n1.getInstructions().add(m);
+            }
+            else if (i instanceof Movlt) {
+               n1.getInstructions().remove(i);
+               Movge m = new Movge(a1, a2);
+               n1.getInstructions().add(m);
+            }
+         }
+         else
+            System.out.println("Error in NOT expression: no preceding move to flip!");
+         $n = n1;
+      }   
+   )   
    |^(NEW id=ID)
     {
         ArrayList<String> names = g_stypes.getFieldNames("global", $id.text);

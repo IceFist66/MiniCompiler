@@ -43,8 +43,6 @@ fun domath(int num) void
     math2.bar = 3;
     math1.simp.one = math1.bar;
     math2.simp.one = math2.bar;
-    
-    math1.simp.one = math2.simp.one;
 
     while(num > 0)
     {
