@@ -197,6 +197,7 @@ public class IGraph {
 	         done = false;        // attempted coloring of one bubble
 	         conflict = false;    // conflict for a particular color for a particular bubble
 	         count = 0;           // color number
+            int uncolored_count = 0;
 	         Bubble b = stackOfBubbles.pop();
 	         Color color;
 	         if (b.getColor() == Color.UNC) { // if the bubble is already colored, don't attempt to color
@@ -223,8 +224,10 @@ public class IGraph {
 	            }
 	            // if after trying all colors there is still a conflict
 	            // then color the bubble as uncolorable
-	            if (conflict == true)
-	               b.setColor(Color.UNC);
+                 if (conflict == true){
+                     b.setColor(Color.UNC);
+                     b.setUncCount(uncolored_count++);
+                 }
 	         }
 	         // the bubble is colored and can now be added back to the graph
 	         copy.add(b);

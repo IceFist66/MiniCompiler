@@ -19,6 +19,7 @@ public class Assembly_Factory {
         private String stringConstants;
         private ArrayList<String> stringDirectives;
         private int stringCounter;
+        private int maxParam;
         private ArrayList<Node> input;
         private ArrayList<ArrayList<Node>> allNodes;
         private ArrayList<ArrayList<String>> allCalleeRegisters;
@@ -32,7 +33,7 @@ public class Assembly_Factory {
 
 	
 	
-	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives, ArrayList<String> globals){
+	public Assembly_Factory(ArrayList<Node> input, String fname, ArrayList<String> stringDirectives, ArrayList<String> globals, int maxParam){
         this.input = input;
         this.fname = fname;
         this.stringDirectives = stringDirectives;
@@ -44,6 +45,7 @@ public class Assembly_Factory {
         this.caller = new ArrayList<String>(Arrays.asList("%rax", "%rcx", "%rdi", "%rsi", "%r8", "%r9", "%r10", "%r11"));
         this.iGraphs = new ArrayList<IGraph>();
         this.store = false;
+        this.maxParam = maxParam;
 	}
 
 	public ArrayList<Node> getInput() {
@@ -234,6 +236,9 @@ public class Assembly_Factory {
         }
         else if(i instanceof Read){
             list = getRead(arg1);
+        }
+        else if(i instanceof Brz){
+            list = getBrz(arg1, arg2, arg3);
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -310,7 +315,12 @@ public class Assembly_Factory {
         list.add(new Cfi("startproc"));
         list.add(new Pushq("%rbp"));
         list.addAll(getMovq("%rsp", "%rbp"));
-        list.add(new Subq("$"+(48+spillSpace), "%rsp"));
+        System.out.println("Max Param: " + maxParam + " SpillSpace: " + spillSpace);
+        if(maxParam<6){
+            list.add(new Subq("$"+(48+((spillSpace)*8)), "%rsp"));        }
+        else{
+            list.add(new Subq("$"+(48+((spillSpace+(maxParam-6))*8)), "%rsp"));
+        }
         return list;
     }
     
@@ -435,6 +445,16 @@ public class Assembly_Factory {
         list.add(new Cmovneq(arg1, arg2));
         return list;
     }
+    
+    public ArrayList<Instruction_a> getBrz(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$0", "%r15"));
+        list.add(new Cmp("%r15", arg1));
+        list.add(new Popq("%r15"));
+        list.addAll(getJe(arg2, arg3));
+        return list;
+    }
 
     public ArrayList<Instruction_a> getLoadai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
@@ -521,7 +541,12 @@ public class Assembly_Factory {
             this.store = true;
         }
         //list.add(new Pushq(arguments.get(argument)));
-        list.add(new Movq(arg1, arguments.get(argument)));
+        if(argument < 6){
+            list.add(new Movq(arg1, arguments.get(argument)));
+        }
+        else{
+            list.add(new Movq(arg1, ((argument-6)*8)+"(%rsp)"));
+        }
         return list;
     }
 
@@ -546,7 +571,12 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getLoadInArgument(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument = Integer.parseInt(arg2);
-        list.add(new Movq(arguments.get(argument), arg3));
+        if(argument < 6){
+            list.add(new Movq(arguments.get(argument), arg3));
+        }
+        else{
+            list.add(new Movq(((16 + ((argument-6)*8))+"(%rbp)"), arg3));
+        }
         return list;
     }
     

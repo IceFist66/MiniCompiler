@@ -4,7 +4,6 @@ fun main(int ke) int
 {
     i = 0;
     print i;
-    print "Hello" endl;
     simple(i);
     return 0;
 }

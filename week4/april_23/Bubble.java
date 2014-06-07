@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Bubble implements Comparable<Bubble> {
 	private String id;
 	private Color color;
+    private int unc_count;
     private int spill;
 	private boolean constrained;
 	private boolean predefined;
@@ -20,6 +21,7 @@ public class Bubble implements Comparable<Bubble> {
 		this.constrained = false;
 		this.edges = new ArrayList<Bubble>();
         this.spill = 0;
+        this.unc_count = 0;
 	}
 	
 	public boolean isPredefined() {
@@ -61,6 +63,12 @@ public class Bubble implements Comparable<Bubble> {
     }
     public void setSpill(int spill){
         this.spill = spill;
+    }
+    public int getUncCount(){
+        return this.unc_count;
+    }
+    public void setUncCount(int count){
+        this.unc_count = count;
     }
 }
 

@@ -4,8 +4,6 @@
 	.section	.rodata
 .LC0:
 	.string	"%d"
-.LC1:
-	.string	"Hello"
 	.text
 .globl main
 	.type	main, @function
@@ -26,8 +24,6 @@ main:
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf
-	movl	$.LC1, %edi
-	call	puts
 	movl	i(%rip), %eax
 	movl	%eax, %edi
 	call	simple
@@ -39,7 +35,7 @@ main:
 .LFE0:
 	.size	main, .-main
 	.section	.rodata
-.LC2:
+.LC1:
 	.string	"%d\n"
 	.text
 .globl simple
@@ -59,7 +55,7 @@ simple:
 	movl	j(%rip), %eax
 	leal	(%rdx,%rax), %eax
 	movl	%eax, -4(%rbp)
-	movl	$.LC2, %eax
+	movl	$.LC1, %eax
 	movl	-4(%rbp), %edx
 	movl	%edx, %esi
 	movq	%rax, %rdi

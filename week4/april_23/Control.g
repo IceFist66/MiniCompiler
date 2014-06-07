@@ -525,21 +525,21 @@ expression [Node predNode] returns [Node n = predNode]
    |id=ID
     {
       if (!assignRisField) {
-         if(isGlobal($id.text)) {
-            Variable v = g_stable.getVariable("global", $id.text);
+         //if(isGlobal($id.text)) {
+            /*Variable v = g_stable.getVariable("global", $id.text);
             if(v.getType() == Type.STRUCT) {
                Computeglobaladdress cga = new Computeglobaladdress($id.text, "r" + registerCounter++);
                $n.getInstructions().add(cga);
             } else {
                Loadglobal lg = new Loadglobal($id.text, "r" + registerCounter++);
                $n.getInstructions().add(lg);
-            }         
-         } else {
+            }*/
+         //} else {
            Mov newMov = new Mov(getRegister($id.text), "r" + registerCounter++);
            $n.getInstructions().add(newMov);           
            rsDotFieldNames.add($id.text);
            System.out.println("Added " + $id.text + " to rsDotFieldNames");
-           }
+           //}
         }
         dotFieldName = $id.text; // this WORKS but is this correct?
     }
@@ -680,7 +680,7 @@ stmt [Node predNode] returns [Node n = predNode]
             Node elseBlock = new Node(NodeType.ELSE, (elseBlockID), "ELSE");
             Node ifJoin = new Node(NodeType.IF_JOIN, (ifJoinID), "IF_JOIN");
             
-            Brnz b = new Brnz(ifGuardResult, "L" + thenBlockID, "L" + elseBlockID);
+            Brz b = new Brz(ifGuardResult, "L" + thenBlockID, "L" + elseBlockID);
             e.getInstructions().add(b); 
             
             e.getSuccNodes().add(thenBlock);
@@ -784,7 +784,7 @@ stmt [Node predNode] returns [Node n = predNode]
             Node whileBodyStart = new Node(NodeType.WHILE_BODY, (whileBodyStartID), "WHILE_BODY");
             Node whileJoin = new Node(NodeType.WHILE_JOIN, (whileJoinID), "WHILE_JOIN");
             
-            Brnz b = new Brnz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
+            Brz b = new Brz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
             e.getInstructions().add(b);
             
             e.getSuccNodes().add(whileBodyStart);
@@ -814,7 +814,7 @@ stmt [Node predNode] returns [Node n = predNode]
     
       {
          guardResult = getLastTarget(e);
-         Brnz bn = new Brnz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
+         Brz bn = new Brz(guardResult, "L" + whileBodyStartID, "L" + whileJoinID);
          e.getInstructions().add(bn);
          n = whileJoin;
       }
