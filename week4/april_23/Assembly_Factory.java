@@ -250,7 +250,7 @@ public class Assembly_Factory {
         list.add(new Pushq("%rdi"));
         list.add(new Pushq("%rsi"));
         list.add(new Pushq("%rax"));
-        list.add(new Movq(".LC" + stringCounter++, "%rdi"));
+        list.add(new Movq("$.LC" + stringCounter++, "%rdi"));
         list.add(new Movq(arg1, "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("printf"));

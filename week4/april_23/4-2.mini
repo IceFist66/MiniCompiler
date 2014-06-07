@@ -1,5 +1,5 @@
 fun main() int
 {
-   print 5 endl;
+   print 5;
    return 0;
 }
