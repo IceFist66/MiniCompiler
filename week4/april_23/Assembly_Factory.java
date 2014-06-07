@@ -247,7 +247,7 @@ public class Assembly_Factory {
         list.add(new asm.Call("printf"));
         list.add(new Popq("%rax"));
         list.add(new Popq("%rsi"));
-        list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
         return list;
     }
 
@@ -513,7 +513,7 @@ public class Assembly_Factory {
         list.add(new Movq(".scan", "%r15"));
         list.add(new Popq("%rax"));
         list.add(new Popq("%rsi"));
-        list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
         //list.add(new Movq("%r15", "%rax"));
         list.add(new Movq("%r15", arg1));
         return list;
