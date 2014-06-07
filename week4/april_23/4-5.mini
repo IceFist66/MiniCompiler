@@ -1,0 +1,17 @@
+int i;
+int j;
+
+fun main(int ke) int
+{
+    i = 0;
+    simple(i);
+    return 0;
+}
+
+fun simple(int x) void
+{
+   int k;
+   j = 3;
+   k = i+j;
+   printf k endl;
+}

@@ -210,6 +210,15 @@ public class Assembly_Factory {
         }
         else if(i instanceof New){
             list = getNew(arg1, arg2, arg3);
+        }
+        else if(i instanceof Loadinargument){
+            list = getLoadInArgument(arg1, arg2, arg3);
+        }
+        else if(i instanceof Del){
+            list = getDel(arg1);
+        }
+        else if(i instanceof Read){
+            list = getRead(arg1);
         }//whatever else
     	else{
             list = getMovq("----", "i_" + i.toString());
@@ -247,7 +256,7 @@ public class Assembly_Factory {
         list.add(new asm.Call("printf"));
         list.add(new Popq("%rax"));
         list.add(new Popq("%rsi"));
-        list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
         return list;
     }
 
@@ -513,9 +522,16 @@ public class Assembly_Factory {
         list.add(new Movq(".scan", "%r15"));
         list.add(new Popq("%rax"));
         list.add(new Popq("%rsi"));
-        list.add(new Popq("%rax"));
+        list.add(new Popq("%rdi"));
         //list.add(new Movq("%r15", "%rax"));
         list.add(new Movq("%r15", arg1));
+        return list;
+    }
+
+    public ArrayList<Instruction_a> getLoadInArgument(String arg1, String arg2, String arg3){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        int argument = Integer.parseInt(arg2);
+        list.add(new Movq(arguments.get(argument), arg3));
         return list;
     }
     
@@ -528,9 +544,14 @@ public class Assembly_Factory {
 		stringCounter = 0;
         int closing_counter = 0;
 		for (Node n : funcs) {
+           String prefront = "";
            //add .comm globals based on globals private variable (find example on web)
-		   String prefront = "\t.text\n";// Add .text etc here
-         String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
+           for(String global: globals){
+                prefront += ".comm " + global + " , 8 , 8\n";
+           }
+           prefront += ".comm .scan , 8 , 8\n";
+		   prefront += "\t.text\n";// Add .text etc here
+            String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
 		   front = prefront + front;
 		   stringDirSize = stringDirectives.size();
 		   if (stringDirSize > 0 && stringCounter <= (stringDirSize - 1))
