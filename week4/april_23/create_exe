@@ -1,0 +1,6 @@
+input=$1
+file="${input%.*}"
+echo "gcc -c $file.s -o $file.o"
+gcc -c "$file.s" -o "$file.o"
+echo "gcc $file.o -o $file"
+gcc "$file.o" -o "$file"
