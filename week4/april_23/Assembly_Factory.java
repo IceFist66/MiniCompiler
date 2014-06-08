@@ -359,7 +359,13 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getMult(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Imulq(arg1, arg2, arg3)); //r3 *= r1 * r2
+        if(arg3 != null){
+            list.add(new Movq(arg1, arg3));
+            list.add(new Imulq(arg2, arg3)); //r3 *= r2
+        }
+        else{
+            list.add(new Imulq(arg1, arg2)); //r3 *= r1 * r2
+        }
         return list;
     }
     
