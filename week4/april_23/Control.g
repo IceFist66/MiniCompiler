@@ -616,19 +616,19 @@ stmt [Node predNode] returns [Node n = predNode]
     (en=expression[current])?
     
          {
-            String stringLabel = ".LC" + (stringCounter) + ":\n"; // this is incremented for the next function before leaving FUN (see below)
-            String entry = "\t.string ";
+            //String stringLabel = ".LC" + (stringCounter) + ":\n"; // this is incremented for the next function before leaving FUN (see below)
+            //String entry = "\t.string ";
             
             if (en != null && getLastTarget(en).equals("endl")) {
                ln = true;
                Println pl = new Println(tar);
                en.getInstructions().add(pl);
-               stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
+               //stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
                n = en;        
             } else {
                Print newPrint = new Print(tar);
                current.getInstructions().add(newPrint);
-               stringConstants += (stringLabel + entry + "\"\%ld \"\n");
+               //stringConstants += (stringLabel + entry + "\"\%ld \"\n");
                n = current;       
             }
          }
@@ -1064,6 +1064,13 @@ fun:
           }
 
         }
+        
+        String stringLabel = ".LL" + (stringCounter) + ":\n"; // this is incremented for the next function before leaving FUN (see below)
+        String entry = "\t.string ";
+        stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
+        String stringLabel2 = ".LC" + (stringCounter) + ":\n";
+        String entry2 = "\t.string ";
+        stringConstants += (stringLabel2 + entry2 + "\"\%ld \"\n");
         
         String newString = stringConstants.substring(0, stringConstants.length());
         newString += (".LS" + stringCounter + ":\n\t.string \"\%ld\"\n");

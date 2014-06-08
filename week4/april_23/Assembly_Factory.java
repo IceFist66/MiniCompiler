@@ -19,6 +19,7 @@ public class Assembly_Factory {
         private String stringConstants;
         private ArrayList<String> stringDirectives;
         private int stringCounter;
+        
         private int maxParam;
         private ArrayList<Node> input;
         private ArrayList<ArrayList<Node>> allNodes;
@@ -138,8 +139,11 @@ public class Assembly_Factory {
         else if(i instanceof Jumpi){
             list = getJmp(arg1);
         }
-        else if(i instanceof Print || i instanceof Println){
+        else if(i instanceof Print){
             list = getPrint(arg1);
+        }
+        else if(i instanceof Println){
+            list = getPrintln(arg1);
         }
         else if(i instanceof Loadi){
             list = getMovq("$"+arg1, arg2);
@@ -270,7 +274,22 @@ public class Assembly_Factory {
         list.add(new Pushq("%rdi"));
         list.add(new Pushq("%rsi"));
         list.add(new Pushq("%rax"));
-        list.add(new Movq("$.LC" + stringCounter++, "%rdi"));
+        list.add(new Movq("$.LC" + stringCounter, "%rdi"));
+        list.add(new Movq(arg1, "%rsi"));
+        list.add(new Movq("$0", "%rax"));
+        list.add(new asm.Call("printf"));
+        list.add(new Popq("%rax"));
+        list.add(new Popq("%rsi"));
+        list.add(new Popq("%rdi"));
+        return list;
+    }
+    
+    public ArrayList<Instruction_a> getPrintln(String arg1){
+        ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%rdi"));
+        list.add(new Pushq("%rsi"));
+        list.add(new Pushq("%rax"));
+        list.add(new Movq("$.LL" + stringCounter, "%rdi"));
         list.add(new Movq(arg1, "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("printf"));
@@ -555,7 +574,7 @@ public class Assembly_Factory {
         list.add(new Pushq("%rdi"));
         list.add(new Pushq("%rsi"));
         list.add(new Pushq("%rax"));
-        list.add(new Movq("$.LS1", "%rdi"));
+        list.add(new Movq("$.LS" + stringCounter, "%rdi"));
         list.add(new Movq("$.scan", "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("scanf"));
