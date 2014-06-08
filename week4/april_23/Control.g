@@ -619,9 +619,10 @@ stmt [Node predNode] returns [Node n = predNode]
             //String stringLabel = ".LC" + (stringCounter) + ":\n"; // this is incremented for the next function before leaving FUN (see below)
             //String entry = "\t.string ";
             
-            if (en != null && getLastTarget(en).equals("endl")) {
+            if (en != null) {    // && getLastTarget(en).equals("endl")) {
                ln = true;
                Println pl = new Println(tar);
+               en.getInstructions().remove(en.getInstructions().size() - 1);
                en.getInstructions().add(pl);
                //stringConstants += (stringLabel + entry + "\"\%ld\\n\"\n");
                n = en;        

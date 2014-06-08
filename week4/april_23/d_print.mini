@@ -1,4 +1,4 @@
 fun main() void
 {
-   print 5;
+   print 5 endl;
 }
