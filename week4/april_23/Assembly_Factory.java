@@ -588,13 +588,20 @@ public class Assembly_Factory {
 		f = new FileWriter(new File(fileName));
 		stringCounter = 0;
         int closing_counter = 0;
+        String global_prefront = "\n";
+         for(String global: globals){
+            global_prefront += "\t.comm " + global + " , 8 , 8\n";
+         }
+         global_prefront += "\t.comm .scan , 8 , 8";
+         System.out.print(global_prefront);
+         f.write(global_prefront);
 		for (Node n : funcs) {
            String prefront = "";
-           //add .comm globals based on globals private variable (find example on web)
-           for(String global: globals){
-                prefront += ".comm " + global + " , 8 , 8\n";
-           }
-           prefront += ".comm .scan , 8 , 8\n";
+        //   //add .comm globals based on globals private variable (find example on web)
+        //   for(String global: globals){
+        //        prefront += ".comm " + global + " , 8 , 8\n";
+       //    }
+       //    prefront += ".comm .scan , 8 , 8\n";
 		   prefront += "\t.text\n";// Add .text etc here
             String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
 		   front = prefront + front;

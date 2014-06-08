@@ -616,7 +616,7 @@ stmt [Node predNode] returns [Node n = predNode]
     (en=expression[current])?
     
          {
-            String stringLabel = ".LC" + (stringCounter++) + ":\n";
+            String stringLabel = ".LC" + (stringCounter) + ":\n"; // this is incremented for the next function before leaving FUN (see below)
             String entry = "\t.string ";
             
             if (en != null && getLastTarget(en).equals("endl")) {
@@ -1066,7 +1066,8 @@ fun:
         }
         
         String newString = stringConstants.substring(0, stringConstants.length());
-        newString += (".LS1:\n\t.string \"\%ld\"\n");
+        newString += (".LS" + stringCounter + ":\n\t.string \"\%ld\"\n");
+        stringCounter++; // this increments the count to produce labels for the next function (.LC0, .LS0, ..., .LC1, .LS1, ...)
         stringDirectives.add(newString);
         stringConstants = "";
         
