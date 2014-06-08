@@ -31,7 +31,7 @@ clean : clean_iloc clean_asm this
 
 this:
 	\rm *generated* MiniParser.java MiniLexer.java Control.java TypeCheck.java Mini.tokens TypeCheck.tokens *.class *.dot *.il *.asm
-	
+
 clean_iloc :
 	make -C iloc clean
 clean_asm :

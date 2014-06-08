@@ -608,13 +608,13 @@ public class Assembly_Factory {
 		f = new FileWriter(new File(fileName));
 		stringCounter = 0;
       int closing_counter = 0;
-      String global_prefront = "\n";
+      /*String global_prefront = "\n";
       for(String global: globals){
          global_prefront += "\t.comm " + global + " , 8 , 8\n";
       }
       global_prefront += "\t.comm .scan , 8 , 8";
       System.out.print(global_prefront);
-      f.write(global_prefront);
+      f.write(global_prefront);*/
 		for (Node n : funcs) {
          String prefront = "";
         //   //add .comm globals based on globals private variable (find example on web)
