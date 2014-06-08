@@ -438,37 +438,55 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getCmoveq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Cmoveq(arg1, arg2));
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
+        list.add(new Cmoveq("%r15", arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovgq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
         list.add(new Cmovgq(arg1, arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovgeq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
         list.add(new Cmovgeq(arg1, arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovlq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
         list.add(new Cmovlq(arg1, arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovleq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
         list.add(new Cmovleq(arg1, arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovneq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Pushq("%r15"));
+        list.add(new Movq("$1", "%r15"));
         list.add(new Cmovneq(arg1, arg2));
+        list.add(new Popq("%r15"));
         return list;
     }
     
