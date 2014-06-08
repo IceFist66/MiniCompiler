@@ -1002,7 +1002,8 @@ fun:
       
       {
         currentScope = $id.text;
-        registerCounter = 0;
+        //registerCounter = 0;
+        registerCounter = localRegisterReset;
         stringConstants += "\t.section .rodata\n";
         Node head = new Node(NodeType.ENTRY, (currentIDNum++), "Entry");
         head.setFunctionName($id.text);
@@ -1114,6 +1115,10 @@ construct [StructTypes stypes, SymbolTable stable, String filename] returns [Arr
         printNodeAdds = false;
         printMini = false;
         ArrayList<String> globals = g_stable.gatherVariablesInScope("global");
+        System.out.println("GLOBAL REGISTER MAP");
+        for (String s : globals) {
+         System.out.println("Added " + s + "to the globals register");        
+        }
         globalRegisterMap = buildRegisterMap(globals, true);
         System.out.println("After mapping global vars, the reg count is " + registerCounter);
     }

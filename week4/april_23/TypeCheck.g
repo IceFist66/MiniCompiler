@@ -59,7 +59,7 @@ struct [String scope]: //adds a new struct definition
 ;
 
 decl [String scope] returns [Variable v = null]
-   : ^(DECL ^(TYPE var=type[scope]{$v = $var.v; String string = $var.s;}) id=ID ) 
+   : ^(DECL ^(TYPE var=type[scope]{$v = $var.v; String string = $var.s;}) (id=ID)+ ) 
    
    {
       if (var != null) {

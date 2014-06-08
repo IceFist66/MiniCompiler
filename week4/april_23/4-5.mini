@@ -10,7 +10,7 @@ fun main(int ke) int
 
 fun simple(int x) void
 {
-   int k;
+   int k, j;
    j = 3;
    k = i+j;
    print k endl;
