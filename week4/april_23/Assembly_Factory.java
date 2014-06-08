@@ -72,6 +72,7 @@ public class Assembly_Factory {
             createKillGenSet(n);
 			n.setAsmProcessed(true);
 			successors(n);
+			stringCounter++;
          //n.getAsmInstructions().addAll(getEnd()); //This is the call to .cfi_endproc
          //n.printAsm(prefront+front); //prints the asm instructions to screen
 	   }
@@ -606,33 +607,33 @@ public class Assembly_Factory {
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
 		stringCounter = 0;
-        int closing_counter = 0;
-        String global_prefront = "\n";
-         for(String global: globals){
-            global_prefront += "\t.comm " + global + " , 8 , 8\n";
-         }
-         global_prefront += "\t.comm .scan , 8 , 8";
-         System.out.print(global_prefront);
-         f.write(global_prefront);
+      int closing_counter = 0;
+      String global_prefront = "\n";
+      for(String global: globals){
+         global_prefront += "\t.comm " + global + " , 8 , 8\n";
+      }
+      global_prefront += "\t.comm .scan , 8 , 8";
+      System.out.print(global_prefront);
+      f.write(global_prefront);
 		for (Node n : funcs) {
-           String prefront = "";
+         String prefront = "";
         //   //add .comm globals based on globals private variable (find example on web)
         //   for(String global: globals){
         //        prefront += ".comm " + global + " , 8 , 8\n";
        //    }
        //    prefront += ".comm .scan , 8 , 8\n";
 		   prefront += "\t.text\n";// Add .text etc here
-            String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
+         String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
 		   front = prefront + front;
 		   stringDirSize = stringDirectives.size();
 		   if (stringDirSize > 0 && stringCounter <= (stringDirSize - 1))
-		      f = n.printAsm(front, f, stringDirectives.get(stringCounter++), n.getIsMainHead(), allCalleeRegisters.get(input.indexOf(n)));
+		      f = n.printAsm(front, f, stringDirectives.get(stringCounter), n.getIsMainHead(), allCalleeRegisters.get(input.indexOf(n)));
 		   else
 		      f = n.printAsm(front, f, "", n.getIsMainHead(), allCalleeRegisters.get(input.indexOf(n)));
             
-            String closing = ".LFE" + (closing_counter++) + ":\n\t.size\t" + n.getFunctionName() + ", .-" + n.getFunctionName() + "\n";
-            f.write(closing);
-            System.out.print(closing);
+         String closing = ".LFE" + (closing_counter++) + ":\n\t.size\t" + n.getFunctionName() + ", .-" + n.getFunctionName() + "\n";
+         f.write(closing);
+         System.out.print(closing);
 		}
 		f.close();
    }
