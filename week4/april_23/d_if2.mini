@@ -1,0 +1,10 @@
+fun main() void
+{
+   int i;
+   i = 3;
+   j = 4
+   if(i == 3 && j == 4){
+      i = 5;
+   }
+   print i endl;
+}
