@@ -471,8 +471,8 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%r15"));
         list.add(new Movq("$1", "%r15"));
-        //list.add(new Cmovlq("%r15", arg2));
-        list.add(new Cmovgeq("%r15", arg2));
+        //list.add(new Cmovlq("%r15", arg2)); //Flipped for testing purposes PROBLEM UNSOLVED
+        list.add(new Cmovgq("%r15", arg2));
         list.add(new Popq("%r15"));
         return list;
     }

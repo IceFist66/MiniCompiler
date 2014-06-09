@@ -3,7 +3,6 @@ fun main() void
    int i;
    i = 0;
    while(i < 5){
-      print i endl;
       i = i + 1;
    }
    print i endl;

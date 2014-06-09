@@ -2,8 +2,8 @@ fun main() void
 {
    int i, j;
    i = 3;
-   j = 4
-   if(i == 3 && j == 4){
+   j = 4;
+   if(i == 3 && j == 3){
       i = 5;
    }
    print i endl;
