@@ -496,7 +496,7 @@ public class Assembly_Factory {
         list.add(new Movq("$0", "%r15"));
         list.add(new Cmp("%r15", arg1));
         list.add(new Popq("%r15"));
-        list.addAll(getJe(arg2, arg3));
+        list.addAll(getJne(arg2, arg3));
         return list;
     }
 
