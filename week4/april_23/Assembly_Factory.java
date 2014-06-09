@@ -65,6 +65,10 @@ public class Assembly_Factory {
                         //String prefront = "\t.text\n";// Add .text etc here
                         //String front = ".globl " + n.getFunctionName() + "\n\t.type\t" + n.getFunctionName() + ", @function\n";
                         //n.getAsmInstructions().addAll(getStart()); //Static getStart
+            n.getAsmInstructions().add(new Cfi("startproc"));
+            n.getAsmInstructions().add(new Pushq("%rbp"));
+            n.getAsmInstructions().addAll(getMovq("%rsp", "%rbp"));
+            n.getAsmInstructions().add(new Subq("$"+48, "%rsp"));
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
@@ -100,7 +104,7 @@ public class Assembly_Factory {
                 }
             }
             for(int j = insts.size() - 1; j >= 0; j--){
-                n.getAsmInstructions().add(0, insts.get(j));
+                n.getAsmInstructions().set(3, insts.get(j));
             }
             i++;
         }
@@ -332,9 +336,9 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getStart(int spillSpace){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Cfi("startproc"));
+        /*list.add(new Cfi("startproc"));
         list.add(new Pushq("%rbp"));
-        list.addAll(getMovq("%rsp", "%rbp"));
+        list.addAll(getMovq("%rsp", "%rbp"));*/
         System.out.println("Max Param: " + maxParam + " SpillSpace: " + spillSpace);
         if(maxParam<6){
             list.add(new Subq("$"+(48+((spillSpace)*8)), "%rsp"));        }
