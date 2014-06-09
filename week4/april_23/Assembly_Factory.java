@@ -326,9 +326,9 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getReturn(){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        //list.addAll(getMovq("%rbp", "%rsp"));
-        //list.add(new Popq("%rbp"));
-        list.add(new Leave()); //leave
+        list.addAll(getMovq("%rbp", "%rsp"));
+        list.add(new Popq("%rbp"));
+        //list.add(new Leave()); //leave
         list.add(new asm.Ret()); //just calls "ret"
         list.add(new Cfi("endproc"));
         return list;
