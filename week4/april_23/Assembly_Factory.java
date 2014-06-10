@@ -326,6 +326,7 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getReturn(){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
+        list.add(new Addq("$"+48, "%rsp")); //*********MAKE SURE TO DYNAMICLY CHANGE THIS LATER
         list.addAll(getMovq("%rbp", "%rsp"));
         list.add(new Popq("%rbp"));
         //list.add(new Leave()); //leave
@@ -388,7 +389,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getCmp(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Cmp(arg1, arg2));
+        list.add(new Cmp(arg1, arg2)); //original code
+        //list.add(new Cmp(arg2, arg1));
         return list;
     }
 
@@ -471,8 +473,8 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%r15"));
         list.add(new Movq("$1", "%r15"));
-        //list.add(new Cmovlq("%r15", arg2)); //Flipped for testing purposes PROBLEM UNSOLVED
-        list.add(new Cmovgq("%r15", arg2));
+        list.add(new Cmovlq("%r15", arg2)); //Flipped for testing purposes PROBLEM UNSOLVED
+        //list.add(new Cmovgq("%r15", arg2));
         list.add(new Popq("%r15"));
         return list;
     }
@@ -499,9 +501,11 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%r15"));
         list.add(new Movq("$0", "%r15"));
-        list.add(new Cmp("%r15", arg1));
+        list.add(new Cmp("%r15", arg1)); //original code
+        //list.add(new Cmp(arg1, "%r15"));
         list.add(new Popq("%r15"));
-        list.addAll(getJne(arg2, arg3));
+        //list.addAll(getJne(arg2, arg3)); //original code NOT SURE due to Jeff
+        list.addAll(getJe(arg2, arg3));
         return list;
     }
 
