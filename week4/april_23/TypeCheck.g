@@ -115,6 +115,7 @@ expression:
    ^(AND expression expression)
    |^(OR expression expression)
    |^(EQ expression expression)
+   |^(NE expression expression)
    |^(LT expression expression)
    |^(GT expression expression)
    |^(LE expression expression)
