@@ -263,8 +263,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getAddq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg1, arg3)); //r3 = r2
-        list.add(new Addq(arg2, arg3)); //r3 += r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r1
+        list.add(new Addq(arg2, arg3)); //r3 += r2
         return list;
     }
 
@@ -306,15 +306,15 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getAndq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg2, arg3)); //r3 = r2
-        list.add(new Andq(arg1, arg3)); //r3 &&= r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r1
+        list.add(new Andq(arg2, arg3)); //r3 &&= r2
         return list;
     }
 
     public ArrayList<Instruction_a> getOrq(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.addAll(getMovq(arg1, arg3)); //r3 = r2
-        list.add(new Orq(arg2, arg3)); //r3 ||= r1
+        list.addAll(getMovq(arg1, arg3)); //r3 = r1
+        list.add(new Orq(arg2, arg3)); //r3 ||= r2
         return list;
     }
 

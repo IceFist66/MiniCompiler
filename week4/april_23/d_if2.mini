@@ -7,8 +7,9 @@ fun main() void
       i = 5;
    }
    print i endl;
+   print j endl;
    if(i == 3 && j == 4){
-      i = 6;
+      print j endl;
    }
    print i endl;
 }
