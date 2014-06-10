@@ -40,7 +40,7 @@ arg1 + " , " + arg2
 null
 this.arg1 this.arg2
 
-cmp
+cmpq
 2
 arg1 + " , " + arg2
 null
