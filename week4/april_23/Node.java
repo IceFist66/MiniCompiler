@@ -31,6 +31,7 @@ public class Node {
     private boolean isMainHead;
 	private boolean iloc_printed;
 	private boolean asm_printed;
+	private boolean asm_printed_1;
 	private boolean asm_processed;
 	
 	public Node (NodeType nodeType, int id, String text) {
@@ -50,6 +51,7 @@ public class Node {
 		backEdgeTarget = null;
 		iloc_printed = false;
 		asm_printed = false;
+		asm_printed_1 = false;
 		asm_processed = false;
         isMainHead = false;
 	}
@@ -60,6 +62,14 @@ public class Node {
 	
 	public void setAsmProcessed(boolean b) {
 	   asm_processed = b;
+	}
+	
+	public boolean getAsmPrinted1() {
+	   return asm_printed_1;
+	}
+	
+	public void setAsmPrinted1(boolean b) {
+	   asm_printed_1 = b;
 	}
 	
 	public String getFunctionName() {
@@ -447,5 +457,60 @@ public class Node {
             line += "\t" + (new Popq(s)).toString() + "\n";
         }
         return line;
+    }
+    
+     public FileWriter printAsmFirst(FileWriter f, boolean isMain) throws IOException {
+      System.out.println();
+
+      String line = this.getFunctionName() + ":\n";
+		f.write(line);
+      System.out.print(line);
+      ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
+      for(Instruction_a ainst : asm_instructions){
+          line = "";
+          if(ainst instanceof Leave){
+              //System.out.println("FOUND A Leave");
+              if(!isMain){
+              }
+          }
+         line += "\t" + ainst.toString() + "\n";
+         f.write(line);
+         System.out.print(line);
+      }
+      printGenKillSet(this, f); //comment out
+      printLiveOutSet(this, f); //comment out
+      this.asm_printed_1 = true;
+      f = asmSuccFirst(this, f, isMain);
+      return f;
+    }
+    
+    public FileWriter asmSuccFirst(Node n, FileWriter f, boolean isMain) throws IOException {
+      ArrayList<Instruction_a> asm_instructions;
+      for (Node s : n.succNodes) {
+      if (s.asm_printed_1 == false) {
+            String line = "L" + s.id + ":\n";
+	      	f.write(line);
+
+            System.out.print(line);
+            asm_instructions = s.getAsmInstructions();
+            for(Instruction_a ainst : asm_instructions){
+                line = "";
+                if(ainst instanceof Leave){
+                    //System.out.println("FOUND A Leave");
+                    if(!isMain){
+                       
+                    }
+                }
+               line += "\t" + ainst.toString() + "\n";
+               f.write(line);
+               System.out.print(line);
+            }
+            printGenKillSet(s, f); //comment out
+            printLiveOutSet(s, f); //comment out
+            s.asm_printed_1 = true;
+            asmSuccFirst(s, f, isMain);
+         }
+		}    
+      return f;
     }
 }

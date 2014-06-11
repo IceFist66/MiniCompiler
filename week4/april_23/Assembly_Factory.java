@@ -82,7 +82,7 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	    //printAsmAll(fname, input, stringDirectives); //comment out
+	     printAsmAllFirst(fname, input); //comment out
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
@@ -108,7 +108,7 @@ public class Assembly_Factory {
             }
             i++;
         }
-        printAsmAll(fname, input, stringDirectives);
+        //printAsmAll(fname, input, stringDirectives);
 	}
 
     public void successors(Node n) {
@@ -908,5 +908,21 @@ public class Assembly_Factory {
            }
        }
        allCalleeRegisters.add(callee);
+   }
+   
+    public void printAsmAllFirst(String fn, ArrayList<Node> funcs) throws IOException {
+      FileWriter f;
+
+		String fileName = fn.substring(0, fn.length() - 4);
+		fileName = "asm_" + fileName + "s";
+		f = new FileWriter(new File(fileName));
+
+
+		for (Node n : funcs) {
+
+		      f = n.printAsmFirst(f, n.getIsMainHead());
+
+		}
+		f.close();
    }
 }
