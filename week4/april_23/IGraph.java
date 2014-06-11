@@ -100,13 +100,13 @@ public class IGraph {
 			            for(String s : liveNow){
 				            Bubble bsource = getBubble(s);
 				            if(bsource != null){
-					            if(!btarget.getEdges().contains(bsource)) {
+					            if(!btarget.getEdges().contains(bsource) && !btarget.getId().equals(bsource.getId())) {
 						            btarget.getEdges().add(bsource);
 						            if (btarget.getEdges().size() >= numColors)
 						              if (btarget.isConstrained() == false)
 						                 btarget.setConstrained(true);
 						        }
-					            if(!bsource.getEdges().contains(btarget)) {
+					            if(!bsource.getEdges().contains(btarget) && !btarget.getId().equals(bsource.getId())) {
 						            bsource.getEdges().add(btarget);
 						            if (bsource.getEdges().size() >= numColors)
 						              if (bsource.isConstrained() == false)

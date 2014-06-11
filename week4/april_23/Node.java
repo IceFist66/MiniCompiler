@@ -345,8 +345,8 @@ public class Node {
          f.write(line);
          System.out.print(line);
       }
-      //printGenKillSet(this, f);
-      //printLiveOutSet(this, f);
+      //printGenKillSet(this, f); //comment out
+      //printLiveOutSet(this, f); //comment out
       this.asm_printed = true;
       f = asmSucc(this, f, isMain, callee);
       return f;
@@ -373,8 +373,8 @@ public class Node {
                f.write(line);
                System.out.print(line);
             }
-            //printGenKillSet(s, f);
-            //printLiveOutSet(s, f);
+            //printGenKillSet(s, f); //comment out
+            //printLiveOutSet(s, f); //comment out
             s.asm_printed = true;
             asmSucc(s, f, isMain, callee);
          }

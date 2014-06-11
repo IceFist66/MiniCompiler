@@ -206,6 +206,15 @@ expression [Node predNode] returns [Node n = predNode]
          String p2 = getLastTarget(n2);
          And newAnd = new And(p1, p2, "r" + registerCounter++);
          n2.getInstructions().add(newAnd);
+         
+         //Temporary
+         Println print1 = new Println(p1);
+         n2.getInstructions().add(print1);
+         /*
+         Println print2 = new Println(p2);
+         n2.getInstructions().add(print2);
+         */
+
          $n = n2;
       }      
    )

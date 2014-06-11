@@ -276,31 +276,43 @@ public class Assembly_Factory {
     
     public ArrayList<Instruction_a> getPrint(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%rdi"));
-        list.add(new Pushq("%rsi"));
-        list.add(new Pushq("%rax"));
+        for(int i = 0; i < this.caller.size(); i++){
+            list.add(new Pushq(caller.get(i)));
+        }
+        //list.add(new Pushq("%rdi"));
+        //list.add(new Pushq("%rsi"));
+        //list.add(new Pushq("%rax"));
         list.add(new Movq("$.LC" + stringCounter, "%rdi"));
         list.add(new Movq(arg1, "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("printf"));
-        list.add(new Popq("%rax"));
-        list.add(new Popq("%rsi"));
-        list.add(new Popq("%rdi"));
+        //list.add(new Popq("%rax"));
+        //list.add(new Popq("%rsi"));
+        //list.add(new Popq("%rdi"));
+        for(int i = this.caller.size() - 1; i >= 0; i--){
+            list.add(new Popq(caller.get(i)));
+        }
         return list;
     }
     
     public ArrayList<Instruction_a> getPrintln(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%rdi"));
-        list.add(new Pushq("%rsi"));
-        list.add(new Pushq("%rax"));
+        for(int i = 0; i < this.caller.size(); i++){
+            list.add(new Pushq(caller.get(i)));
+        }
+        //list.add(new Pushq("%rdi"));
+        //list.add(new Pushq("%rsi"));
+        //list.add(new Pushq("%rax"));
         list.add(new Movq("$.LL" + stringCounter, "%rdi"));
         list.add(new Movq(arg1, "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("printf"));
-        list.add(new Popq("%rax"));
-        list.add(new Popq("%rsi"));
-        list.add(new Popq("%rdi"));
+        //list.add(new Popq("%rax"));
+        //list.add(new Popq("%rsi"));
+        //list.add(new Popq("%rdi"));
+        for(int i = this.caller.size() - 1; i >= 0; i--){
+            list.add(new Popq(caller.get(i)));
+        }
         return list;
     }
 
@@ -473,7 +485,6 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%r15"));
         list.add(new Movq("$1", "%r15"));
-        //list.add(new Cmovlq("%r15", arg2)); //Flipped for testing purposes PROBLEM UNSOLVED
         list.add(new Cmovgq("%r15", arg2));
         list.add(new Popq("%r15"));
         return list;
@@ -483,7 +494,6 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%r15"));
         list.add(new Movq("$1", "%r15"));
-        //list.add(new Cmovleq("%r15", arg2)); //original code
         list.add(new Cmovgeq("%r15", arg2));
         list.add(new Popq("%r15"));
         return list;
@@ -563,25 +573,34 @@ public class Assembly_Factory {
             i++;
             st.nextToken();
         }
-        list.add(new Pushq("%rdi"));
-        list.add(new Pushq("%rax"));
+        for(int j = 0; j < this.caller.size(); j++){
+            list.add(new Pushq(caller.get(j)));
+        }
+        //list.add(new Pushq("%rdi"));
+        //list.add(new Pushq("%rax"));
         list.add(new Movq("$"+8*i, "%rdi"));
         list.add(new asm.Call("malloc"));
         list.add(new Movq("%rax", arg3));
-        list.add(new Popq("%rax"));
-        list.add(new Popq("%rdi"));
+        //list.add(new Popq("%rax"));
+        //list.add(new Popq("%rdi"));
+        for(int j = this.caller.size() - 1; j >= 0; j--){
+            list.add(new Popq(caller.get(j)));
+        }
         return list;
     }
 
     public ArrayList<Instruction_a> getDel(String arg1){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%rdi"));
-        //list.add(new Pushq("%rax"));
+        for(int i = 0; i < this.caller.size(); i++){
+            list.add(new Pushq(caller.get(i)));
+        }
+        //list.add(new Pushq("%rdi"));
         list.add(new Movq(arg1, "%rdi"));
         list.add(new asm.Call("free"));
-        //list.add(new Movq("%rax", arg3));
-        //list.add(new Popq("%rax"));
-        list.add(new Popq("%rdi"));
+        //list.add(new Popq("%rdi"));
+        for(int i = this.caller.size() - 1; i >= 0; i--){
+            list.add(new Popq(caller.get(i)));
+        }
         return list;
     }
 

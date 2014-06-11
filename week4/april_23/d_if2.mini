@@ -8,8 +8,4 @@ fun main() void
    }
    print i endl;
    print j endl;
-   if(i == 3 && j == 4){
-      print j endl;
-   }
-   print i endl;
 }
