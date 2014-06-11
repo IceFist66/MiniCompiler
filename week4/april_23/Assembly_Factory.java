@@ -82,7 +82,7 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	    //printAsmAll(fname, input, stringDirectives);
+	    //printAsmAll(fname, input, stringDirectives); //comment out
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
