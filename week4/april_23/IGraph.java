@@ -90,36 +90,40 @@ public class IGraph {
                     if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%')){
                         liveNow.add(source);
 			            addBubble(source);
-                        System.out.println("Added a bubble: " + source);
+                        //System.out.println("Added a bubble: " + source);
                     }
                     
 		        }
                 for(String target : targets){
 		            Bubble btarget = getBubble(target);
-		            if(btarget != null){
+		            if(btarget != null){ //some instructions have no targets and return null or are not registers
 			            for(String s : liveNow){
 				            Bubble bsource = getBubble(s);
-				            if(bsource != null){
+				            if(bsource != null){ //some instruction have no sources and return null or are not registers
 					            if(!btarget.getEdges().contains(bsource) && !btarget.getId().equals(bsource.getId())) {
 						            btarget.getEdges().add(bsource);
-						            if (btarget.getEdges().size() >= numColors)
-						              if (btarget.isConstrained() == false)
-						                 btarget.setConstrained(true);
+						            if (btarget.getEdges().size() >= numColors){
+                                        if (btarget.isConstrained() == false){
+                                            btarget.setConstrained(true);
+                                        }
+                                    }
 						        }
-					            if(!bsource.getEdges().contains(btarget) && !btarget.getId().equals(bsource.getId())) {
+					            if(!bsource.getEdges().contains(btarget) && !bsource.getId().equals(btarget.getId())) {
 						            bsource.getEdges().add(btarget);
-						            if (bsource.getEdges().size() >= numColors)
-						              if (bsource.isConstrained() == false)
-						                 bsource.setConstrained(true);
+						            if (bsource.getEdges().size() >= numColors){
+                                        if (bsource.isConstrained() == false){
+                                            bsource.setConstrained(true);
+                                        }
+                                    }
 						        }
 				            }
 				            else{
-					            System.out.println("BSource is null: " + s);
+					            //System.out.println("BSource is null: " + s);
 				            }
 			            }
 		            }
 		            else{
-			            System.out.println("BTarget is null!!: "+ target);
+			            //System.out.println("BTarget is null!!: "+ target);
 		            }
                 }
 			}
@@ -149,9 +153,9 @@ public class IGraph {
 	
 	public void colorGraph() {
 	
-	   int numColors = colors.size();
+	   int numColors = colors.size() - 3;
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
-	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles);
+	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles); //makes an unaltering copy
 	          
 	      // color the predefined registers
 	      for (Bubble b : bubbles) {
@@ -175,14 +179,18 @@ public class IGraph {
 	      
 	      // push the now ordered set of constrained, unpredefined bubbles
 	      for (Bubble c : copy) {
-	         if (c.isPredefined() == false)
-               stackOfBubbles.push(c);            
+              if (c.isPredefined() == false){
+                  //DO NOT REMOVE FROM COPY (won't compile)
+                  stackOfBubbles.push(c);
+              }
 	      }
 	      
-	      // push the now ordered set of constrained, predefined bubbles
+	      // push the now ordered set of constrained and/or predefined bubbles
 	      for (Bubble p : copy) {
-	         if (p.isPredefined() == true)
-	            stackOfBubbles.push(p);
+              if (p.isPredefined() == true){
+                  //DO NOT REMOVE FROM COPY (won't compile)
+                  stackOfBubbles.push(p);
+              }
 	      }
 	      
 	      // empty copy (will be used to store results of coloring)
@@ -226,7 +234,7 @@ public class IGraph {
 	            // then color the bubble as uncolorable
                  if (conflict == true){
                      b.setColor(Color.UNC);
-                     b.setUncCount(uncolored_count++);
+                     b.setUncCount(++uncolored_count);
                  }
 	         }
 	         // the bubble is colored and can now be added back to the graph

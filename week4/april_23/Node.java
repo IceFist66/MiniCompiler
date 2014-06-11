@@ -488,7 +488,7 @@ public class Node {
       ArrayList<Instruction_a> asm_instructions;
       for (Node s : n.succNodes) {
       if (s.asm_printed_1 == false) {
-            String line = "L" + s.id + ":\n";
+            String line = "\nL" + s.id + ":\n";
 	      	f.write(line);
 
             System.out.print(line);

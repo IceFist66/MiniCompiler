@@ -28,6 +28,12 @@ public class Assembly_Factory {
         private ArrayList<String> caller;
         private ArrayList<String> globals;
         private boolean store;
+    
+    private final int offset = 8;
+    private final int default_stack = 48;
+    private final int max_arguments = 6;
+    private final int argument_location = 16;
+    private final int subq_location = 3;
         //String rdi = "rdi";
         //arguments.add(rdi);
         //Collections.addAll(arguments, temp);
@@ -68,7 +74,7 @@ public class Assembly_Factory {
             n.getAsmInstructions().add(new Cfi("startproc"));
             n.getAsmInstructions().add(new Pushq("%rbp"));
             n.getAsmInstructions().addAll(getMovq("%rsp", "%rbp"));
-            n.getAsmInstructions().add(new Subq("$"+48, "%rsp"));
+            n.getAsmInstructions().add(new Subq("$"+this.default_stack, "%rsp"));
 			for(Instruction inst : instructions){
 				asm = getAssembly(inst);
 				n.getAsmInstructions().addAll(asm);
@@ -82,7 +88,7 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-	     printAsmAllFirst(fname, input); //comment out
+        printAsmAllFirst(fname, input); //comment out
         generateIGraphs();
         printIGraphs();
         colorIGraphs();
@@ -104,11 +110,11 @@ public class Assembly_Factory {
                 }
             }
             for(int j = insts.size() - 1; j >= 0; j--){
-                n.getAsmInstructions().set(3, insts.get(j));
+                n.getAsmInstructions().set(this.subq_location, insts.get(j));
             }
             i++;
         }
-        //printAsmAll(fname, input, stringDirectives);
+        printAsmAll(fname, input, stringDirectives);
 	}
 
     public void successors(Node n) {
@@ -338,7 +344,7 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getReturn(){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Addq("$"+48, "%rsp")); //*********MAKE SURE TO DYNAMICLY CHANGE THIS LATER
+        list.add(new Addq("$"+this.default_stack, "%rsp")); //*********MAKE SURE TO DYNAMICLY CHANGE THIS LATER
         list.addAll(getMovq("%rbp", "%rsp"));
         list.add(new Popq("%rbp"));
         //list.add(new Leave()); //leave
@@ -353,10 +359,10 @@ public class Assembly_Factory {
         list.add(new Pushq("%rbp"));
         list.addAll(getMovq("%rsp", "%rbp"));*/
         System.out.println("Max Param: " + maxParam + " SpillSpace: " + spillSpace);
-        if(maxParam<6){
-            list.add(new Subq("$"+(48+((spillSpace)*8)), "%rsp"));        }
+        if(maxParam<this.max_arguments){
+            list.add(new Subq("$"+(this.default_stack+((spillSpace)*this.offset)), "%rsp"));        }
         else{
-            list.add(new Subq("$"+(48+((spillSpace+(maxParam-6))*8)), "%rsp"));
+            list.add(new Subq("$"+(this.default_stack+((spillSpace+(maxParam-this.max_arguments))*this.offset)), "%rsp"));
         }
         return list;
     }
@@ -522,9 +528,9 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getLoadai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        int offset = 8; //64 bits
+        //int offset = 8; //64 bits
         //offset *= Integer.parseInt(arg2); //create an offset from arg2
-        list.addAll(getMovq((offset+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
+        list.addAll(getMovq((this.offset+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
         return list;
     }
 
@@ -541,9 +547,9 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getStoreai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        int offset = 8; //64 bits
+        //int offset = 8; //64 bits
         //offset *= Integer.parseInt(arg3); //create an offset from arg2
-        list.addAll(getMovq(arg1, offset+"("+arg2+")")); //movq offset(arg1), arg3
+        list.addAll(getMovq(arg1, this.offset+"("+arg2+")")); //movq offset(arg1), arg3
         return list;
     }
 
@@ -556,7 +562,7 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getCall(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument_count = Integer.parseInt(arg2);
-        int offset = 8;
+        //int offset = 8;
         //fix for more than 6 arguments
         list.add(new asm.Call(arg1));
         /*for(int i = argument_count - 1; i > 0; i++){//pop Enum Register
@@ -578,7 +584,7 @@ public class Assembly_Factory {
         }
         //list.add(new Pushq("%rdi"));
         //list.add(new Pushq("%rax"));
-        list.add(new Movq("$"+8*i, "%rdi"));
+        list.add(new Movq("$"+(this.offset*i), "%rdi"));
         list.add(new asm.Call("malloc"));
         list.add(new Movq("%rax", arg3));
         //list.add(new Popq("%rax"));
@@ -614,11 +620,13 @@ public class Assembly_Factory {
             this.store = true;
         }
         //list.add(new Pushq(arguments.get(argument)));
-        if(argument < 6){
+        if(argument < this.max_arguments){
             list.add(new Movq(arg1, arguments.get(argument)));
         }
         else{
-            list.add(new Movq(arg1, ((argument-6)*8)+"(%rsp)"));
+            //list.add(new Movq(arg1, ((argument-this.max_arguments)*this.offset)+"(%rsp)")); //original code
+            list.add(new Movq(arg1, (this.argument_location +(argument-this.max_arguments)*this.offset)+"(%rsp)"));
+            
         }
         return list;
     }
@@ -644,19 +652,20 @@ public class Assembly_Factory {
     public ArrayList<Instruction_a> getLoadInArgument(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         int argument = Integer.parseInt(arg2);
-        if(argument < 6){
+        if(argument < this.max_arguments){
             list.add(new Movq(arguments.get(argument), arg3));
         }
         else{
-            list.add(new Movq(((16 + ((argument-6)*8))+"(%rbp)"), arg3));
+            list.add(new Movq(((this.argument_location + ((argument-this.max_arguments)*this.offset))+"(%rbp)"), arg3));
         }
         return list;
     }
     
     public void printAsmAll(String fn, ArrayList<Node> funcs, ArrayList<String> stringDirectives) throws IOException {
       FileWriter f;
+        int prefix = 4;
       int stringDirSize;
-		String fileName = fn.substring(0, fn.length() - 4);
+		String fileName = fn.substring(0, fn.length() - prefix);
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
 		stringCounter = 0;
@@ -912,8 +921,8 @@ public class Assembly_Factory {
    
     public void printAsmAllFirst(String fn, ArrayList<Node> funcs) throws IOException {
       FileWriter f;
-
-		String fileName = fn.substring(0, fn.length() - 4);
+        int prefix = 4;
+		String fileName = fn.substring(0, fn.length() - prefix);
 		fileName = "asm_" + fileName + "s";
 		f = new FileWriter(new File(fileName));
 
