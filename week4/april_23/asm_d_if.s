@@ -15,17 +15,17 @@ main:
 	subq $56 , %rsp
 	movq $3 , %rax
 	movq %rax , %rbx
-	movq %rbx , %rcx
-	movq $2 , %rax
-	movq $0 , %rbx
-	cmpq %rcx , %rax
+	movq %rbx , %rdx
+	movq $2 , %rcx
+	movq $0 , %rsi
+	cmpq %rdx , %rcx
 	pushq %r15
 	movq $1 , %r15
-	cmovleq %r15 , %rbx
+	cmovleq %r15 , %rsi
 	popq %r15
 	pushq %r15
 	movq $1 , %r15
-	cmpq %r15 , %rbx
+	cmpq %r15 , %rsi
 	popq %r15
 	je L2
 	jmp L3

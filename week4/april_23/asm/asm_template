@@ -56,7 +56,7 @@ movq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 call
 1
