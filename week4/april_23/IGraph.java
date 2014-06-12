@@ -15,7 +15,8 @@ public class IGraph {
 	private ArrayList<Bubble> bubbles;
 	private ArrayList<Color> colors;
 	private ArrayList<Node> nodes;
-    private int spillSpace;
+   private int spillSpace;
+   private final int withheldRegisters = 5; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
 	
 	public IGraph(ArrayList<Node> nodes) {
 		this.bubbles = new ArrayList<Bubble>();
@@ -157,7 +158,7 @@ public class IGraph {
 	
 	public void colorGraph() {
 	
-	   int numColors = colors.size() - 3; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
+	   int numColors = colors.size() - this.withheldRegisters; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
 	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles); //makes an unaltering copy
 	          
