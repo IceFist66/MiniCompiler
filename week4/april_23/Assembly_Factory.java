@@ -88,7 +88,7 @@ public class Assembly_Factory {
 	   }
         createListAll();
         calcLiveOutAll();
-        printAsmAllFirst(fname, input); //comment out
+        //printAsmAllFirst(fname, input); //comment out
         generateIGraphs();
         printIGraphs();
         colorIGraphs();

@@ -12,7 +12,7 @@ main:
 	.cfi_startproc
 	pushq %rbp
 	movq %rsp , %rbp
-	subq $56 , %rsp
+	subq $48 , %rsp
 	movq $3 , %rax
 	movq %rax , %rbx
 	movq %rbx , %rdx
@@ -21,7 +21,7 @@ main:
 	cmpq %rdx , %rcx
 	pushq %r15
 	movq $1 , %r15
-	cmovleq %r15 , %rsi
+	cmovgq %r15 , %rsi
 	popq %r15
 	pushq %r15
 	movq $1 , %r15
@@ -55,15 +55,15 @@ L2:
 L4:
 	movq %rbx , %r12
 	movq $3 , %rdx
-	movq $0 , uncolorable
+	movq $0 , %r13
 	cmpq %r12 , %rdx
 	pushq %r15
 	movq $1 , %r15
-	cmovleq %r15 , uncolorable
+	cmovgq %r15 , %r13
 	popq %r15
 	pushq %r15
 	movq $1 , %r15
-	cmpq %r15 , uncolorable
+	cmpq %r15 , %r13
 	popq %r15
 	je L5
 	jmp L6
@@ -97,7 +97,7 @@ L7:
 	cmpq %rdx , %rbx
 	pushq %r15
 	movq $1 , %r15
-	cmovleq %r15 , %r12
+	cmovgq %r15 , %r12
 	popq %r15
 	pushq %r15
 	movq $1 , %r15

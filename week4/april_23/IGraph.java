@@ -157,7 +157,7 @@ public class IGraph {
 	
 	public void colorGraph() {
 	
-	   int numColors = colors.size() - 5; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
+	   int numColors = colors.size() - 3; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
 	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles); //makes an unaltering copy
 	          
