@@ -88,7 +88,7 @@ public class IGraph {
 		        sources = a.getSources();
 		        for(String source : sources){
                     if(source != null && (source.charAt(0) == 'r' || source.charAt(0) == '%')){
-                        liveNow.add(source);
+                        //liveNow.add(source); // move down for loop target : targeta THIS IS WRONG!!!
 			            addBubble(source);
                         //System.out.println("Added a bubble: " + source);
                     }
@@ -126,6 +126,10 @@ public class IGraph {
 			            //System.out.println("BTarget is null!!: "+ target);
 		            }
                 }
+                 // loop over all sources in the instruction and add to LiveNow
+               for(String source : sources){
+                 liveNow.add(source);
+               }
 			}
 		}
 	}
@@ -153,7 +157,7 @@ public class IGraph {
 	
 	public void colorGraph() {
 	
-	   int numColors = colors.size() - 3;
+	   int numColors = colors.size() - 5; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
 	   Stack<Bubble> stackOfBubbles = new Stack<Bubble>();
 	   ArrayList<Bubble> copy = new ArrayList<Bubble>(bubbles); //makes an unaltering copy
 	          

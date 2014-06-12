@@ -20,7 +20,7 @@ idivq
 1
 arg1
 %rax %rdx
-this.arg1
+this.arg1 %rax %rdx
 
 andq
 2
@@ -74,43 +74,43 @@ cmoveq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 cmovgq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 cmovgeq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 cmovlq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 cmovleq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 cmovneq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg1
+this.arg1 this.arg2
 
 shrq
 2
 arg1 + " , " + arg2
 this.arg2
-this.arg2
+this.arg1
 
 leave
 0
