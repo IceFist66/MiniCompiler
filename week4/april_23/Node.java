@@ -463,7 +463,7 @@ public class Node {
       System.out.println();
 
       String line = this.getFunctionName() + ":\n";
-		f.write(line);
+		//f.write(line);
       System.out.print(line);
       ArrayList<Instruction_a> asm_instructions = this.getAsmInstructions();
       for(Instruction_a ainst : asm_instructions){
@@ -474,7 +474,7 @@ public class Node {
               }
           }
          line += "\t" + ainst.toString() + "\n";
-         f.write(line);
+         //f.write(line);
          System.out.print(line);
       }
       printGenKillSet(this, f); //comment out
@@ -489,7 +489,7 @@ public class Node {
       for (Node s : n.succNodes) {
       if (s.asm_printed_1 == false) {
             String line = "\nL" + s.id + ":\n";
-	      	f.write(line);
+	      	//f.write(line);
 
             System.out.print(line);
             asm_instructions = s.getAsmInstructions();
@@ -502,7 +502,7 @@ public class Node {
                     }
                 }
                line += "\t" + ainst.toString() + "\n";
-               f.write(line);
+               //f.write(line);
                System.out.print(line);
             }
             printGenKillSet(s, f); //comment out
