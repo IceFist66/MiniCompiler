@@ -5,5 +5,13 @@ fun main(int ke) int
 
 fun simple(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int n, int m, int o) int
 {
+   simple2 (a, b, c, d, e, f, g, h);
    return a - b + c * d / e + f * g + h + i + j + k + l + m + n + o;
+}
+
+fun simple2(int a, int b, int c, int d, int e, int f, int g, int h) void
+{
+   int x;
+   x = a + b + c + d + e + f + g + h;
+   print x endl;
 }

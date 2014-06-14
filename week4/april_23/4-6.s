@@ -65,6 +65,13 @@ simple:
 	imull	16(%rbp), %eax
 	leal	(%rdx,%rax), %eax
 	addl	24(%rbp), %eax
+	addl	32(%rbp), %eax
+	addl	40(%rbp), %eax
+	addl	48(%rbp), %eax
+	addl	56(%rbp), %eax
+	addl	72(%rbp), %eax
+	addl	64(%rbp), %eax
+	addl	80(%rbp), %eax
 	leave
 	.cfi_def_cfa 7, 8
 	ret

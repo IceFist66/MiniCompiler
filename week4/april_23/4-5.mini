@@ -11,6 +11,6 @@ fun simple(int x) void
 {
    int k, j;
    j = 3;
-   k = i+j;
+   k = x+j;
    print k endl;
 }

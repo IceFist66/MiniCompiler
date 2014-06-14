@@ -289,5 +289,9 @@ public class IGraph {
 			System.out.println();
 		}
 	}
+    
+    public HashMap<String, Integer> getUncoloredRegisters(){
+        return uncoloredRegisters;
+    }
 }
 

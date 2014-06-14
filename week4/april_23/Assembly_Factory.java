@@ -625,7 +625,7 @@ public class Assembly_Factory {
         }
         else{
             //list.add(new Movq(arg1, ((argument-this.max_arguments)*this.offset)+"(%rsp)")); //original code
-            list.add(new Movq(arg1, (this.argument_location +(argument-this.max_arguments)*this.offset)+"(%rsp)"));
+            list.add(new Movq(arg1, ((argument-this.max_arguments)*this.offset)+"(%rsp)"));
             
         }
         return list;
@@ -674,7 +674,7 @@ public class Assembly_Factory {
       for(String global: globals){
          global_prefront += "\t.comm\t" + global + " , 8 , 8\n";
       }
-      global_prefront += "\t.comm\t.scan , 8 , 8";
+      global_prefront += "\t.comm\t.scan , 8 , 8\n";
       System.out.print(global_prefront);
       f.write(global_prefront);
 		for (Node n : funcs) {
@@ -834,52 +834,113 @@ public class Assembly_Factory {
         int association = 0;
         for(ArrayList<Node> nodes : allNodes){ //for each list of nodes
             IGraph graph = iGraphs.get(association); //grab associated Igraph
+            HashMap<String, Integer> unc = graph.getUncoloredRegisters(); //get all the uncolored registers
             //ArrayList<Bubble> bubbles = graph.getBubbles();//getBubbles
             for(Node n : nodes){//for each Node
+                ArrayList<Instruction_a> copy = new ArrayList<Instruction_a>();
                 for(Instruction_a inst : n.getAsmInstructions()){
+                    ArrayList<Integer> st = getTargetSource(inst);
                     String arg1 = inst.getArg1();
                     String arg2 = inst.getArg2();
                     String arg3 = inst.getArg3();
+                    String address1 = "";
+                    String address2 = "";
+                    boolean a1c = false;
+                    boolean a2c = false;
                     if(arg1 != null && arg1.charAt(0) == 'r'){
                         //System.out.println("Before: " + inst.getArg1() + " text " + inst.toString());
                         Bubble sb = graph.getBubble(arg1);
-                        if(sb == null){
+                        /*if(sb == null){
                             System.out.println("This is null from arg1: " + arg1 + " in Node: " + n.getId());
+                        }*/
+                        String color = sb.getColor().text();
+                        if(color.equals("uncolorable")){
+                            int spill = this.offset * -1 * unc.get(sb.getId());
+                            address1 = spill+"(%rbp)";
+                            inst.setArg1("%r14");
+                            a1c = true;
                         }
-                        inst.setArg1(sb.getColor().text());
-                        if(inst instanceof Imulq && arg3 != null){
+                        else{
+                            inst.setArg1(color);
+                        }
+                        /*if(inst instanceof Imulq && arg3 != null){
                             inst.resetText2();
                         }
                         else{
                             inst.resetText();
-                        }
+                        }*/
                         //System.out.println("After: " + inst.getArg1() + " text " + inst.toString());
                     }
                     if(arg2 != null && arg2.charAt(0) == 'r'){
                         //System.out.println("Before: " + inst.getArg2() + " text " + inst.toString());
                         Bubble sb = graph.getBubble(arg2);
-                        inst.setArg2(sb.getColor().text());
-                        if(inst instanceof Imulq && arg3 != null){
+                        String color = sb.getColor().text();
+                        if(color.equals("uncolorable")){
+                            int spill = this.offset * -1 * unc.get(sb.getId());
+                            address2 = spill+"(%rbp)";
+                            inst.setArg2("%r15");
+                            a2c = true;
+                        }
+                        else{
+                            inst.setArg2(color);
+                        }
+                        /*if(inst instanceof Imulq && arg3 != null){
                             inst.resetText2();
                         }
                         else{
                             inst.resetText();
-                        }
+                        }*/
                         //System.out.println("After: " + inst.getArg2() + " text " + inst.toString());
                     }
-                    if(arg3 != null && arg3.charAt(0) == 'r'){
+                    /*(if(arg3 != null && arg3.charAt(0) == 'r'){
                         //System.out.println("Before: " + inst.getArg3() + " text " + inst.toString());
                         Bubble sb = graph.getBubble(arg3);
-                        inst.setArg3(sb.getColor().text());
-                        if(inst instanceof Imulq && arg3 != null){
+                        String color = sb.getColor().text();
+                        if(color.equals("uncolorable")){
+                            int spill = this.offset * -1 * unc.get(sb.getId());
+                            String address = spill+"(%rbp)";
+                            inst.setArg3(address);
+                        }
+                        else{
+                            inst.setArg3(color);
+                        }
+                        /*if(inst instanceof Imulq && arg3 != null){
                             inst.resetText2();
                         }
                         else{
                             inst.resetText();
                         }
                         //System.out.println("After: " + inst.getArg3() + " text " + inst.toString());
+                    }*/
+                    if(inst instanceof Imulq && arg3 != null){
+                        inst.resetText2();
+                    }
+                    else{
+                        inst.resetText();
+                    }
+                    if(a1c){
+                        if(st.get(0) == 1 || st.get(0) == 3){
+                            copy.add(new Movq(address1, "%r14"));
+                        }
+                    }
+                    if(a2c){
+                        if(st.get(1) == 1 || st.get(1) == 3){
+                            copy.add(new Movq(address2, "%r15"));
+                        }
+                    }
+                    copy.add(inst);
+                    if(a1c){
+                        if(st.get(0) == 2 || st.get(0) == 3){
+                            copy.add(new Movq("%r14", address1));
+                        }
+                    }
+                    if(a2c){
+                        if(st.get(1) == 2 || st.get(1) == 3){
+                            copy.add(new Movq("%r15", address2));
+                        }
                     }
                 }
+                n.setAsmInstructions(copy);
             }
             association++;//increment association
         }
@@ -934,4 +995,193 @@ public class Assembly_Factory {
 		}
 		f.close();
    }
+    public ArrayList<Integer> getTargetSource(Instruction_a i){
+        //0 not source or target
+        //1 source
+        //2 target
+        //3 both
+        ArrayList<Integer> st = new ArrayList<Integer>();
+        
+        if(i instanceof Addq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+        
+        if(i instanceof Subq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+        
+        if(i instanceof Imulq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+        
+        if(i instanceof Idivq){
+            st.add(1);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Andq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+        
+        if(i instanceof Orq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Xorq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmpq){
+            st.add(1);
+            st.add(1);
+            return st;
+        }
+        
+        if(i instanceof Jmp){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Je){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Jg){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Jge){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Jl){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Jle){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        if(i instanceof Jne){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Movq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof asm.Call){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof asm.Ret){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+
+        
+        if(i instanceof Cmoveq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmovgq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmovgeq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmovlq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmovleq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Cmovneq){
+            st.add(1);
+            st.add(3);
+            return st;
+        }
+
+        
+        if(i instanceof Shrq){
+            st.add(1);
+            st.add(2);
+            return st;
+        }
+        
+        if(i instanceof Leave){
+            st.add(0);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Pushq){
+            st.add(1);
+            st.add(0);
+            return st;
+        }
+        
+        if(i instanceof Popq){
+            st.add(2);
+            st.add(0);
+            return st;
+        }
+        
+        //if not one of the above
+        st.add(0);
+        st.add(0);
+        return st;
+    }
 }
