@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Stack;
+import java.util.HashMap;
 
 import iloc.*;
 import asm.*;
@@ -17,9 +18,11 @@ public class IGraph {
 	private ArrayList<Node> nodes;
    private int spillSpace;
    private final int withheldRegisters = 5; // save %r14 and %r15 for temporary use and spills, don't use %rbp or %rsp, and Color.UNC is not a valid coloring
+   private HashMap<String, Integer> uncoloredRegisters;
 	
 	public IGraph(ArrayList<Node> nodes) {
 		this.bubbles = new ArrayList<Bubble>();
+		this.uncoloredRegisters = new HashMap<String, Integer>();
 		this.colors = createColorSet();
 		this.nodes = nodes;
         this.spillSpace = 0;
@@ -54,6 +57,8 @@ public class IGraph {
                 if(b.getColor() == Color.UNC){
                     spillSpace++;
                     b.setSpill(spillSpace);
+                    uncoloredRegisters.put(b.getId(), spillSpace);
+                    System.out.println("Added " + b.getId() + " as number " + spillSpace + " to the list of uncolored registers.");
                 }
             }
         }
@@ -235,11 +240,20 @@ public class IGraph {
                      conflict = false;
                   }
 	            }
-	            // if after trying all colors there is still a conflict
+	            /*// if after trying all colors there is still a conflict
 	            // then color the bubble as uncolorable
                  if (conflict == true){
                      b.setColor(Color.UNC);
                      b.setUncCount(++uncolored_count);
+                     uncoloredRegisters.put(b.getId(), uncolored_count);
+                     System.out.println("Added " + b.getId() + " as number " + uncolored_count + " to the list of uncolored registers.");
+                 }*/
+               // if bubble is still uncolored then it is uncolorable
+	            // increase the uncolored_count and add the register to the table of uncoloredRegisters for use in spills
+                 if (b.getColor() == Color.UNC){
+                     b.setUncCount(++uncolored_count);
+                    // uncoloredRegisters.put(b.getId(), uncolored_count);
+                    // System.out.println("Added " + b.getId() + " as number " + uncolored_count + " to the list of uncolored registers.");
                  }
 	         }
 	         // the bubble is colored and can now be added back to the graph

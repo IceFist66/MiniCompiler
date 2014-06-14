@@ -1,7 +1,6 @@
-int i,k;
-
 fun main(int ke) int
 {
+    int i;
     i = 0;
     print i;
     simple(i);
