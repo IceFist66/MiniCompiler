@@ -463,65 +463,65 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getCmoveq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmoveq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmoveq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovgq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmovlq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmovlq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovgeq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmovleq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmovleq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovlq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmovgq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmovgq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovleq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmovgeq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmovgeq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
 
     public ArrayList<Instruction_a> getCmovneq(String arg1, String arg2){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmovneq("%r15", arg2));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmovneq("%r13", arg2));
+        list.add(new Popq("%r13"));
         return list;
     }
     
     public ArrayList<Instruction_a> getBrz(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        list.add(new Pushq("%r15"));
-        list.add(new Movq("$1", "%r15"));
-        list.add(new Cmpq("%r15", arg1)); //original code
-        //list.add(new Cmpq(arg1, "%r15"));
-        list.add(new Popq("%r15"));
+        list.add(new Pushq("%r13"));
+        list.add(new Movq("$1", "%r13"));
+        list.add(new Cmpq("%r13", arg1)); //original code
+        //list.add(new Cmpq(arg1, "%r13"));
+        list.add(new Popq("%r13"));
         //list.addAll(getJne(arg2, arg3)); //original code NOT SURE due to Jeff
         list.addAll(getJe(arg2, arg3));
         return list;
@@ -641,12 +641,12 @@ public class Assembly_Factory {
         list.add(new Movq("$.scan", "%rsi"));
         list.add(new Movq("$0", "%rax"));
         list.add(new asm.Call("scanf"));
-        list.add(new Movq(".scan", "%r15"));
+        list.add(new Movq(".scan", "%r13"));
         list.add(new Popq("%rax"));
         list.add(new Popq("%rsi"));
         list.add(new Popq("%rdi"));
-        //list.add(new Movq("%r15", "%rax"));
-        list.add(new Movq("%r15", arg1));
+        //list.add(new Movq("%r13", "%rax"));
+        list.add(new Movq("%r13", arg1));
         return list;
     }
 

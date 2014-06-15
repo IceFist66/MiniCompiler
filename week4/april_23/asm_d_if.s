@@ -1,3 +1,5 @@
+
+	.comm	.scan , 8 , 8
 	.section .rodata
 .LL0:
 	.string "%ld\n"
@@ -12,21 +14,21 @@ main:
 	.cfi_startproc
 	pushq %rbp
 	movq %rsp , %rbp
-	subq $48 , %rsp
+	subq $56 , %rsp
 	movq $3 , %rax
 	movq %rax , %rbx
 	movq %rbx , %rdx
 	movq $2 , %rcx
 	movq $0 , %rsi
 	cmpq %rdx , %rcx
-	pushq %r15
-	movq $1 , %r15
-	cmovgq %r15 , %rsi
-	popq %r15
-	pushq %r15
-	movq $1 , %r15
-	cmpq %r15 , %rsi
-	popq %r15
+	pushq %r13
+	movq $1 , %r13
+	cmovgq %r13 , %rsi
+	popq %r13
+	pushq %r13
+	movq $1 , %r13
+	cmpq %r13 , %rsi
+	popq %r13
 	je L2
 	jmp L3
 L2:
@@ -55,16 +57,21 @@ L2:
 L4:
 	movq %rbx , %r12
 	movq $3 , %rdx
-	movq $0 , %r13
+	movq -8(%rbp) , %r15
+	movq $0 , %r15
+	movq %r15 , -8(%rbp)
 	cmpq %r12 , %rdx
-	pushq %r15
-	movq $1 , %r15
-	cmovgq %r15 , %r13
-	popq %r15
-	pushq %r15
-	movq $1 , %r15
-	cmpq %r15 , %r13
-	popq %r15
+	pushq %r13
+	movq $1 , %r13
+	movq -8(%rbp) , %r15
+	cmovgq %r13 , %r15
+	movq %r15 , -8(%rbp)
+	popq %r13
+	pushq %r13
+	movq $1 , %r13
+	movq -8(%rbp) , %r15
+	cmpq %r13 , %r15
+	popq %r13
 	je L5
 	jmp L6
 L5:
@@ -95,14 +102,14 @@ L7:
 	movq $4 , %rbx
 	movq $0 , %r12
 	cmpq %rdx , %rbx
-	pushq %r15
-	movq $1 , %r15
-	cmovgq %r15 , %r12
-	popq %r15
-	pushq %r15
-	movq $1 , %r15
-	cmpq %r15 , %r12
-	popq %r15
+	pushq %r13
+	movq $1 , %r13
+	cmovgq %r13 , %r12
+	popq %r13
+	pushq %r13
+	movq $1 , %r13
+	cmpq %r13 , %r12
+	popq %r13
 	je L8
 	jmp L9
 L8:
@@ -130,7 +137,7 @@ L8:
 	jmp L10
 L10:
 L1:
-	addq $48 , %rsp
+	addq $56 , %rsp
 	movq %rbp , %rsp
 	popq %rbp
 	ret 
