@@ -90,9 +90,9 @@ public class Assembly_Factory {
         calcLiveOutAll();
         //printAsmAllFirst(fname, input); //comment out
         generateIGraphs();
-        printIGraphs();
+        //printIGraphs();
         colorIGraphs();
-        printIGraphColorings();
+        //printIGraphColorings();
         applyColor();
         int association = 0;
         for(Node n : input){//settting up the callee saved registers
@@ -113,6 +113,7 @@ public class Assembly_Factory {
                 n.getAsmInstructions().set(this.subq_location, insts.get(j));
             }
             i++;
+            changeReturn(n, graph);
         }
         printAsmAll(fname, input, stringDirectives);
 	}
@@ -1183,5 +1184,24 @@ public class Assembly_Factory {
         st.add(0);
         st.add(0);
         return st;
+    }
+    
+    public void changeReturn(Node n, IGraph graph){
+        for(int x = 0; x < n.getAsmInstructions().size(); x++){
+            if(n.getAsmInstructions().get(x) instanceof asm.Ret){
+                int spill = graph.getSpillSpace();
+                Addq add;
+                if(this.maxParam<this.max_arguments){
+                    add = new Addq("$"+(this.default_stack+((spill)*this.offset)), "%rsp");
+                }
+                else{
+                    add = new Addq("$"+(this.default_stack+((spill+(maxParam-this.max_arguments))*this.offset)), "%rsp");
+                }
+                n.getAsmInstructions().set(x-3, add);
+            }
+        }
+        for(Node s: n.getSuccNodes()){
+            changeReturn(s, graph);
+        }
     }
 }

@@ -1,11 +1,31 @@
 fun main(int ke) int
 {
-   return simple(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+   int y;
+   y = simple(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+   print y endl;
+   return y;
 }
 
 fun simple(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int n, int m, int o) int
 {
+   int y;   
+   print a endl;
+   print b endl;
+   print c endl;
+   print o endl;
+   print e endl;
+   print f endl;
+   print g endl;
+   print h endl;
    simple2 (a, b, c, d, e, f, g, h);
+   print a endl;
+   print b endl;
+   print c endl;
+   print d endl;
+   print e endl;
+   print f endl;
+   print g endl;
+   print h endl;
    return a - b + c * d / e + f * g + h + i + j + k + l + m + n + o;
 }
 

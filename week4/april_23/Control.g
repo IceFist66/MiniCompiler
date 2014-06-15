@@ -45,6 +45,7 @@ options
     private int stringCounter = 0;
     private int lsDotCounter = 0;
     private String filename = "";
+    private ArrayList<ArrayList<String>> g_orderedParams;
     
     // remove the boolean argument once figure out how to load and store globals
     public HashMap<String, String> buildRegisterMap(ArrayList<String> variableNames, boolean isGlobalTable) {
@@ -1048,13 +1049,30 @@ fun:
             maxNumParams = numP;
          int count = 0;
          System.out.println("numP = " + numP);
-         for (String p : f.getParams()) {
+         
+         // find function's parameter list
+         ArrayList<String> target;
+         for(ArrayList<String> a : g_orderedParams) {
+            if (a.get(0).equals($id.text)) {
+                target = a;
+                target.remove(0);
+                for (String p : target) {
+                    System.out.println(p);
+                    Loadinargument lia = new Loadinargument(p, count + "", getRegister(p));
+                    head.getInstructions().add(lia);
+                    count++;
+                }
+                
+            }
+         }
+
+         /*for (String p : f.getParams()) {
             System.out.println(p);
             Loadinargument lia = new Loadinargument(p, count + "", getRegister(p));
           //  firstBlock.getInstructions().add(lia);
             head.getInstructions().add(lia);
             count++;
-         }
+         }*/
       }
       
       //rettype decls current=stmts[firstBlock]
@@ -1108,10 +1126,11 @@ rettype:
 ;
 
 
-construct [StructTypes stypes, SymbolTable stable, String filename] returns [ArrayList<Node> f = null]
+construct [StructTypes stypes, SymbolTable stable, String filename, ArrayList<ArrayList<String>> orderedParams] returns [ArrayList<Node> f = null]
     @init {
         g_stypes = stypes; 
-        g_stable = stable; 
+        g_stable = stable;
+        g_orderedParams = orderedParams;
         functions = new ArrayList<Node>();
         funcNames = new ArrayList<String>();
         stringDirectives = new ArrayList<String>();

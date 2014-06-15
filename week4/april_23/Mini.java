@@ -96,7 +96,7 @@ public class Mini
 
          // our code
          tparser.verify(stypes, stable);
-         ArrayList<Node> instructions = cparser.construct(stypes, stable, _inputFile);
+         ArrayList<Node> instructions = cparser.construct(stypes, stable, _inputFile, tparser.getOrderedParams());
           Assembly_Factory factory = new Assembly_Factory(instructions, _inputFile, cparser.getStringDirectives(), cparser.getGlobals(), cparser.getMaxNumParams());
          try {
             factory.convert();

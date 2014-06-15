@@ -29,6 +29,11 @@ options
 @members {
     private StructTypes g_stypes;
     private SymbolTable g_stable;
+    private ArrayList<ArrayList<String>> ordered_params;
+    
+    public ArrayList<ArrayList<String>> getOrderedParams(){
+        return ordered_params;
+    }
 }
 
 error:
@@ -177,16 +182,34 @@ fun [String scope]:
 ;
 
 params [String scope] returns [int i = 0]:
-    ^(PARAMS {int j = 0;}(v=decl[scope]
+    ^(PARAMS 
+    
+    {
+        int j = 0;
+        ArrayList<String> pa = new ArrayList<String>();
+        pa.add(scope);
+    }
+    
+    (v=decl[scope]
+    
     {
         /*System.out.println("Get Param name: "+ v.getName());
         System.out.println("Get Param struct_type: "+ v.getStructType());*/
         v.setVarType(Scope.PARAMETER);
         g_stable.addSymbol(scope, v.getName(), v);
+        pa.add(v.getName());
         System.out.println("Symbol " + v.getName() + " was added to " + scope);
         j++;
     }
-    )* {$i = j;})
+    
+    )*
+    
+    {
+        $i = j;
+        ordered_params.add(pa);
+    }
+    
+    )
 ;
 
 rettype[String scope] returns [Variable v = null]:
@@ -194,7 +217,13 @@ rettype[String scope] returns [Variable v = null]:
 ;
 
 
-verify [StructTypes stypes, SymbolTable stable] @init {g_stypes = stypes; g_stable = stable; }:
+verify [StructTypes stypes, SymbolTable stable] @init 
+    {
+        g_stypes = stypes; 
+        g_stable = stable; 
+        ordered_params = new ArrayList<ArrayList<String>>();
+
+    }:
     ^(PROGRAM types["global"] decls["global"] funcs["global"])
     { System.out.println("Successfully walked Program tree."); 
       stable.gatherParams();
