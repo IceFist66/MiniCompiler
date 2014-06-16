@@ -27,6 +27,7 @@ public class Assembly_Factory {
         private ArrayList<IGraph> iGraphs;
         private ArrayList<String> caller;
         private ArrayList<String> globals;
+        private HashMap<String, Integer> mallocs;
         private boolean store;
     
     private final int offset = 8;
@@ -53,6 +54,7 @@ public class Assembly_Factory {
         this.iGraphs = new ArrayList<IGraph>();
         this.store = false;
         this.maxParam = maxParam;
+        this.mallocs = new HashMap<String, Integer>();
 	}
 
 	public ArrayList<Node> getInput() {
@@ -397,6 +399,8 @@ public class Assembly_Factory {
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
         list.add(new Pushq("%rdx")); //push %rdx
         list.add(new Pushq("%rax")); //push %rax
+        list.add(new Xorq("%rdx", "%rdx"));
+        list.add(new Xorq("%rax", "%rax"));
         list.addAll(getMovq(arg1, "%rax")); //r1 -> rax
         list.add(new Cqto()); //cqto- sign extend rax to rdx:rax
         list.add(new Idivq(arg2)); //rax /= r2
@@ -529,9 +533,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getLoadai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        //int offset = 8; //64 bits
-        //offset *= Integer.parseInt(arg2); //create an offset from arg2
-        list.addAll(getMovq((this.offset+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
+        int index = mallocs.get(arg2);
+        list.addAll(getMovq(((this.offset * index)+"("+arg1+")"), arg3)); //movq offset(arg1), arg3
         return list;
     }
 
@@ -548,9 +551,8 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getStoreai(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        //int offset = 8; //64 bits
-        //offset *= Integer.parseInt(arg3); //create an offset from arg2
-        list.addAll(getMovq(arg1, this.offset+"("+arg2+")")); //movq offset(arg1), arg3
+        int index = mallocs.get(arg3);
+        list.addAll(getMovq(arg1, (this.offset * index)+"("+arg2+")")); //movq offset(arg1), arg3
         return list;
     }
 
@@ -574,11 +576,15 @@ public class Assembly_Factory {
 
     public ArrayList<Instruction_a> getNew(String arg1, String arg2, String arg3){
         ArrayList<Instruction_a> list = new ArrayList<Instruction_a>();
-        StringTokenizer st = new StringTokenizer(arg2, " ,");
+        StringTokenizer st = new StringTokenizer(arg2, "[] ,");
         int i = 1;
+        String temp;
         while(st.hasMoreTokens()){
+            temp = st.nextToken();
+            if(!mallocs.containsKey(temp)){ //assumes that all structs have unique field names
+                mallocs.put(temp, i);
+            }
             i++;
-            st.nextToken();
         }
         for(int j = 0; j < this.caller.size(); j++){
             list.add(new Pushq(caller.get(j)));
@@ -841,9 +847,15 @@ public class Assembly_Factory {
                 ArrayList<Instruction_a> copy = new ArrayList<Instruction_a>();
                 for(Instruction_a inst : n.getAsmInstructions()){
                     ArrayList<Integer> st = getTargetSource(inst);
-                    String arg1 = inst.getArg1();
-                    String arg2 = inst.getArg2();
-                    String arg3 = inst.getArg3();
+                    ArrayList<String> a1 = stripArg(inst.getArg1());
+                    ArrayList<String> a2 = stripArg(inst.getArg2());
+                    ArrayList<String> a3 = stripArg(inst.getArg3());
+                    String off1 = a1.get(0);
+                    String arg1 = a1.get(1);
+                    String off2 = a2.get(0);
+                    String arg2 = a2.get(1);
+                    String off3 = a3.get(0);
+                    String arg3 = a3.get(1);
                     String address1 = "";
                     String address2 = "";
                     boolean a1c = false;
@@ -862,7 +874,12 @@ public class Assembly_Factory {
                             a1c = true;
                         }
                         else{
-                            inst.setArg1(color);
+                            if(!off1.equals("")){
+                                inst.setArg1(off1+"("+color+")");
+                            }
+                            else{
+                                inst.setArg1(color);
+                            }
                         }
                         /*if(inst instanceof Imulq && arg3 != null){
                             inst.resetText2();
@@ -883,7 +900,12 @@ public class Assembly_Factory {
                             a2c = true;
                         }
                         else{
-                            inst.setArg2(color);
+                            if(!off2.equals("")){
+                                inst.setArg2(off2+"("+color+")");
+                            }
+                            else{
+                                inst.setArg2(color);
+                            }
                         }
                         /*if(inst instanceof Imulq && arg3 != null){
                             inst.resetText2();
@@ -1203,5 +1225,24 @@ public class Assembly_Factory {
         for(Node s: n.getSuccNodes()){
             changeReturn(s, graph);
         }
+    }
+    
+    public ArrayList<String> stripArg(String arg){
+        String offset = "";
+        String newa = arg;
+        ArrayList<String> returns = new ArrayList<String>();
+        if(arg != null){
+            StringTokenizer st = new StringTokenizer(arg, "() ");
+            if(st.hasMoreTokens()){
+                newa = st.nextToken();
+            }
+            if(st.hasMoreTokens()){
+                offset = newa;
+                newa = st.nextToken();
+            }
+        }
+        returns.add(offset);
+        returns.add(newa);
+        return returns;
     }
 }

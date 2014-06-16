@@ -797,6 +797,8 @@ simple:
 	movq %r15 , -336(%rbp)
 	pushq %rdx
 	pushq %rax
+	xorq %rdx , %rdx
+	xorq %rax , %rax
 	movq -328(%rbp) , %r14
 	movq %r14 , %rax
 	cqto 
